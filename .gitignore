@@ -3,5 +3,6 @@ apiGateway/node_modules
 apiGateway/logs
 
 # auth
-
-
+auth/node_modules
+auth/proto/authType
+auth/proto/auth.ts
