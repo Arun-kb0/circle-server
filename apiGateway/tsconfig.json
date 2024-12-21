@@ -16,7 +16,7 @@
   },
   "include": [
     "src/*",
-    "src/proto/**/*.ts"
+    "src/protos/**/*.ts"
   ],
   "exclude": [
     
