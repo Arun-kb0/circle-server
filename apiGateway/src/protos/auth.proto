@@ -7,6 +7,7 @@ service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse) {};
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
   rpc Logout(LogoutRequest) returns (LogoutResponse) {};
+  rpc Refresh(RefreshRequest) returns (RefreshResponse) {};
 
   rpc AdminSignUp(AdminSignUpRequest) returns (AdminSignUpResponse) {};
   rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse) {};
@@ -14,7 +15,7 @@ service AuthService {
 
 
 message User {
-  string id = 1;
+  string _id = 1;
   string name = 2;
   string email = 3;
   int32 age = 4;
@@ -59,6 +60,15 @@ message LogoutRequest {
 
 message LogoutResponse {
 
+}
+
+message RefreshRequest {
+  string refreshToken =1;
+}
+
+message RefreshResponse {
+  string accessToken = 1;
+  User user =2;
 }
 
 

@@ -29,7 +29,8 @@ const grpcConnect = () => {
     {
       login: userController.login,
       signUp: userController.signup,
-      logout: userController.logout
+      logout: userController.logout,
+      refresh: userController.refresh
     }
   )
 

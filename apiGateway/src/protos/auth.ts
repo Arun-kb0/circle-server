@@ -18,6 +18,8 @@ export interface ProtoGrpcType {
     LoginResponse: MessageTypeDefinition
     LogoutRequest: MessageTypeDefinition
     LogoutResponse: MessageTypeDefinition
+    RefreshRequest: MessageTypeDefinition
+    RefreshResponse: MessageTypeDefinition
     SignUpRequest: MessageTypeDefinition
     SignUpResponse: MessageTypeDefinition
     User: MessageTypeDefinition

@@ -2,7 +2,7 @@
 
 
 export interface User {
-  'id'?: (string);
+  '_id'?: (string);
   'name'?: (string);
   'email'?: (string);
   'age'?: (number);
@@ -17,7 +17,7 @@ export interface User {
 }
 
 export interface User__Output {
-  'id'?: (string);
+  '_id'?: (string);
   'name'?: (string);
   'email'?: (string);
   'age'?: (number);

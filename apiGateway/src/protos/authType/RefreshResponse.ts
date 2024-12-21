@@ -2,14 +2,12 @@
 
 import type { User as _authType_User, User__Output as _authType_User__Output } from '../authType/User';
 
-export interface AdminLoginResponse {
+export interface RefreshResponse {
+  'accessToken'?: (string);
   'user'?: (_authType_User | null);
-  'token'?: (string);
-  'refreshToken'?: (string);
 }
 
-export interface AdminLoginResponse__Output {
+export interface RefreshResponse__Output {
+  'accessToken'?: (string);
   'user'?: (_authType_User__Output);
-  'token'?: (string);
-  'refreshToken'?: (string);
 }

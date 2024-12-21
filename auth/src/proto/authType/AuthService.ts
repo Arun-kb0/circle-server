@@ -10,6 +10,8 @@ import type { LoginRequest as _authType_LoginRequest, LoginRequest__Output as _a
 import type { LoginResponse as _authType_LoginResponse, LoginResponse__Output as _authType_LoginResponse__Output } from '../authType/LoginResponse';
 import type { LogoutRequest as _authType_LogoutRequest, LogoutRequest__Output as _authType_LogoutRequest__Output } from '../authType/LogoutRequest';
 import type { LogoutResponse as _authType_LogoutResponse, LogoutResponse__Output as _authType_LogoutResponse__Output } from '../authType/LogoutResponse';
+import type { RefreshRequest as _authType_RefreshRequest, RefreshRequest__Output as _authType_RefreshRequest__Output } from '../authType/RefreshRequest';
+import type { RefreshResponse as _authType_RefreshResponse, RefreshResponse__Output as _authType_RefreshResponse__Output } from '../authType/RefreshResponse';
 import type { SignUpRequest as _authType_SignUpRequest, SignUpRequest__Output as _authType_SignUpRequest__Output } from '../authType/SignUpRequest';
 import type { SignUpResponse as _authType_SignUpResponse, SignUpResponse__Output as _authType_SignUpResponse__Output } from '../authType/SignUpResponse';
 
@@ -50,6 +52,15 @@ export interface AuthServiceClient extends grpc.Client {
   logout(argument: _authType_LogoutRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_LogoutResponse__Output>): grpc.ClientUnaryCall;
   logout(argument: _authType_LogoutRequest, callback: grpc.requestCallback<_authType_LogoutResponse__Output>): grpc.ClientUnaryCall;
   
+  Refresh(argument: _authType_RefreshRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  Refresh(argument: _authType_RefreshRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  Refresh(argument: _authType_RefreshRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  Refresh(argument: _authType_RefreshRequest, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  refresh(argument: _authType_RefreshRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  refresh(argument: _authType_RefreshRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  refresh(argument: _authType_RefreshRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  refresh(argument: _authType_RefreshRequest, callback: grpc.requestCallback<_authType_RefreshResponse__Output>): grpc.ClientUnaryCall;
+  
   SignUp(argument: _authType_SignUpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
   SignUp(argument: _authType_SignUpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
   SignUp(argument: _authType_SignUpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
@@ -70,6 +81,8 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   Logout: grpc.handleUnaryCall<_authType_LogoutRequest__Output, _authType_LogoutResponse>;
   
+  Refresh: grpc.handleUnaryCall<_authType_RefreshRequest__Output, _authType_RefreshResponse>;
+  
   SignUp: grpc.handleUnaryCall<_authType_SignUpRequest__Output, _authType_SignUpResponse>;
   
 }
@@ -79,5 +92,6 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   AdminSignUp: MethodDefinition<_authType_AdminSignUpRequest, _authType_AdminSignUpResponse, _authType_AdminSignUpRequest__Output, _authType_AdminSignUpResponse__Output>
   Login: MethodDefinition<_authType_LoginRequest, _authType_LoginResponse, _authType_LoginRequest__Output, _authType_LoginResponse__Output>
   Logout: MethodDefinition<_authType_LogoutRequest, _authType_LogoutResponse, _authType_LogoutRequest__Output, _authType_LogoutResponse__Output>
+  Refresh: MethodDefinition<_authType_RefreshRequest, _authType_RefreshResponse, _authType_RefreshRequest__Output, _authType_RefreshResponse__Output>
   SignUp: MethodDefinition<_authType_SignUpRequest, _authType_SignUpResponse, _authType_SignUpRequest__Output, _authType_SignUpResponse__Output>
 }

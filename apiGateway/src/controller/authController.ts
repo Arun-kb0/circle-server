@@ -84,6 +84,14 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
   }
 }
 
+export const handleRefreshToken = () => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
 export const verify = async (req: Request, res: Response, next: NextFunction) => {
 
 }

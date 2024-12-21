@@ -1,7 +1,13 @@
 import { UserRepoInterface } from "../repositories/interfaces/UserRepoInterface";
 import bcrypt from 'bcrypt'
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
 import { IUser } from "../model/UserModel";
+import { doesNotMatch } from "assert";
+
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
+const ACCESS_EXPIRES_IN = '60s'
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
+const REFRESH_EXPIRES_IN = '1d'
 
 export class UserService {
 
@@ -20,13 +26,13 @@ export class UserService {
 
     const accessToken = jwt.sign(
       { "username": newUser.email },
-      process.env.ACCESS_TOKEN_SECRET as string || 'secret',
-      { expiresIn: '60s' }
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: ACCESS_EXPIRES_IN }
     )
     const refreshToken = jwt.sign(
       { "username": newUser.email },
-      process.env.REFRESH_TOKEN_SECRET as string || 'secret',
-      { expiresIn: '1d' }
+      REFRESH_TOKEN_SECRET,
+      { expiresIn: REFRESH_EXPIRES_IN }
     )
 
     const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
@@ -56,13 +62,13 @@ export class UserService {
     await bcrypt.compare(password, foundUser.password)
     const accessToken = jwt.sign(
       { "username": foundUser.email },
-      process.env.ACCESS_TOKEN_SECRET as string || 'secret',
-      { expiresIn: '60s' }
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: ACCESS_EXPIRES_IN }
     )
     const refreshToken = jwt.sign(
       { "username": foundUser.email },
-      process.env.REFRESH_TOKEN_SECRET as string || 'secret',
-      { expiresIn: '1d' }
+      REFRESH_TOKEN_SECRET,
+      { expiresIn: REFRESH_EXPIRES_IN }
     )
 
     const updatedUser = await this.userRepo.update(foundUser._id, { refreshToken })
@@ -83,8 +89,29 @@ export class UserService {
     this.userRepo.update(id, { refreshToken: undefined })
   }
 
-  async getUserByEmail(email: string) {
-    return this.userRepo.findByEmail(email)
+  async refresh(refreshToken: string) {
+    const user = await this.userRepo.findByToken(refreshToken)
+    if (!user) return { err: 404, data: null }
+
+    const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
+      if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.email) {
+        return { err: 403, data: null }
+      }
+      const accessToken = jwt.sign(
+        { username: decoded.username },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+      const { refreshToken, password, ...rest } = user
+      return { err: null, data: { accessToken, user: rest } }
+    }
+
+    jwt.verify(
+      refreshToken,
+      REFRESH_TOKEN_SECRET,
+      verifyCallback
+    )
+
   }
 
 }

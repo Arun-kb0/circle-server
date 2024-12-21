@@ -30,12 +30,9 @@ export class UserRepo implements UserRepoInterface {
   }
 
 
-  findAll(): Promise<IUser[]> {
-    throw new Error("Method not implemented.");
-  }
-
-  delete(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async findByToken(refreshToken:string): Promise<IUser | null> {
+    const user = await User.findOne({ refreshToken })
+    return user ? user.toObject() : null
   }
 
 }

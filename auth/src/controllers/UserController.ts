@@ -6,11 +6,14 @@ import { LoginResponse } from '../proto/authType/LoginResponse'
 import { SignUpResponse } from "../proto/authType/SignUpResponse";
 import { LogoutRequest__Output } from "../proto/authType/LogoutRequest";
 import { LogoutResponse } from "../proto/authType/LogoutResponse";
+import { RefreshRequest__Output } from "../proto/authType/RefreshRequest";
+import { RefreshResponse } from "../proto/authType/RefreshResponse";
 
 
 type LoginUserFun = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
 type SignupUserFun = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
 type LogoutUserFun = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
+type RefreshUserFun = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
 
 export class UserController {
 
@@ -96,6 +99,41 @@ export class UserController {
       }
       this.userService.logout(userId, token)
       cb(null, { status: 'success' })
+    } catch (error) {
+      console.error(error)
+      let message = 'unexpected error occurred.'
+      if (error instanceof Error) {
+        message = error.message
+      }
+      cb({
+        code: grpc.status.INTERNAL,
+        message,
+      }, null)
+    }
+  }
+
+  refresh: RefreshUserFun = async (call, cb) => {
+    try {
+      const { refreshToken } = call.request
+      if (!refreshToken) {
+        return cb({
+          code: grpc.status.INVALID_ARGUMENT,
+          message: 'refreshToken is required.',
+        }, null)
+      }
+      const res = await this.userService.refresh(refreshToken)
+      if (!res) {
+        return cb({
+          code: grpc.status.NOT_FOUND,
+          message: 'res is empty.',
+        }, null)
+      } else if (res.err === 403) {
+        return cb({
+          code: grpc.status.UNAUTHENTICATED,
+          message: 'unauthorized.',
+        }, null)
+      }
+      cb(null, res.data)
     } catch (error) {
       console.error(error)
       let message = 'unexpected error occurred.'

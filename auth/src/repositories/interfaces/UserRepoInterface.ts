@@ -10,8 +10,7 @@ export interface UserRepoInterface {
   create(user: CreateUserArg): Promise<IUser>
   findById(id: string): Promise<IUser | null>
   findByEmail(email: string): Promise<IUser | null>
-  findAll(): Promise<IUser[]>
+  findByToken(refreshToken:string): Promise<IUser | null>
   update(id: string, user: Partial<IUser>): Promise<IUser | null>
-  delete(id: string): Promise<boolean>
 }
 
