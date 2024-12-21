@@ -16,7 +16,7 @@
   "include": [
     "src/*",
     "src/proto/**/*.ts"
-  ],
+, "src/model", "src/controlsrc/servicesservsrc/repositoriessitories"  ],
   "exclude": [
     
   ]

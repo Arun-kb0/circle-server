@@ -1,10 +1,9 @@
 #!/bin/bash
 
-rm -rf ./src/proto/studentType 
+rm -rf ./src/proto/authType 
 
 npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=./src/proto/ ./src/proto/*.proto
 
-# mkdir -p ./proto
 
 protoc -I=./src/proto ./src/proto/*.proto \
   --js_out=import_style=commonjs:./src/proto \
