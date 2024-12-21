@@ -1,42 +1,15 @@
-import path from 'path'
-import * as grpc from '@grpc/grpc-js'
-import * as protoLoader from '@grpc/proto-loader'
-import { getGrpcServer, startGrpcServer } from './util/grpc'
-import { ProtoGrpcType } from './proto/auth'
-import { userController } from './util/DI'
 import { healthCheck } from './util/healthCheck'
-import mongoose from 'mongoose'
+import connectDB from './config/dbConnect'
+import grpcConnect  from './config/grpcConnect'
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://arun11kb:o7DNRY2oTPIytb7D@cluster0.nlbom.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/users'
+
+const MONGODB_URI = process.env.USER_DB_URI || 'mongodb+srv://arun11kb:o7DNRY2oTPIytb7D@cluster0.nlbom.mongodb.net/user?retryWrites=true&w=majority&appName=Cluster0'
 const HTTP_PORT = process.env.HEALTH_CHECK_PORT || 8081
-const PROTO_FILE = path.resolve(__dirname, './proto/auth.proto')
-
-const packageDef = protoLoader.loadSync(
-  PROTO_FILE,
-  {
-    keepCase: true,
-    longs: String,
-    defaults: true,
-    oneofs: true
-  }
-)
-
-const authProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-startGrpcServer()
-const server = getGrpcServer()
 
 
-server.addService(
-  authProto.authType.AuthService.service,
-  {
-    login: userController.login
-  }
-)
-
-
-mongoose.connect(MONGODB_URI)
+connectDB(MONGODB_URI)
   .then(() => {
-    console.log('users mongodb connected ')
+    grpcConnect()
     healthCheck.listen(HTTP_PORT, () => {
       console.log(`HTTP health check server running on port ${HTTP_PORT}`);
     })
