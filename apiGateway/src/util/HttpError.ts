@@ -8,7 +8,13 @@ class HttpError extends Error {
   ) {
     super(message)
     this.statusCode = statusCode
-    this.status = (statusCode >= 400 && statusCode <= 500) ? 'fail' : 'error'
+    if (statusCode >= 400 && statusCode <= 500) {
+      this.status = 'fail'
+    } else if (statusCode < 400) {
+      this.status = 'success'
+    } else {
+      this.status = 'error'
+    }
 
     this.isOperational = true
     Error.captureStackTrace(this, this.constructor)

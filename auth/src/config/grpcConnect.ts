@@ -27,7 +27,9 @@ const grpcConnect = () => {
   server.addService(
     authProto.authType.AuthService.service,
     {
-      login: userController.login
+      login: userController.login,
+      signUp: userController.signup,
+      logout: userController.logout
     }
   )
 

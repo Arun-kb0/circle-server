@@ -5,12 +5,13 @@ import httpLogger from './middleware/httpLogger'
 import HttpError from './util/HttpError'
 import httpStatus from './constants/httpStatus'
 import errorHandler from './middleware/errorHandler'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 const PORT = 5001
 
-// app.use(express.urlencoded())
 app.use(express.json())
+app.use(cookieParser())
 
 app.use(httpLogger)
 app.use(cors())

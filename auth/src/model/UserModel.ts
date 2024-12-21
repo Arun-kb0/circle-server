@@ -21,15 +21,15 @@ export interface IUser extends Document {
 const UserSchema: Schema = new Schema<IUser>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     age: { type: Number },
     location: { type: Number },
     state: { type: Number },
     gender: { type: Number },
     role: { type: String },
-    followeeCount: { type: Number },
-    followerCount: { type: Number },
+    followeeCount: { type: Number, default: 0 },
+    followerCount: { type: Number, default: 0 },
     refreshToken: { type: String }
   },
   { timestamps: true }
