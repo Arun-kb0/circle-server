@@ -64,11 +64,10 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const { userId } = req.body
     const cookies = req.cookies
-    console.log(req.cookies)
     if (!cookies?.jwt) {
       throw new HttpError(httpStatus.OK, 'no cookie found logout success.')
     }
-    const refreshToken = cookies.jwt 
+    const refreshToken = cookies.jwt
     client.logout({ userId, token: refreshToken }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
@@ -77,18 +76,38 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
         sameSite: 'none',
         secure: true,
       })
-      res.status(httpStatus.OK).json({message: "logout success"})
+      res.status(httpStatus.OK).json({ message: "logout success" })
     })
   } catch (error) {
     next(error)
   }
 }
 
-export const handleRefreshToken = () => {
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
+    const cookies = req.cookies
+    if (!cookies?.jwt) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'no cookie found logout success.')
+    }
+    const refreshToken = cookies.jwt
+
+    client.refresh({ refreshToken }, (err, msg) => {
+      if (err?.code === grpc.status.UNAUTHENTICATED) {
+        throw new HttpError(httpStatus.UNAUTHORIZED, err.message)
+      } else if (err) {
+        throw new HttpError(httpStatus.UNAUTHORIZED, err.message)
+      }
+      if (!msg) throw new Error('grpc response is empty')
+      res.status(httpStatus.OK)
+        .json({
+          token: msg.accessToken,
+          user: msg.user,
+          message: 'refresh success'
+        })
+    })
+
   } catch (error) {
-    
+    next(error)
   }
 }
 

@@ -90,27 +90,37 @@ export class UserService {
   }
 
   async refresh(refreshToken: string) {
-    const user = await this.userRepo.findByToken(refreshToken)
-    if (!user) return { err: 404, data: null }
+    try {
+      const user = await this.userRepo.findByToken(refreshToken)
+      if (!user) return { err: 404, data: null }
 
-    const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
-      if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.email) {
-        return { err: 403, data: null }
+      let data: any
+      const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
+        if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.username) {
+          return { err: 403, data: null }
+        }
+
+        const accessToken = jwt.sign(
+          { username: decoded.username },
+          ACCESS_TOKEN_SECRET,
+          { expiresIn: REFRESH_EXPIRES_IN }
+        )
+        console.log(accessToken)
+        const { refreshToken: rToken, password, ...rest } = user
+        data = { err: null, data: { accessToken, user: rest } }
       }
-      const accessToken = jwt.sign(
-        { username: decoded.username },
-        ACCESS_TOKEN_SECRET,
-        { expiresIn: REFRESH_EXPIRES_IN }
+
+      jwt.verify(
+        refreshToken,
+        REFRESH_TOKEN_SECRET,
+        verifyCallback
       )
-      const { refreshToken, password, ...rest } = user
-      return { err: null, data: { accessToken, user: rest } }
+      return data
+    } catch (error) {
+      console.log(error)
+      return { err: 500, data: null }
     }
 
-    jwt.verify(
-      refreshToken,
-      REFRESH_TOKEN_SECRET,
-      verifyCallback
-    )
 
   }
 

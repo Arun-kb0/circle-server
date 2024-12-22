@@ -115,6 +115,7 @@ export class UserController {
   refresh: RefreshUserFun = async (call, cb) => {
     try {
       const { refreshToken } = call.request
+
       if (!refreshToken) {
         return cb({
           code: grpc.status.INVALID_ARGUMENT,
@@ -130,7 +131,7 @@ export class UserController {
       } else if (res.err === 403) {
         return cb({
           code: grpc.status.UNAUTHENTICATED,
-          message: 'unauthorized.',
+          message: 'refreshToken unauthorized.',
         }, null)
       }
       cb(null, res.data)
@@ -145,6 +146,7 @@ export class UserController {
         message,
       }, null)
     }
+    
   }
 
 
