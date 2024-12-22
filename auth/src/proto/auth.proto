@@ -27,6 +27,8 @@ message User {
   int32 followerCount = 10;
   string createdAt = 11;
   string updatedAt = 12;
+  string status = 13;
+  bool isOnline = 14;
 }
 
 

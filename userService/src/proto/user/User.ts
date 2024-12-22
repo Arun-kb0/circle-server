@@ -1,4 +1,4 @@
-// Original file: src/proto/auth.proto
+// Original file: src/proto/user.proto
 
 
 export interface User {

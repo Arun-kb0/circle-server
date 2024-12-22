@@ -2,5 +2,8 @@
 apiGateway/node_modules
 apiGateway/logs
 
-# auth
+# auth service
 auth/node_modules
+
+# user service
+userService/node_modules
