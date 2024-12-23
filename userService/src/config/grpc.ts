@@ -1,9 +1,8 @@
 import * as grpc from '@grpc/grpc-js'
 
 const server = new grpc.Server()
-const PORT = process.env.AUTH_SERVICE_PORT || 50051
-const IP = process.env.AUTH_SERVICE_HOST || 'localhost'
-// const IP_ADDRESS = `0.0.0.0:${PORT}`
+const PORT = process.env.USER_SERVICE_PORT || 50052
+const IP = process.env.USER_SERVICE_HOST || 'localhost'
 const IP_ADDRESS = `${IP}:${PORT}`
 
 export const startGrpcServer = () => {
@@ -15,7 +14,7 @@ export const startGrpcServer = () => {
         console.log(error)
         return
       }
-      console.log(`auth service is running on ${IP_ADDRESS}`)
+      console.log(`user service is running on ${IP_ADDRESS}`)
     }
   )
 }

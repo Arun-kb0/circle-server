@@ -1,5 +1,6 @@
 // Original file: src/proto/user.proto
 
+import type { Image as _user_Image, Image__Output as _user_Image__Output } from '../user/Image';
 
 export interface User {
   '_id'?: (string);
@@ -16,6 +17,7 @@ export interface User {
   'updatedAt'?: (string);
   'status'?: (string);
   'isOnline'?: (boolean);
+  'image'?: (_user_Image | null);
 }
 
 export interface User__Output {
@@ -33,4 +35,5 @@ export interface User__Output {
   'updatedAt'?: (string);
   'status'?: (string);
   'isOnline'?: (boolean);
+  'image'?: (_user_Image__Output);
 }

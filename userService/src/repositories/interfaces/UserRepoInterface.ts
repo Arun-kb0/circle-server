@@ -1,7 +1,10 @@
-import {IUser} from '../../model/UserModel'
+import { IUser } from '../../model/UserModel'
 
 export interface UserRepoInterface {
-  getAll(): Promise<IUser[]>
-  get(): Promise<IUser>
-  update(): Promise<IUser>
+  findAll(): Promise<IUser[]>
+  findById(userId: string): Promise<IUser | null>
+  update(userId: string, user: Partial<IUser>): Promise<IUser | null>
+  delete(userId: string): Promise<string>
+  findByEmail(email: string): Promise<IUser | null>
+  findByName(name: string): Promise<IUser | null >
 }

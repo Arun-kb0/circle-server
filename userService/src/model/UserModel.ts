@@ -16,6 +16,10 @@ export interface IUser extends Document {
   refreshToken: string
   status: 'blocked' | 'deleted' | 'active'
   isOnline: boolean
+  image: {
+    url: string
+    name: string
+  }
   createdAt: Date
   updatedAt: Date
 }
@@ -34,7 +38,11 @@ const UserSchema: Schema = new Schema<IUser>(
     followerCount: { type: Number, default: 0 },
     refreshToken: { type: String },
     status: { type: String, default: 'active' },
-    isOnline: { type: Boolean, default: false }
+    isOnline: { type: Boolean, default: false },
+    image: {
+      url: { type: String, default: null },
+      name: { type: String, default: null },
+    }
   },
   { timestamps: true }
 )

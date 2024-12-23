@@ -14,6 +14,11 @@ service AuthService {
 }
 
 
+message Image {
+  string url =1;
+  string name=2;
+}
+
 message User {
   string _id = 1;
   string name = 2;
@@ -29,6 +34,7 @@ message User {
   string updatedAt = 12;
   string status = 13;
   bool isOnline = 14;
+  Image image = 15;
 }
 
 
