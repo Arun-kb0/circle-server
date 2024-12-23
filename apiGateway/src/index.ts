@@ -6,6 +6,7 @@ import HttpError from './util/HttpError'
 import httpStatus from './constants/httpStatus'
 import errorHandler from './middleware/errorHandler'
 import cookieParser from 'cookie-parser'
+import userRouter from './router/userRoutes'
 
 const app = express()
 const PORT = 5001
@@ -17,6 +18,7 @@ app.use(httpLogger)
 app.use(cors())
 
 app.use('/auth', authRouter)
+app.use('/user', userRouter)
 
 
 app.use('/test', (req, res) => {

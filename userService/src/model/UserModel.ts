@@ -16,9 +16,9 @@ export interface IUser extends Document {
   refreshToken: string
   status: 'blocked' | 'deleted' | 'active'
   isOnline: boolean
-  image: {
-    url: string
-    name: string
+  image?: {
+    url?: string
+    name?: string
   }
   createdAt: Date
   updatedAt: Date

@@ -1,5 +1,4 @@
-import e, { NextFunction, Request, Response } from "express";
-import * as protoLoader from '@grpc/proto-loader'
+import { NextFunction, Request, Response } from "express";
 import * as grpc from '@grpc/grpc-js'
 import path from 'path'
 import getPackageDef from '../util/createPackageDef'

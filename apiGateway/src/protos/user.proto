@@ -17,8 +17,6 @@ message Image {
   string name=2;
 }
 
-
-
 message User {
   string _id = 1;
   string name = 2;
@@ -27,21 +25,14 @@ message User {
   int32 location = 5;
   int32 state = 6;
   int32 gender = 7;
+  string role = 8;
   int32 followeeCount = 9;
   int32 followerCount = 10;
   string createdAt = 11;
   string updatedAt = 12;
-  oneof status {
-    string blocked =13;
-    string deleted =14;
-    string active =15;
-  };
-  oneof role {
-    string admin=16;
-    string user=17;
-  };
-  bool isOnline = 18;
-  Image image = 19;
+  string status = 13;
+  bool isOnline = 14;
+  Image image = 15;
 }
 
 message GetAllUsersRequest {}

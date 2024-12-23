@@ -5,7 +5,8 @@ import { UserRepoInterface } from "../interfaces/UserRepoInterface";
 export class UserRepo implements UserRepoInterface {
 
   async findAll(): Promise<IUser[]> {
-    const users = await User.find()
+    const res = await User.find()
+    const users = res.map(user=> user.toObject())
     return users
   }
 
@@ -20,8 +21,6 @@ export class UserRepo implements UserRepoInterface {
       { $set: { ...user } },
       { new: true }
     ).select('-password -refreshToken')
-      .exec()
-
     return updatedUser ? updatedUser.toObject() : null
   }
 

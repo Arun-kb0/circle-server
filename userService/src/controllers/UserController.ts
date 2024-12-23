@@ -11,8 +11,11 @@ import { UnblockUserResponse } from "../proto/user/UnblockUserResponse";
 import { UpdateUserRequest__Output } from "../proto/user/UpdateUserRequest";
 import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
 import { CustomError } from "../util/CustomError";
-import { IUser } from "../model/UserModel";
 import handleError from "../util/handeError";
+import { User, User__Output } from '../proto/user/User'
+import { convertUserForDb, convertUserForGrpc } from '../util/converter'
+import { validateRequest, validateResponse } from '../util/validations'
+import { IUser } from "../model/UserModel";
 
 
 type GetAllUserFun = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
@@ -30,29 +33,14 @@ export class UserController {
   getAllUsers: GetAllUserFun = async (call, cb) => {
     try {
       const res = await this.userService.getAllUsers()
-      if (!res) {
-        const code = grpc.status.NOT_FOUND
-        const message = 'res is empty.'
-        throw new CustomError(code, message, 'cnt')
-      }
-      if (res.err) {
-        const code = grpc.status.INTERNAL
-        const message = `error ${res.err}.`
-        throw new CustomError(code, message, 'cnt')
-      }
-
-      // * convert every created and updatedAt to string
-      let users: any[] = []
+      validateResponse(res)
+      const users: User[] = []
       res.data?.forEach((user) => {
-        const data = {
-          ...user,
-          createdAt: user.createdAt.toString(),
-          updatedAt: user.updatedAt.toString()
-        }
+        const data = convertUserForGrpc(user)
         users.push(data)
       })
+      cb(null, { users: users })
 
-      cb(null, users as GetAllUsersResponse)
     } catch (error) {
       const { message, code } = handleError(error)
       cb({ message, code }, null)
@@ -62,37 +50,56 @@ export class UserController {
   getUser: GetUserFun = async (call, cb) => {
     try {
       const { userId } = call.request
-      if (!userId) {
-        const code = grpc.status.INVALID_ARGUMENT
-        const msg = 'userId is required'
-        throw new CustomError(code, msg, 'cnt')
-      }
-      const res = await this.userService.getUser(userId)
-      if (!res) {
-        const code = grpc.status.NOT_FOUND
-        const message = 'res is empty.'
-        throw new CustomError(code, message, 'cnt')
-      }
-      if (res.err) {
-        const code = grpc.status.INTERNAL
-        const message = `error ${res.err}.`
-        throw new CustomError(code, message, 'cnt')
-      }
-      if (!res.data) {
-        const code = grpc.status.NOT_FOUND
-        const message = `user not found.`
-        throw new CustomError(code, message, 'cnt')
-      }
+      validateRequest('userId is required', userId)
+      const res = await this.userService.getUser(userId as string)
+      validateResponse(res)
+      const user = convertUserForGrpc(res.data as IUser)
+      cb(null, { user });
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
-      const { createdAt,image, updatedAt, password, refreshToken, ...rest } = res.data
-      const user = {
-        ...rest,
-        createdAt: createdAt.toString(),
-        updatedAt: createdAt.toString(),
-      }
+  updateUser: UpdateUserFun = async (call, cb) => {
+    try {
+      const { userId, user } = call.request
+      validateRequest('userId and password is required', userId, user)
+      const protoUser = convertUserForDb(user as User__Output)
+      const res = await this.userService.updateUser(userId as string, protoUser)
+      validateResponse(res)
+      const updatedUser = convertUserForGrpc(res.data as IUser)
+      cb(null, { user: updatedUser })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
 
-      cb(null, user as GetUserResponse); 
+  }
 
+  
+
+  // * admin
+  blockUser: BlockUserFun = async (call, cb) => {
+    try {
+      const { userId } = call.request
+      validateRequest('userId is required', userId)
+      const res = await this.userService.blockUser(userId as string)
+      validateResponse(res)
+      cb(null, { userId })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  unblockUser: UnblockUserFun = async (call, cb) => {
+    try {
+      const { userId } = call.request
+      validateRequest('userId is required', userId)
+      const res = await this.userService.blockUser(userId as string)
+      validateResponse(res)
+      cb(null, { userId })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)

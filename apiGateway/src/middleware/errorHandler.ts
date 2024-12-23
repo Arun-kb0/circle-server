@@ -26,17 +26,31 @@ const formattedErrorLog = (error: HttpError, req: Request, res: Response) => {
 }
 
 
-const errorHandler = (error: HttpError, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
+  console.warn(error)
+  
   if (error.name === 'TokenExpiredError') {
     error.statusCode = httpStatus.UNAUTHORIZED
   }
 
-  error.statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR
-  res.status(error.statusCode).json({
-    status: error.status,
-    name: error.name,
-    message: error.message
-  })
+  let resJson: any =  {}
+  let statusCode = httpStatus.INTERNAL_SERVER_ERROR
+  if (error instanceof HttpError) {
+    statusCode = error.statusCode
+    resJson = {
+      status: error.status,
+      name: error.name,
+      message: error.message
+    }
+  } else if (error instanceof Error) {
+    resJson = {
+      status: 'error',
+      name: error.name,
+      message: error.message
+    }
+  }
+
+  res.status(resJson.status).json(resJson)
 
   logger.log(
     'error',
