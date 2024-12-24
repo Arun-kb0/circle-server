@@ -1,6 +1,6 @@
 import { Schema } from "mongoose"
 import { IUser } from "../model/UserModel"
-import { User } from "../proto/user/User"
+import { User } from "../proto/authType/User"
 
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {

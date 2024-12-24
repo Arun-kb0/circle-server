@@ -11,7 +11,9 @@ import { RefreshResponse } from "../proto/authType/RefreshResponse";
 import { User } from "../proto/authType/User";
 import { CustomError } from "../util/CustomError";
 import handleError from "../util/handleError";
+import { convertUserForGrpc } from "../util/converter";
 import { validateRequest, validateResponse } from "../util/validations";
+import { IUser } from "../model/UserModel";
 
 
 
@@ -29,68 +31,43 @@ export class UserController {
   signup: SignupUserFun = async (call, cb) => {
     try {
       const { name, email, password } = call.request
-      if (!email || !password || !name) {
-        return cb({
-          code: grpc.status.INVALID_ARGUMENT,
-          message: 'name, email and password is required.',
-        }, null)
-      }
-      const res = await this.userService.signup(name, email, password)
-      console.log(res)
-      if (!res || res.err) {
-        return cb({
-          code: grpc.status.NOT_FOUND,
-          message: 'user not found.',
-        }, null)
-      }
-
+      const message = 'name, email and password is required.'
+      validateRequest(message, name, email, password)
+      const res = await this.userService.signup(name as string, email as string, password as string)
+      validateResponse(res)
       cb(null, res.data)
 
     } catch (error) {
-      console.error(error)
-      let message = 'unexpected error occurred.'
-      if (error instanceof Error) {
-        message = error.message
-      }
-      cb({
-        code: grpc.status.INTERNAL,
-        message,
-      }, null)
+      const err = handleError(error)
+      cb(err, null)
     }
-
   }
 
   login: LoginUserFun = async (call, cb) => {
+    type Data = {
+      user: IUser;
+      token: string;
+      refreshToken: string;
+    }
     try {
       const { email, password } = call.request
-      if (!email || !password) {
-        return cb({
-          code: grpc.status.INVALID_ARGUMENT,
-          message: 'email and password is required.',
-        }, null)
-      }
-      const data = await this.userService.login(email, password)
-      if (!data) {
-        return cb({
-          code: grpc.status.NOT_FOUND,
-          message: 'user not found.',
-        }, null)
-      }
+      const message = 'email and password is required.'
+      validateRequest(message, email, password)
+      const res = await this.userService.login(email as string, password as string)
+      validateResponse(res)
 
-      // ! 
-      console.log(data.user)
+      const { user: rawUser, token, refreshToken } = res.data as Data
+      const user = convertUserForGrpc(rawUser)
+      const data = {
+        user,
+        token,
+        refreshToken
+      }
       cb(null, data)
 
     } catch (error) {
-      console.error(error)
-      let message = 'unexpected error occurred.'
-      if (error instanceof Error) {
-        message = error.message
-      }
-      cb({
-        code: grpc.status.INTERNAL,
-        message,
-      }, null)
+      const err = handleError(error)
+      cb(err, null)
     }
   }
 
@@ -115,36 +92,19 @@ export class UserController {
   refresh: RefreshUserFun = async (call, cb) => {
     try {
       const { refreshToken } = call.request
-
-      if (!refreshToken) {
-        return cb({
-          code: grpc.status.INVALID_ARGUMENT,
-          message: 'refreshToken is required.',
-        }, null)
-      }
-      const res = await this.userService.refresh(refreshToken)
-      if (!res) {
-        return cb({
-          code: grpc.status.NOT_FOUND,
-          message: 'res is empty.',
-        }, null)
-      } else if (res.err === 403) {
-        return cb({
-          code: grpc.status.UNAUTHENTICATED,
-          message: 'refreshToken unauthorized.',
-        }, null)
+      const message = 'refreshToken is required.'
+      validateRequest(message, refreshToken)
+      const res = await this.userService.refresh(refreshToken as string)
+      validateResponse(res)
+      if (res.err === 403) {
+        const code = grpc.status.UNAUTHENTICATED
+        const message = 'refreshToken unauthorized.'
+        throw new CustomError(code, message, 'cnt')
       }
       cb(null, res.data)
     } catch (error) {
-      console.error(error)
-      let message = 'unexpected error occurred.'
-      if (error instanceof Error) {
-        message = error.message
-      }
-      cb({
-        code: grpc.status.INTERNAL,
-        message,
-      }, null)
+      const err = handleError(error)
+      cb(err, null)
     }
 
   }
