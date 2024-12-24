@@ -7,18 +7,18 @@ export interface IUser extends Document {
   email: string
   password: string
   age?: number
-  location?: number
-  state?: number
-  gender?: number
+  location?: string
+  state?: string
+  gender?: string
   role: 'admin' | 'user'
   followeeCount: number
   followerCount: number
   refreshToken: string
   status: 'blocked' | 'deleted' | 'active'
   isOnline: boolean
-  image: {
-    url: string
-    name: string
+  image?: {
+    url?: string
+    name?: string
   }
   createdAt: Date
   updatedAt: Date
@@ -30,9 +30,9 @@ const UserSchema: Schema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     age: { type: Number },
-    location: { type: Number },
-    state: { type: Number },
-    gender: { type: Number },
+    location: { type: String },
+    state: { type: String },
+    gender: { type: String },
     role: { type: String },
     followeeCount: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },

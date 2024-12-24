@@ -50,7 +50,7 @@ const errorHandler = (error: any, req: Request, res: Response, next: NextFunctio
     }
   }
 
-  res.status(resJson.status).json(resJson)
+  res.status(statusCode).json(resJson)
 
   logger.log(
     'error',

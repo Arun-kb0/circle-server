@@ -1,3 +1,4 @@
+import { Types, } from "mongoose";
 import { IUser, User } from "../../model/UserModel";
 import { UserRepoInterface } from "../interfaces/UserRepoInterface";
 
@@ -16,8 +17,12 @@ export class UserRepo implements UserRepoInterface {
   }
 
   async update(userId: string, user: Partial<IUser>): Promise<IUser | null> {
+    if (!userId || !Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid or empty userId');
+    }
+    const objId = Types.ObjectId.createFromHexString(userId)
     const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
+      { _id: objId },
       { $set: { ...user } },
       { new: true }
     ).select('-password -refreshToken')

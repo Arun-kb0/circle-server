@@ -21,9 +21,13 @@ export const validateResponse = (res: { err: number | null, data: any }) => {
 }
 
 export const validateRequest = (msg: string, ...args: any[]) => {
+  // console.log(args)
   let isFailed = false
+  const typesWithLen = ['string','array']
   args?.forEach((res) => {
     if (!res) {
+      isFailed = true
+    } else if (typesWithLen.includes(typeof res) && res.length === 0) {
       isFailed = true
     }
   })

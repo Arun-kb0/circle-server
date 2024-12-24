@@ -24,9 +24,9 @@ message User {
   string name = 2;
   string email = 3;
   int32 age = 4;
-  int32 location = 5;
-  int32 state = 6;
-  int32 gender = 7;
+  string location = 5;
+  string state = 6;
+  string gender = 7;
   int32 followeeCount = 9;
   int32 followerCount = 10;
   string createdAt = 11;

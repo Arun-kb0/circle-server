@@ -97,7 +97,7 @@ export class UserController {
     try {
       const { userId } = call.request
       validateRequest('userId is required', userId)
-      const res = await this.userService.blockUser(userId as string)
+      const res = await this.userService.unBlockUser(userId as string)
       validateResponse(res)
       cb(null, { userId })
     } catch (error) {

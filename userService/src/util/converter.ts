@@ -22,7 +22,7 @@ export const convertUserForGrpc = (user: Partial<IUser>) => {
 }
 
 export const convertUserForDb = (user: User): Partial<IUser> => {
-  const { createdAt, updatedAt, image, ...rest } = user
+  const { createdAt, updatedAt, image, _id, ...rest } = user
   const convertedUser: Partial<IUser> = {
     ...rest,
     image: {

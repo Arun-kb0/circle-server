@@ -7,9 +7,9 @@ export interface User {
   'name'?: (string);
   'email'?: (string);
   'age'?: (number);
-  'location'?: (number);
-  'state'?: (number);
-  'gender'?: (number);
+  'location'?: (string);
+  'state'?: (string);
+  'gender'?: (string);
   'followeeCount'?: (number);
   'followerCount'?: (number);
   'createdAt'?: (string);
@@ -30,9 +30,9 @@ export interface User__Output {
   'name'?: (string);
   'email'?: (string);
   'age'?: (number);
-  'location'?: (number);
-  'state'?: (number);
-  'gender'?: (number);
+  'location'?: (string);
+  'state'?: (string);
+  'gender'?: (string);
   'followeeCount'?: (number);
   'followerCount'?: (number);
   'createdAt'?: (string);

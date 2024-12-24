@@ -14,21 +14,37 @@ service AuthService {
 }
 
 
+message Image {
+  string url =1;
+  string name=2;
+}
+
+
+
 message User {
   string _id = 1;
   string name = 2;
   string email = 3;
   int32 age = 4;
-  int32 location = 5;
-  int32 state = 6;
-  int32 gender = 7;
-  string role = 8;
+  string location = 5;
+  string state = 6;
+  string gender = 7;
   int32 followeeCount = 9;
   int32 followerCount = 10;
   string createdAt = 11;
   string updatedAt = 12;
+  oneof status {
+    string blocked =13;
+    string deleted =14;
+    string active =15;
+  };
+  oneof role {
+    string admin=16;
+    string user=17;
+  };
+  bool isOnline = 18;
+  Image image = 19;
 }
-
 
 message LoginRequest {
   string email =1;

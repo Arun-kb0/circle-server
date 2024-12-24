@@ -1,6 +1,5 @@
 import { IUser } from '../model/UserModel'
 import { UserRepoInterface } from '../repositories/interfaces/UserRepoInterface'
-import { CustomError } from '../util/CustomError'
 import handleError from '../util/handeError'
 
 export class UserService {
@@ -35,6 +34,7 @@ export class UserService {
       if (!updatedUser) return { err: 404, data: null }
       return { err: null, data: updatedUser }
     } catch (error) {
+      console.log(error)
       return { err: 500, data: null }
     }
   }
