@@ -1,5 +1,5 @@
 import type * as grpc from '@grpc/grpc-js';
-import type { MessageTypeDefinition } from '@grpc/proto-loader';
+import type { EnumTypeDefinition, MessageTypeDefinition } from '@grpc/proto-loader';
 
 import type { UserServiceClient as _user_UserServiceClient, UserServiceDefinition as _user_UserServiceDefinition } from './user/UserService';
 
@@ -18,6 +18,8 @@ export interface ProtoGrpcType {
     GetUserRequest: MessageTypeDefinition
     GetUserResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
+    Role: EnumTypeDefinition
+    Status: EnumTypeDefinition
     UnblockUserRequest: MessageTypeDefinition
     UnblockUserResponse: MessageTypeDefinition
     UpdateUserRequest: MessageTypeDefinition

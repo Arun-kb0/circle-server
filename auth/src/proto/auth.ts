@@ -1,5 +1,5 @@
 import type * as grpc from '@grpc/grpc-js';
-import type { MessageTypeDefinition } from '@grpc/proto-loader';
+import type { EnumTypeDefinition, MessageTypeDefinition } from '@grpc/proto-loader';
 
 import type { AuthServiceClient as _authType_AuthServiceClient, AuthServiceDefinition as _authType_AuthServiceDefinition } from './authType/AuthService';
 
@@ -21,8 +21,10 @@ export interface ProtoGrpcType {
     LogoutResponse: MessageTypeDefinition
     RefreshRequest: MessageTypeDefinition
     RefreshResponse: MessageTypeDefinition
+    Role: EnumTypeDefinition
     SignUpRequest: MessageTypeDefinition
     SignUpResponse: MessageTypeDefinition
+    Status: EnumTypeDefinition
     User: MessageTypeDefinition
   }
 }

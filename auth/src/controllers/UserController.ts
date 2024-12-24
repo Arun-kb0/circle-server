@@ -8,6 +8,11 @@ import { LogoutRequest__Output } from "../proto/authType/LogoutRequest";
 import { LogoutResponse } from "../proto/authType/LogoutResponse";
 import { RefreshRequest__Output } from "../proto/authType/RefreshRequest";
 import { RefreshResponse } from "../proto/authType/RefreshResponse";
+import { User } from "../proto/authType/User";
+import { CustomError } from "../util/CustomError";
+import handleError from "../util/handleError";
+import { validateRequest, validateResponse } from "../util/validations";
+
 
 
 type LoginUserFun = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
@@ -65,7 +70,6 @@ export class UserController {
         }, null)
       }
       const data = await this.userService.login(email, password)
-
       if (!data) {
         return cb({
           code: grpc.status.NOT_FOUND,
@@ -73,6 +77,8 @@ export class UserController {
         }, null)
       }
 
+      // ! 
+      console.log(data.user)
       cb(null, data)
 
     } catch (error) {
@@ -90,25 +96,19 @@ export class UserController {
 
   logout: LogoutUserFun = async (call, cb) => {
     try {
-      const { userId, token } = call.request
-      if (!userId || !token) {
-        return cb({
-          code: grpc.status.INVALID_ARGUMENT,
-          message: 'email and password is required.',
-        }, null)
+      const { token } = call.request
+      validateRequest('token is required ', token)
+      const res = await this.userService.logout(token as string)
+      validateResponse(res)
+      if (res.err === 404) {
+        const code = grpc.status.NOT_FOUND
+        const message = `user not found`
+        throw new CustomError(code, message, 'cnt')
       }
-      this.userService.logout(userId, token)
-      cb(null, { status: 'success' })
+      cb(null, res.data)
     } catch (error) {
-      console.error(error)
-      let message = 'unexpected error occurred.'
-      if (error instanceof Error) {
-        message = error.message
-      }
-      cb({
-        code: grpc.status.INTERNAL,
-        message,
-      }, null)
+      const err = handleError(error)
+      cb(err, null)
     }
   }
 
@@ -146,7 +146,7 @@ export class UserController {
         message,
       }, null)
     }
-    
+
   }
 
 

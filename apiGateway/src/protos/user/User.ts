@@ -1,5 +1,7 @@
 // Original file: src/proto/user.proto
 
+import type { Status as _user_Status, Status__Output as _user_Status__Output } from '../user/Status';
+import type { Role as _user_Role, Role__Output as _user_Role__Output } from '../user/Role';
 import type { Image as _user_Image, Image__Output as _user_Image__Output } from '../user/Image';
 
 export interface User {
@@ -14,15 +16,10 @@ export interface User {
   'followerCount'?: (number);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'blocked'?: (string);
-  'deleted'?: (string);
-  'active'?: (string);
-  'admin'?: (string);
-  'user'?: (string);
+  'status'?: (_user_Status);
+  'role'?: (_user_Role);
   'isOnline'?: (boolean);
   'image'?: (_user_Image | null);
-  'status'?: "blocked"|"deleted"|"active";
-  'role'?: "admin"|"user";
 }
 
 export interface User__Output {
@@ -37,11 +34,8 @@ export interface User__Output {
   'followerCount'?: (number);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'blocked'?: (string);
-  'deleted'?: (string);
-  'active'?: (string);
-  'admin'?: (string);
-  'user'?: (string);
+  'status'?: (_user_Status__Output);
+  'role'?: (_user_Role__Output);
   'isOnline'?: (boolean);
   'image'?: (_user_Image__Output);
 }

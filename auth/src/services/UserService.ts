@@ -1,8 +1,7 @@
 import { UserRepoInterface } from "../repositories/interfaces/UserRepoInterface";
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
-import { IUser } from "../model/UserModel";
-import { doesNotMatch } from "assert";
+import handleError from '../util/handleError'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 const ACCESS_EXPIRES_IN = '60s'
@@ -16,43 +15,45 @@ export class UserService {
   ) { }
 
   async signup(name: string, email: string, password: string) {
-    const hashedPwd = await bcrypt.hash(password, 10)
-    const user = {
-      name,
-      email,
-      password: hashedPwd,
+    try {
+      const hashedPwd = await bcrypt.hash(password, 10)
+      const user = {
+        name,
+        email,
+        password: hashedPwd,
+      }
+      const newUser = await this.userRepo.create({ ...user, role: 'user' })
+
+      const accessToken = jwt.sign(
+        { "username": newUser.email },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      )
+      const refreshToken = jwt.sign(
+        { "username": newUser.email },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+
+      const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
+      if (!updatedUser) throw new Error('user refresh token update failed')
+
+      const { password: pwd, refreshToken: rToken, createdAt, updatedAt, ...rest } = updatedUser
+
+      const data = {
+        user: {
+          ...rest,
+          createdAt: createdAt.toString(),
+          updatedAt: updatedAt.toString()
+        },
+        token: accessToken,
+        refreshToken: refreshToken
+      }
+      return { err: null, data }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
     }
-    const newUser = await this.userRepo.create({ ...user, role: 'user' })
-
-    const accessToken = jwt.sign(
-      { "username": newUser.email },
-      ACCESS_TOKEN_SECRET,
-      { expiresIn: ACCESS_EXPIRES_IN }
-    )
-    const refreshToken = jwt.sign(
-      { "username": newUser.email },
-      REFRESH_TOKEN_SECRET,
-      { expiresIn: REFRESH_EXPIRES_IN }
-    )
-
-    const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
-    if (!updatedUser) throw new Error('user refresh token update failed')
-
-    const { password: pwd, refreshToken: rToken, createdAt, updatedAt, ...rest } = updatedUser
-    console.log("updatedUser")
-    console.log(updatedUser)
-    console.log("rest")
-    console.log(rest)
-    const data = {
-      user: {
-        ...rest,
-        createdAt: createdAt.toString(),
-        updatedAt: updatedAt.toString()
-      },
-      token: accessToken,
-      refreshToken: refreshToken
-    }
-    return { err: null, data }
   }
 
   async login(email: string, password: string) {
@@ -85,8 +86,16 @@ export class UserService {
     return data
   }
 
-  async logout(id: string, token: string) {
-    this.userRepo.update(id, { refreshToken: undefined })
+  async logout(token: string) {
+    try {
+      const user = await this.userRepo.findByToken(token)
+      if (!user) return { err: 404, data: null }
+      await this.userRepo.update(user._id, { refreshToken: '' })
+      return { err: null, data: { status: 'success' } }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
   }
 
   async refresh(refreshToken: string) {

@@ -13,7 +13,7 @@ export interface IUser extends Document {
   role: 'admin' | 'user'
   followeeCount: number
   followerCount: number
-  refreshToken: string
+  refreshToken: string 
   status: 'blocked' | 'deleted' | 'active'
   isOnline: boolean
   image?: {

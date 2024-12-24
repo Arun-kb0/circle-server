@@ -1,5 +1,7 @@
 // Original file: src/proto/auth.proto
 
+import type { Status as _authType_Status, Status__Output as _authType_Status__Output } from '../authType/Status';
+import type { Role as _authType_Role, Role__Output as _authType_Role__Output } from '../authType/Role';
 import type { Image as _authType_Image, Image__Output as _authType_Image__Output } from '../authType/Image';
 
 export interface User {
@@ -14,15 +16,10 @@ export interface User {
   'followerCount'?: (number);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'blocked'?: (string);
-  'deleted'?: (string);
-  'active'?: (string);
-  'admin'?: (string);
-  'user'?: (string);
+  'status'?: (_authType_Status);
+  'role'?: (_authType_Role);
   'isOnline'?: (boolean);
   'image'?: (_authType_Image | null);
-  'status'?: "blocked"|"deleted"|"active";
-  'role'?: "admin"|"user";
 }
 
 export interface User__Output {
@@ -37,11 +34,8 @@ export interface User__Output {
   'followerCount'?: (number);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'blocked'?: (string);
-  'deleted'?: (string);
-  'active'?: (string);
-  'admin'?: (string);
-  'user'?: (string);
+  'status'?: (_authType_Status__Output);
+  'role'?: (_authType_Role__Output);
   'isOnline'?: (boolean);
   'image'?: (_authType_Image__Output);
 }

@@ -22,8 +22,6 @@ const client = new authProto.authType.AuthService(
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body
-    console.log("email,password")
-    console.log(email, password)
     client.login({ email, password }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
@@ -34,6 +32,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         secure: true,
         maxAge: 24 * 60 * 60 * 1000
       })
+      console.log(msg)
       res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data })
     })
   } catch (error) {
@@ -63,13 +62,14 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.body
+    // * get userId from user obj from token
     const cookies = req.cookies
     if (!cookies?.jwt) {
       throw new HttpError(httpStatus.OK, 'no cookie found logout success.')
     }
     const refreshToken = cookies.jwt
-    client.logout({ userId, token: refreshToken }, (err, msg) => {
+
+    client.logout({ token: refreshToken }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
       res.clearCookie('jwt', {

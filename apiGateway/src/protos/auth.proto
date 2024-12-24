@@ -19,6 +19,16 @@ message Image {
   string name=2;
 }
 
+enum Status {
+  active=0;
+  blocked=1;
+  deleted=2;
+}
+
+enum Role{
+  user=0;
+  admin=1;
+}
 
 
 message User {
@@ -33,17 +43,10 @@ message User {
   int32 followerCount = 10;
   string createdAt = 11;
   string updatedAt = 12;
-  oneof status {
-    string blocked =13;
-    string deleted =14;
-    string active =15;
-  };
-  oneof role {
-    string admin=16;
-    string user=17;
-  };
-  bool isOnline = 18;
-  Image image = 19;
+  Status status = 13;
+  Role role = 14;
+  bool isOnline = 15;
+  Image image = 16;
 }
 
 message LoginRequest {
@@ -70,12 +73,11 @@ message SignUpResponse {
 }
 
 message LogoutRequest {
-  string userId =1;
-  string token =2;
+  string token =1;
 }
 
 message LogoutResponse {
-
+  
 }
 
 message RefreshRequest {

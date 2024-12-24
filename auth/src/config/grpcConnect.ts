@@ -3,7 +3,7 @@ import * as grpc from '@grpc/grpc-js'
 import * as protoLoader from '@grpc/proto-loader'
 import { getGrpcServer, startGrpcServer } from '../config/grpc'
 import { ProtoGrpcType } from '../proto/auth'
-import { userController } from '../util/DI'
+import { userController } from '../DI'
 
 
 const PROTO_FILE = path.resolve(__dirname, '../proto/auth.proto')
@@ -12,8 +12,9 @@ const packageDef = protoLoader.loadSync(
   {
     keepCase: true,
     longs: String,
+    enums: String,
     defaults: true,
-    oneofs: true
+    oneofs: true,
   }
 )
 

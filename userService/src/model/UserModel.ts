@@ -10,10 +10,10 @@ export interface IUser extends Document {
   location?: string
   state?: string
   gender?: string
-  role: 'admin' | 'user'
   followeeCount: number
   followerCount: number
   refreshToken: string
+  role: 'admin' | 'user'
   status: 'blocked' | 'deleted' | 'active'
   isOnline: boolean
   image?: {
@@ -33,7 +33,7 @@ const UserSchema: Schema = new Schema<IUser>(
     location: { type: String },
     state: { type: String },
     gender: { type: String },
-    role: { type: String },
+    role: { type: String ,default:'user'},
     followeeCount: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },
     refreshToken: { type: String },
