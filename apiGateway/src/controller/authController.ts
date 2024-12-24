@@ -22,17 +22,19 @@ const client = new authProto.authType.AuthService(
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body
+    console.log("email,password")
+    console.log(email, password)
     client.login({ email, password }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
-      const { refreshToken, ...data } = msg
+      const { refreshToken, token, ...data } = msg
       res.cookie('jwt', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
         maxAge: 24 * 60 * 60 * 1000
       })
-      res.status(httpStatus.OK).json({ message: 'login success', ...data })
+      res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data })
     })
   } catch (error) {
     next(error)
@@ -45,14 +47,14 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     client.signUp({ name, email, password }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
-      const { refreshToken, ...data } = msg
+      const { refreshToken, token, ...data } = msg
       res.cookie('jwt', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
         maxAge: 24 * 60 * 60 * 1000
       })
-      res.status(httpStatus.OK).json({ message: 'singup success', ...data })
+      res.status(httpStatus.OK).json({ message: 'singup success', accessToken: token, ...data })
     })
   } catch (error) {
     next(error)
@@ -98,8 +100,8 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       }
       if (!msg) throw new Error('grpc response is empty')
       res.status(httpStatus.OK)
-        .json({
-          token: msg.accessToken,
+        .json({ 
+          accessToken: msg.accessToken,
           user: msg.user,
           message: 'refresh success'
         })
