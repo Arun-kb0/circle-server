@@ -2,6 +2,8 @@ import { UserRepoInterface } from "../repositories/interfaces/UserRepoInterface"
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
 import handleError from '../util/handleError'
+import { JwtWithUsername } from '../constants/types'
+import { IUser } from "../model/UserModel";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 const ACCESS_EXPIRES_IN = '60s'
@@ -55,7 +57,8 @@ export class UserService {
       const foundUser = await this.userRepo.findByEmail(email)
       if (!foundUser) return { err: 404, data: null }
 
-      await bcrypt.compare(password, foundUser.password)
+      const isMatch = await bcrypt.compare(password, foundUser.password)
+      if (!isMatch) return { err: 401, data: null }
       const accessToken = jwt.sign(
         { "username": foundUser.email },
         ACCESS_TOKEN_SECRET,
@@ -69,7 +72,7 @@ export class UserService {
 
       const updatedUser = await this.userRepo.update(foundUser._id, { refreshToken })
       const data = {
-        user: foundUser,
+        user: updatedUser,
         token: accessToken,
         refreshToken
       }
@@ -93,14 +96,21 @@ export class UserService {
   }
 
   async refresh(refreshToken: string) {
+    type ResType = {
+      err: number | null
+      data: { user: IUser, accessToken: string } | null
+    }
+
     try {
       const user = await this.userRepo.findByToken(refreshToken)
       if (!user) return { err: 404, data: null }
 
-      let data: any
+      let res: ResType = { err: null, data: null }
       const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
         if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.username) {
-          return { err: 403, data: null }
+          res.err = 403
+          res.data = null
+          return
         }
 
         const accessToken = jwt.sign(
@@ -108,7 +118,8 @@ export class UserService {
           ACCESS_TOKEN_SECRET,
           { expiresIn: REFRESH_EXPIRES_IN }
         )
-        data = { user, accessToken }
+        res.err = null
+        res.data = { user, accessToken }
       }
 
       jwt.verify(
@@ -116,13 +127,53 @@ export class UserService {
         REFRESH_TOKEN_SECRET,
         verifyCallback
       )
-      return { err: null, data }
+      return res
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, data: null }
     }
 
 
+  }
+
+  async jwtVerify(token: string) {
+    type ResType = {
+      err: number | null
+      data: string | null
+    }
+    try {
+      let res: ResType = { err: null, data: null }
+      const verifyCallback: VerifyCallback = (err, decoded) => {
+        console.log(decoded)
+        console.log(err)
+
+        if (err || !decoded || typeof decoded === 'string') {
+          res.err = 403
+          res.data = null
+          return
+        }
+        const payload = decoded as JwtWithUsername
+        if (!payload?.username) {
+          res.err = 403
+          res.data = null
+          return
+        }
+        const username = payload.username
+        res.err = null
+        res.data = username
+      }
+
+      jwt.verify(
+        token,
+        ACCESS_TOKEN_SECRET,
+        verifyCallback
+      )
+      console.log(res)
+      return res
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
   }
 
 }

@@ -8,6 +8,7 @@ service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
   rpc Logout(LogoutRequest) returns (LogoutResponse) {};
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {};
+  rpc JwtVerify(JwtVerifyRequest) returns (JwtVerifyResponse) {};
 
   rpc AdminSignUp(AdminSignUpRequest) returns (AdminSignUpResponse) {};
   rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse) {};
@@ -110,4 +111,12 @@ message AdminSignUpResponse {
   User user =1;
   string token =2;
   string refreshToken = 3;
+}
+
+message JwtVerifyRequest {
+  string accessToken =1;
+}
+
+message JwtVerifyResponse {
+  string username =1;
 }

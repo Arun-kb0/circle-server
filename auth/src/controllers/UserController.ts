@@ -14,6 +14,8 @@ import handleError from "../util/handleError";
 import { convertUserForGrpc } from "../util/converter";
 import { validateRequest, validateResponse } from "../util/validations";
 import { IUser } from "../model/UserModel";
+import { JwtVerifyRequest__Output } from "../proto/authType/JwtVerifyRequest";
+import { JwtVerifyResponse } from "../proto/authType/JwtVerifyResponse";
 
 
 
@@ -21,6 +23,7 @@ type LoginUserFun = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
 type SignupUserFun = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
 type LogoutUserFun = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
 type RefreshUserFun = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
+type JwtVerifyFun = grpc.handleUnaryCall<JwtVerifyRequest__Output, JwtVerifyResponse>
 
 export class UserController {
 
@@ -54,8 +57,12 @@ export class UserController {
       const message = 'email and password is required.'
       validateRequest(message, email, password)
       const res = await this.userService.login(email as string, password as string)
+      if (res.err === 401) {
+        const code = grpc.status.INVALID_ARGUMENT
+        const message = 'email or password mis match'
+        throw new CustomError(code, message, 'cnt')
+      }
       validateResponse(res)
-
       const { user: rawUser, token, refreshToken } = res.data as Data
       const user = convertUserForGrpc(rawUser)
       const data = {
@@ -76,12 +83,12 @@ export class UserController {
       const { token } = call.request
       validateRequest('token is required ', token)
       const res = await this.userService.logout(token as string)
-      validateResponse(res)
       if (res.err === 404) {
         const code = grpc.status.NOT_FOUND
         const message = `user not found`
         throw new CustomError(code, message, 'cnt')
       }
+      validateResponse(res)
       cb(null, res.data)
     } catch (error) {
       const err = handleError(error)
@@ -90,6 +97,10 @@ export class UserController {
   }
 
   refresh: RefreshUserFun = async (call, cb) => {
+    type DataType = {
+      user: IUser;
+      accessToken: string
+    }
     try {
       const { refreshToken } = call.request
       const message = 'refreshToken is required.'
@@ -101,7 +112,13 @@ export class UserController {
         const message = 'refreshToken unauthorized.'
         throw new CustomError(code, message, 'cnt')
       }
-      cb(null, res.data)
+      const { user: rawUser, accessToken } = res.data as DataType
+      const user = convertUserForGrpc(rawUser)
+      const response = {
+        user,
+        accessToken
+      }
+      cb(null, response)
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -109,5 +126,24 @@ export class UserController {
 
   }
 
+  jwtVerify: JwtVerifyFun = async (call, cb) => {
+    try {
+      const { accessToken } = call.request
+      const message = 'access token not found'
+      validateRequest(message, accessToken)
+      const res = await this.userService.jwtVerify(accessToken as string)
+      if (res?.err === 403) {
+        const code = grpc.status.UNAUTHENTICATED
+        const message = `error ${res.err}.`
+        throw new CustomError(code, message, 'cnt')
+      }
+      validateResponse(res)
+      const username = res.data as string
+      cb(null, { username })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
 }

@@ -4,7 +4,9 @@ import {
   getUser, unblockUser, updateUser
 } from "../controller/userController";
 
+
 const router = express.Router()
+
 
 router.get('/all', getAllUsers)
 router.get('/:userId', getUser)

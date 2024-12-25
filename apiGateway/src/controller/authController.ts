@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as grpc from '@grpc/grpc-js'
 import path from 'path'
-import getPackageDef from '../util/createPackageDef'
+import getPackageDef from '../util/getPackageDef'
 import { ProtoGrpcType } from "../protos/auth";
 import httpStatus from "../constants/httpStatus";
 import HttpError from "../util/HttpError";
@@ -32,7 +32,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         secure: true,
         maxAge: 24 * 60 * 60 * 1000
       })
-      console.log(msg)
       res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data })
     })
   } catch (error) {
@@ -53,7 +52,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
         secure: true,
         maxAge: 24 * 60 * 60 * 1000
       })
-      res.status(httpStatus.OK).json({ message: 'singup success', accessToken: token, ...data })
+      res.status(httpStatus.OK).json({ message: 'signup success', accessToken: token, ...data })
     })
   } catch (error) {
     next(error)

@@ -6,6 +6,8 @@ import type { AdminLoginRequest as _authType_AdminLoginRequest, AdminLoginReques
 import type { AdminLoginResponse as _authType_AdminLoginResponse, AdminLoginResponse__Output as _authType_AdminLoginResponse__Output } from '../authType/AdminLoginResponse';
 import type { AdminSignUpRequest as _authType_AdminSignUpRequest, AdminSignUpRequest__Output as _authType_AdminSignUpRequest__Output } from '../authType/AdminSignUpRequest';
 import type { AdminSignUpResponse as _authType_AdminSignUpResponse, AdminSignUpResponse__Output as _authType_AdminSignUpResponse__Output } from '../authType/AdminSignUpResponse';
+import type { JwtVerifyRequest as _authType_JwtVerifyRequest, JwtVerifyRequest__Output as _authType_JwtVerifyRequest__Output } from '../authType/JwtVerifyRequest';
+import type { JwtVerifyResponse as _authType_JwtVerifyResponse, JwtVerifyResponse__Output as _authType_JwtVerifyResponse__Output } from '../authType/JwtVerifyResponse';
 import type { LoginRequest as _authType_LoginRequest, LoginRequest__Output as _authType_LoginRequest__Output } from '../authType/LoginRequest';
 import type { LoginResponse as _authType_LoginResponse, LoginResponse__Output as _authType_LoginResponse__Output } from '../authType/LoginResponse';
 import type { LogoutRequest as _authType_LogoutRequest, LogoutRequest__Output as _authType_LogoutRequest__Output } from '../authType/LogoutRequest';
@@ -33,6 +35,15 @@ export interface AuthServiceClient extends grpc.Client {
   adminSignUp(argument: _authType_AdminSignUpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_AdminSignUpResponse__Output>): grpc.ClientUnaryCall;
   adminSignUp(argument: _authType_AdminSignUpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_AdminSignUpResponse__Output>): grpc.ClientUnaryCall;
   adminSignUp(argument: _authType_AdminSignUpRequest, callback: grpc.requestCallback<_authType_AdminSignUpResponse__Output>): grpc.ClientUnaryCall;
+  
+  JwtVerify(argument: _authType_JwtVerifyRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  JwtVerify(argument: _authType_JwtVerifyRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  JwtVerify(argument: _authType_JwtVerifyRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  JwtVerify(argument: _authType_JwtVerifyRequest, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  jwtVerify(argument: _authType_JwtVerifyRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  jwtVerify(argument: _authType_JwtVerifyRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  jwtVerify(argument: _authType_JwtVerifyRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
+  jwtVerify(argument: _authType_JwtVerifyRequest, callback: grpc.requestCallback<_authType_JwtVerifyResponse__Output>): grpc.ClientUnaryCall;
   
   Login(argument: _authType_LoginRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_LoginResponse__Output>): grpc.ClientUnaryCall;
   Login(argument: _authType_LoginRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_LoginResponse__Output>): grpc.ClientUnaryCall;
@@ -77,6 +88,8 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   AdminSignUp: grpc.handleUnaryCall<_authType_AdminSignUpRequest__Output, _authType_AdminSignUpResponse>;
   
+  JwtVerify: grpc.handleUnaryCall<_authType_JwtVerifyRequest__Output, _authType_JwtVerifyResponse>;
+  
   Login: grpc.handleUnaryCall<_authType_LoginRequest__Output, _authType_LoginResponse>;
   
   Logout: grpc.handleUnaryCall<_authType_LogoutRequest__Output, _authType_LogoutResponse>;
@@ -90,6 +103,7 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
 export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   AdminLogin: MethodDefinition<_authType_AdminLoginRequest, _authType_AdminLoginResponse, _authType_AdminLoginRequest__Output, _authType_AdminLoginResponse__Output>
   AdminSignUp: MethodDefinition<_authType_AdminSignUpRequest, _authType_AdminSignUpResponse, _authType_AdminSignUpRequest__Output, _authType_AdminSignUpResponse__Output>
+  JwtVerify: MethodDefinition<_authType_JwtVerifyRequest, _authType_JwtVerifyResponse, _authType_JwtVerifyRequest__Output, _authType_JwtVerifyResponse__Output>
   Login: MethodDefinition<_authType_LoginRequest, _authType_LoginResponse, _authType_LoginRequest__Output, _authType_LoginResponse__Output>
   Logout: MethodDefinition<_authType_LogoutRequest, _authType_LogoutResponse, _authType_LogoutRequest__Output, _authType_LogoutResponse__Output>
   Refresh: MethodDefinition<_authType_RefreshRequest, _authType_RefreshResponse, _authType_RefreshRequest__Output, _authType_RefreshResponse__Output>

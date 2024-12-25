@@ -15,6 +15,8 @@ export interface ProtoGrpcType {
     AdminSignUpResponse: MessageTypeDefinition
     AuthService: SubtypeConstructor<typeof grpc.Client, _authType_AuthServiceClient> & { service: _authType_AuthServiceDefinition }
     Image: MessageTypeDefinition
+    JwtVerifyRequest: MessageTypeDefinition
+    JwtVerifyResponse: MessageTypeDefinition
     LoginRequest: MessageTypeDefinition
     LoginResponse: MessageTypeDefinition
     LogoutRequest: MessageTypeDefinition

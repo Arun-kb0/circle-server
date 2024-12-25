@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as grpc from '@grpc/grpc-js'
 import path from 'path'
-import getPackageDef from '../util/createPackageDef'
+import getPackageDef from '../util/getPackageDef'
 import { ProtoGrpcType } from '../protos/user'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
