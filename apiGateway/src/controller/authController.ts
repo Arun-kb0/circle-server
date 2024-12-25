@@ -99,7 +99,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       }
       if (!msg) throw new Error('grpc response is empty')
       res.status(httpStatus.OK)
-        .json({ 
+        .json({
           accessToken: msg.accessToken,
           user: msg.user,
           message: 'refresh success'
@@ -113,4 +113,56 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
 
 export const verify = async (req: Request, res: Response, next: NextFunction) => {
 
+}
+
+
+// * admin
+
+
+export const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body
+    client.adminLogin({ email, password }, (err, msg) => {
+      if (err?.code === grpc.status.NOT_FOUND) {
+        return next(new HttpError(httpStatus.FORBIDDEN, err.message))
+      }
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      const { refreshToken, token, ...data } = msg
+      res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000
+      })
+      res.status(httpStatus.OK).json({ message: 'admin login success', accessToken: token, ...data })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
+export const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email, password } = req.body
+    client.adminSignUp({ name, email, password }, (err, msg) => {
+      if (err?.code === grpc.status.PERMISSION_DENIED) {
+        return next(new HttpError(httpStatus.FORBIDDEN, 'root user mismatch'))
+      }
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      const { refreshToken, token, ...data } = msg
+      res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000
+      })
+      res.status(httpStatus.OK).json({ message: 'admin signup success', accessToken: token, ...data })
+    })
+  } catch (error) {
+    next(error)
+  }
 }

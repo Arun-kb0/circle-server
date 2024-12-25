@@ -32,7 +32,9 @@ const grpcConnect = () => {
       signUp: userController.signup,
       logout: userController.logout,
       refresh: userController.refresh,
-      jwtVerify: userController.jwtVerify
+      jwtVerify: userController.jwtVerify,
+      adminSignUp : userController.adminSignup,
+      adminLogin : userController.adminLogin
     }
   )
 

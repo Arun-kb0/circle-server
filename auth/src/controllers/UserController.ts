@@ -16,6 +16,9 @@ import { validateRequest, validateResponse } from "../util/validations";
 import { IUser } from "../model/UserModel";
 import { JwtVerifyRequest__Output } from "../proto/authType/JwtVerifyRequest";
 import { JwtVerifyResponse } from "../proto/authType/JwtVerifyResponse";
+import { AdminSignUpRequest__Output } from "../proto/authType/AdminSignUpRequest";
+import { AdminSignUpResponse } from "../proto/authType/AdminSignUpResponse";
+import { AdminLoginRequest__Output } from "../proto/authType/AdminLoginRequest";
 
 
 
@@ -24,6 +27,8 @@ type SignupUserFun = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
 type LogoutUserFun = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
 type RefreshUserFun = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
 type JwtVerifyFun = grpc.handleUnaryCall<JwtVerifyRequest__Output, JwtVerifyResponse>
+type AdminLoginFun = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminSignUpResponse>
+type AdminSignupFun = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
 
 export class UserController {
 
@@ -140,6 +145,74 @@ export class UserController {
       validateResponse(res)
       const username = res.data as string
       cb(null, { username })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  adminSignup: AdminSignupFun = async (call, cb) => {
+    type Data = {
+      user: IUser;
+      token: string;
+      refreshToken: string;
+    }
+    try {
+      const { name, email, password } = call.request
+      const message = 'name, email and password is required.'
+      validateRequest(message, name, email, password)
+      const res = await this.userService.adminSignup(name as string, email as string, password as string)
+      if (res.err === 404) {
+        const code = grpc.status.PERMISSION_DENIED
+        const message = `error ${res.err}.`
+        throw new CustomError(code, message, 'cnt')
+      }
+      validateResponse(res)
+      const { user: rawUser, ...rest } = res.data as Data
+      const user = convertUserForGrpc(rawUser)
+      const response = {
+        user,
+        ...rest,
+      }
+      cb(null, response)
+
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  adminLogin: AdminLoginFun = async (call, cb) => {
+    type Data = {
+      user: IUser;
+      token: string;
+      refreshToken: string;
+    }
+    try {
+      const { email, password } = call.request
+      const message = 'email and password is required.'
+      validateRequest(message, email, password)
+      const res = await this.userService.adminLogin(email as string, password as string)
+      if (res.err === 401) {
+        const code = grpc.status.INVALID_ARGUMENT
+        const message = 'email or password mis match'
+        throw new CustomError(code, message, 'cnt')
+      }
+      if (res.err === 404) {
+        const code = grpc.status.NOT_FOUND
+        const message = 'root user or user not found '
+        throw new CustomError(code, message, 'cnt')
+      }
+      validateResponse(res)
+      const { user: rawUser, token, refreshToken } = res.data as Data
+      const user = convertUserForGrpc(rawUser)
+      const data = {
+        user,
+        token,
+        refreshToken
+      }
+      cb(null, data)
+
     } catch (error) {
       const err = handleError(error)
       cb(err, null)

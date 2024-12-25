@@ -9,6 +9,8 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret
 const ACCESS_EXPIRES_IN = '60s'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
 const REFRESH_EXPIRES_IN = '1d'
+const ROOT_USER = 'arunkb@gmail.com'
+
 
 export class UserService {
 
@@ -175,5 +177,77 @@ export class UserService {
       return { err: code as number, data: null }
     }
   }
+
+
+  // * admin
+  async adminSignup(name: string, email: string, password: string) {
+    try {
+      if (name !== ROOT_USER) return { err: 404, data: null }
+      const hashedPwd = await bcrypt.hash(password, 10)
+      const user = {
+        name,
+        email,
+        password: hashedPwd,
+        role:'admin'
+      }
+      const newUser = await this.userRepo.create({ ...user, role: 'admin' })
+
+      const accessToken = jwt.sign(
+        { "username": newUser.email, role: 'admin' },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      )
+      const refreshToken = jwt.sign(
+        { "username": newUser.email, role: 'admin' },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+
+      const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
+      if (!updatedUser) return { err: 409, data: null }
+
+      const data = {
+        user,
+        token: accessToken,
+        refreshToken
+      }
+      return { err: null, data }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
+
+  async adminLogin(email: string, password: string) {
+    try {
+      const foundUser = await this.userRepo.findByEmail(email)
+      if (!foundUser || foundUser.name !== ROOT_USER) return { err: 404, data: null }
+
+      const isMatch = await bcrypt.compare(password, foundUser.password)
+      if (!isMatch) return { err: 401, data: null }
+      const accessToken = jwt.sign(
+        { "username": foundUser.email, role: 'admin' },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      )
+      const refreshToken = jwt.sign(
+        { "username": foundUser.email, role: 'admin' },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+
+      const updatedUser = await this.userRepo.update(foundUser._id, { refreshToken })
+      const data = {
+        user: updatedUser,
+        token: accessToken,
+        refreshToken
+      }
+      return { err: null, data }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
+
 
 }
