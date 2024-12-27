@@ -1,12 +1,17 @@
-import { IUser, User } from "../../model/UserModel";
-import { UserRepoInterface } from "../interfaces/UserRepoInterface";
+import { IUser, User } from "../model/UserModel";
+import IUserRepo from "../interfaces/IUserRepo";
 
 
 
-export class UserRepo implements UserRepoInterface {
+export class UserRepo implements IUserRepo {
 
   async findByEmail(email: string): Promise<IUser | null> {
     const foundUser = await User.findOne({ email: email })
+    return foundUser ? foundUser.toObject() : null
+  }
+
+  async findByEmailAndStatus(email: string, status: 'blocked' | 'deleted' | 'active'): Promise<IUser | null> {
+    const foundUser = await User.findOne({ email, status })
     return foundUser ? foundUser.toObject() : null
   }
 
@@ -30,7 +35,7 @@ export class UserRepo implements UserRepoInterface {
   }
 
 
-  async findByToken(refreshToken:string): Promise<IUser | null> {
+  async findByToken(refreshToken: string): Promise<IUser | null> {
     const user = await User.findOne({ refreshToken })
     return user ? user.toObject() : null
   }

@@ -1,11 +1,12 @@
 import { IUser } from '../model/UserModel'
-import { UserRepoInterface } from '../repositories/interfaces/UserRepoInterface'
+import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
+import IUserService from '../interfaces/IUserService'
 
-export class UserService {
+export class UserService implements IUserService {
 
   constructor(
-    private userRepo: UserRepoInterface
+    private userRepo: IUserRepo
   ) { }
 
   async getAllUsers() {
@@ -23,7 +24,7 @@ export class UserService {
       const user = await this.userRepo.findById(userId)
       return { err: null, data: user }
     } catch (error) {
-      const { code  , message } = handleError(error)
+      const { code, message } = handleError(error)
       return { err: code as number, data: null }
     }
   }
@@ -42,7 +43,7 @@ export class UserService {
   // * admin functions
   async blockUser(userId: string) {
     try {
-      const blockedUser = this.userRepo.update(userId, { status: 'blocked' })
+      const blockedUser = await this.userRepo.update(userId, { status: 'blocked' })
       if (!blockedUser) return { err: 404, data: null }
       return { err: null, data: blockedUser }
     } catch (error) {
@@ -52,7 +53,7 @@ export class UserService {
 
   async unBlockUser(userId: string) {
     try {
-      const blockedUser = this.userRepo.update(userId, { status: 'active' })
+      const blockedUser = await this.userRepo.update(userId, { status: 'active' })
       if (!blockedUser) return { err: 404, data: null }
       return { err: null, data: blockedUser }
     } catch (error) {

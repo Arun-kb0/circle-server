@@ -23,6 +23,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const { email, password } = req.body
     client.login({ email, password }, (err, msg) => {
+      if (err?.code === grpc.status.UNAVAILABLE) {
+        return next(new HttpError(httpStatus.GONE, 'account blocked'))
+      }
+      if (err?.code === grpc.status.NOT_FOUND) {
+        return next(new HttpError(httpStatus.NOT_FOUND, 'user not found'))
+      }
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
       const { refreshToken, token, ...data } = msg

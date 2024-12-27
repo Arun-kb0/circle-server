@@ -19,31 +19,37 @@ import { JwtVerifyResponse } from "../proto/authType/JwtVerifyResponse";
 import { AdminSignUpRequest__Output } from "../proto/authType/AdminSignUpRequest";
 import { AdminSignUpResponse } from "../proto/authType/AdminSignUpResponse";
 import { AdminLoginRequest__Output } from "../proto/authType/AdminLoginRequest";
+import { AdminLoginResponse } from "../proto/authType/AdminLoginResponse";
+import IUserController from '../interfaces/IUserController'
+import IUserService, { UserAuthInfo } from "../interfaces/IUserService";
 
 
 
-type LoginUserFun = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
-type SignupUserFun = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
-type LogoutUserFun = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
-type RefreshUserFun = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
-type JwtVerifyFun = grpc.handleUnaryCall<JwtVerifyRequest__Output, JwtVerifyResponse>
-type AdminLoginFun = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminSignUpResponse>
-type AdminSignupFun = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
+type LoginUserHandler = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
+type SignupUserHandler = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
+type LogoutUserHandler = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
+type RefreshUserHandler = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
+type JwtVerifyHandler = grpc.handleUnaryCall<JwtVerifyRequest__Output, JwtVerifyResponse>
+type AdminLoginHandler = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
+type AdminSignupHandler = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
 
-export class UserController {
+export class UserController implements IUserController {
 
   constructor(
-    private userService: UserService
+    private userService: IUserService
   ) { }
 
-  signup: SignupUserFun = async (call, cb) => {
+  signup: SignupUserHandler = async (call, cb) => {
     try {
       const { name, email, password } = call.request
       const message = 'name, email and password is required.'
       validateRequest(message, name, email, password)
       const res = await this.userService.signup(name as string, email as string, password as string)
       validateResponse(res)
-      cb(null, res.data)
+      const { user: rawUser, ...rest } = res.data as UserAuthInfo
+      const user = convertUserForGrpc(rawUser as IUser)
+      const response = { user, ...rest }
+      cb(null, response)
 
     } catch (error) {
       const err = handleError(error)
@@ -51,7 +57,7 @@ export class UserController {
     }
   }
 
-  login: LoginUserFun = async (call, cb) => {
+  login: LoginUserHandler = async (call, cb) => {
     type Data = {
       user: IUser;
       token: string;
@@ -65,6 +71,16 @@ export class UserController {
       if (res.err === 401) {
         const code = grpc.status.INVALID_ARGUMENT
         const message = 'email or password mis match'
+        throw new CustomError(code, message, 'cnt')
+      }
+      if (res.err === 409) {
+        const code = grpc.status.UNAVAILABLE
+        const message = 'account blocked'
+        throw new CustomError(code, message, 'cnt')
+      }
+      if (res.err === 410) {
+        const code = grpc.status.NOT_FOUND
+        const message = 'user not found'
         throw new CustomError(code, message, 'cnt')
       }
       validateResponse(res)
@@ -83,7 +99,7 @@ export class UserController {
     }
   }
 
-  logout: LogoutUserFun = async (call, cb) => {
+  logout: LogoutUserHandler = async (call, cb) => {
     try {
       const { token } = call.request
       validateRequest('token is required ', token)
@@ -101,7 +117,7 @@ export class UserController {
     }
   }
 
-  refresh: RefreshUserFun = async (call, cb) => {
+  refresh: RefreshUserHandler = async (call, cb) => {
     type DataType = {
       user: IUser;
       accessToken: string
@@ -131,7 +147,7 @@ export class UserController {
 
   }
 
-  jwtVerify: JwtVerifyFun = async (call, cb) => {
+  jwtVerify: JwtVerifyHandler = async (call, cb) => {
     try {
       const { accessToken } = call.request
       const message = 'access token not found'
@@ -151,7 +167,7 @@ export class UserController {
     }
   }
 
-  adminSignup: AdminSignupFun = async (call, cb) => {
+  adminSignup: AdminSignupHandler = async (call, cb) => {
     type Data = {
       user: IUser;
       token: string;
@@ -182,7 +198,7 @@ export class UserController {
     }
   }
 
-  adminLogin: AdminLoginFun = async (call, cb) => {
+  adminLogin: AdminLoginHandler = async (call, cb) => {
     type Data = {
       user: IUser;
       token: string;

@@ -1,9 +1,10 @@
-import { UserRepoInterface } from "../repositories/interfaces/UserRepoInterface";
+import IUserRepo from "../interfaces/IUserRepo";
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
 import handleError from '../util/handleError'
 import { JwtWithUsername } from '../constants/types'
 import { IUser } from "../model/UserModel";
+import IUserService from '../interfaces/IUserService'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 const ACCESS_EXPIRES_IN = '60s'
@@ -12,10 +13,10 @@ const REFRESH_EXPIRES_IN = '1d'
 const ROOT_USER = 'arunkb@gmail.com'
 
 
-export class UserService {
+export class UserService implements IUserService {
 
   constructor(
-    private userRepo: UserRepoInterface
+    private userRepo: IUserRepo
   ) { }
 
   async signup(name: string, email: string, password: string) {
@@ -58,6 +59,8 @@ export class UserService {
     try {
       const foundUser = await this.userRepo.findByEmail(email)
       if (!foundUser) return { err: 404, data: null }
+      if (foundUser.status === 'blocked') return { err: 409, data: null }
+      if (foundUser.status === 'deleted') return { err: 410, data: null }
 
       const isMatch = await bcrypt.compare(password, foundUser.password)
       if (!isMatch) return { err: 401, data: null }
@@ -107,7 +110,7 @@ export class UserService {
       const user = await this.userRepo.findByToken(refreshToken)
       if (!user) return { err: 404, data: null }
 
-      let res: ResType = { err: null, data: null }
+      let res: ResType = { err: 0, data: null }
       const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
         if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.username) {
           res.err = 403
@@ -120,7 +123,6 @@ export class UserService {
           ACCESS_TOKEN_SECRET,
           { expiresIn: REFRESH_EXPIRES_IN }
         )
-        res.err = null
         res.data = { user, accessToken }
       }
 
@@ -139,12 +141,13 @@ export class UserService {
   }
 
   async jwtVerify(token: string) {
+
     type ResType = {
       err: number | null
       data: string | null
     }
     try {
-      let res: ResType = { err: null, data: null }
+      let res: ResType = { err: 0, data: null }
       const verifyCallback: VerifyCallback = (err, decoded) => {
         console.log(decoded)
         console.log(err)
@@ -172,6 +175,7 @@ export class UserService {
       )
       console.log(res)
       return res
+
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, data: null }
@@ -188,7 +192,6 @@ export class UserService {
         name,
         email,
         password: hashedPwd,
-        role:'admin'
       }
       const newUser = await this.userRepo.create({ ...user, role: 'admin' })
 

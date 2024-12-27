@@ -1,4 +1,4 @@
-import { UserRepo } from './repositories/implementations/UserRepo'
+import { UserRepo } from './repositories/UserRepo'
 import {UserService} from './services/UserService'
 import {UserController} from './controllers/UserController'
 

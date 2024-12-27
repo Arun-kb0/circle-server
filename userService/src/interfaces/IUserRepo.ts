@@ -1,6 +1,6 @@
-import { IUser } from '../../model/UserModel'
+import { IUser } from '../model/UserModel'
 
-export interface UserRepoInterface {
+interface IUserRepo {
   findAll(): Promise<IUser[]>
   findById(userId: string): Promise<IUser | null>
   update(userId: string, user: Partial<IUser>): Promise<IUser | null>
@@ -8,3 +8,5 @@ export interface UserRepoInterface {
   findByEmail(email: string): Promise<IUser | null>
   findByName(name: string): Promise<IUser | null >
 }
+
+export default IUserRepo

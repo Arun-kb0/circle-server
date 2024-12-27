@@ -1,4 +1,4 @@
-import { IUser } from '../../model/UserModel'
+import { IUser } from '../model/UserModel'
 
 
 type CreateUserArg = Pick<
@@ -6,11 +6,13 @@ type CreateUserArg = Pick<
   & Partial<Omit<IUser, '_id' | 'followeeCount' | 'followerCount' | 'email' | 'name' | 'password'>
   >
 
-export interface UserRepoInterface {
+interface IUserRepo {
   create(user: CreateUserArg): Promise<IUser>
   findById(id: string): Promise<IUser | null>
   findByEmail(email: string): Promise<IUser | null>
-  findByToken(refreshToken:string): Promise<IUser | null>
+  findByEmailAndStatus(email: string, status: 'blocked' | 'deleted' | 'active' ): Promise<IUser | null>
+  findByToken(refreshToken: string): Promise<IUser | null>
   update(id: string, user: Partial<IUser>): Promise<IUser | null>
 }
 
+export default  IUserRepo

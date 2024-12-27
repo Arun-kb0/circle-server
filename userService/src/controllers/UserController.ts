@@ -1,4 +1,3 @@
-import { UserService } from "../services/UserService";
 import * as grpc from '@grpc/grpc-js'
 import { BlockUserRequest__Output } from "../proto/user/BlockUserRequest";
 import { BlockUserResponse } from "../proto/user/BlockUserResponse";
@@ -16,21 +15,25 @@ import { User, User__Output } from '../proto/user/User'
 import { convertUserForDb, convertUserForGrpc } from '../util/converter'
 import { validateRequest, validateResponse } from '../util/validations'
 import { IUser } from "../model/UserModel";
+import IUserController from '../interfaces/IUserController'
+import IUserService from "../interfaces/IUserService";
 
 
-type GetAllUserFun = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
-type GetUserFun = grpc.handleUnaryCall<GetUserRequest__Output, GetUserResponse>;
-type BlockUserFun = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
-type UnblockUserFun = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
-type UpdateUserFun = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
+type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
+type GetUserHandler = grpc.handleUnaryCall<GetUserRequest__Output, GetUserResponse>;
+type BlockUserHandler = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
+type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
+type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
 
-export class UserController {
+
+export class UserController implements IUserController {
 
   constructor(
-    private userService: UserService
+    private userService: IUserService
   ) { }
 
-  getAllUsers: GetAllUserFun = async (call, cb) => {
+
+  getAllUsers: GetAllUserHandler  = async (call, cb) =>{
     try {
       const res = await this.userService.getAllUsers()
       validateResponse(res)
@@ -47,7 +50,7 @@ export class UserController {
     }
   }
 
-  getUser: GetUserFun = async (call, cb) => {
+  getUser: GetUserHandler = async (call, cb) => {
     try {
       const { userId } = call.request
       validateRequest('userId is required', userId)
@@ -61,7 +64,7 @@ export class UserController {
     }
   }
 
-  updateUser: UpdateUserFun = async (call, cb) => {
+  updateUser: UpdateUserHandler = async (call, cb) => {
     try {
       const { userId, user } = call.request
       validateRequest('userId and password is required', userId, user)
@@ -77,10 +80,10 @@ export class UserController {
 
   }
 
-  
+
 
   // * admin
-  blockUser: BlockUserFun = async (call, cb) => {
+  blockUser: BlockUserHandler = async (call, cb) => {
     try {
       const { userId } = call.request
       validateRequest('userId is required', userId)
@@ -93,7 +96,7 @@ export class UserController {
     }
   }
 
-  unblockUser: UnblockUserFun = async (call, cb) => {
+  unblockUser: UnblockUserHandler = async (call, cb) => {
     try {
       const { userId } = call.request
       validateRequest('userId is required', userId)

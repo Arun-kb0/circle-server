@@ -1,9 +1,9 @@
 import { Types, } from "mongoose";
-import { IUser, User } from "../../model/UserModel";
-import { UserRepoInterface } from "../interfaces/UserRepoInterface";
+import { IUser, User } from "../model/UserModel";
+import IUserRepo from "../interfaces/IUserRepo";
 
 
-export class UserRepo implements UserRepoInterface {
+export class UserRepo implements IUserRepo {
 
   async findAll(): Promise<IUser[]> {
     const res = await User.find()
