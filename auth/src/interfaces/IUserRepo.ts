@@ -10,9 +10,10 @@ interface IUserRepo {
   create(user: CreateUserArg): Promise<IUser>
   findById(id: string): Promise<IUser | null>
   findByEmail(email: string): Promise<IUser | null>
-  findByEmailAndStatus(email: string, status: 'blocked' | 'deleted' | 'active' ): Promise<IUser | null>
+  findByEmailAndStatus(email: string, status: 'blocked' | 'deleted' | 'active'): Promise<IUser | null>
   findByToken(refreshToken: string): Promise<IUser | null>
   update(id: string, user: Partial<IUser>): Promise<IUser | null>
+  findByEmailAndUpdate(email: string, user: Partial<IUser>): Promise<IUser | null>
 }
 
-export default  IUserRepo
+export default IUserRepo

@@ -5,6 +5,15 @@ import IUserRepo from "../interfaces/IUserRepo";
 
 export class UserRepo implements IUserRepo {
 
+  async findByEmailAndUpdate(email: string, user: Partial<IUser>): Promise<IUser | null> {
+    const updatedUser = await User.findOneAndUpdate(
+      { email: email },
+      { $set: user },
+      { new: true }
+    )
+    return updatedUser ? updatedUser.toObject() : null
+  }
+
   async findByEmail(email: string): Promise<IUser | null> {
     const foundUser = await User.findOne({ email: email })
     return foundUser ? foundUser.toObject() : null

@@ -36,3 +36,4 @@ export const convertUserForDb = (user: User): Partial<IUser> => {
   }
   return convertedUser
 }
+

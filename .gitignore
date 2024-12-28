@@ -4,6 +4,7 @@ apiGateway/logs
 
 # auth service
 auth/node_modules
+auth/.env
 
 # user service
 userService/node_modules

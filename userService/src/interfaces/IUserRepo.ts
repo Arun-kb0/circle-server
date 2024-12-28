@@ -6,7 +6,7 @@ interface IUserRepo {
   update(userId: string, user: Partial<IUser>): Promise<IUser | null>
   delete(userId: string): Promise<string>
   findByEmail(email: string): Promise<IUser | null>
-  findByName(name: string): Promise<IUser | null >
+  findByName(name: string): Promise<IUser | null>
 }
 
 export default IUserRepo

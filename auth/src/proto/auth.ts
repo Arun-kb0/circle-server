@@ -14,20 +14,24 @@ export interface ProtoGrpcType {
     AdminSignUpRequest: MessageTypeDefinition
     AdminSignUpResponse: MessageTypeDefinition
     AuthService: SubtypeConstructor<typeof grpc.Client, _authType_AuthServiceClient> & { service: _authType_AuthServiceDefinition }
+    ForgotPasswordRequest: MessageTypeDefinition
+    ForgotPasswordResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
-    JwtVerifyRequest: MessageTypeDefinition
-    JwtVerifyResponse: MessageTypeDefinition
     LoginRequest: MessageTypeDefinition
     LoginResponse: MessageTypeDefinition
     LogoutRequest: MessageTypeDefinition
     LogoutResponse: MessageTypeDefinition
     RefreshRequest: MessageTypeDefinition
     RefreshResponse: MessageTypeDefinition
+    ResendOtpRequest: MessageTypeDefinition
+    ResendOtpResponse: MessageTypeDefinition
     Role: EnumTypeDefinition
     SignUpRequest: MessageTypeDefinition
     SignUpResponse: MessageTypeDefinition
     Status: EnumTypeDefinition
     User: MessageTypeDefinition
+    VerifyEmailRequest: MessageTypeDefinition
+    VerifyEmailResponse: MessageTypeDefinition
   }
 }
 

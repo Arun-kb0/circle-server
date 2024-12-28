@@ -2,21 +2,28 @@ import IUserRepo from "../interfaces/IUserRepo";
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
 import handleError from '../util/handleError'
-import { JwtWithUsername } from '../constants/types'
 import { IUser } from "../model/UserModel";
-import IUserService from '../interfaces/IUserService'
+import IUserService, { SvcFuncReturnType } from '../interfaces/IUserService'
+import { IUserOtp } from "../model/UserOtpModel";
+import getOtpTemplate from '../util/getOtpTemplate'
+import IUserOtpRepo from "../interfaces/IUserOtpRepo";
+import { validateRequest } from "../util/validations";
+import nodeMailerTransport from '../config/nodeMailerTransport'
+
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 const ACCESS_EXPIRES_IN = '60s'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
 const REFRESH_EXPIRES_IN = '1d'
 const ROOT_USER = 'arunkb@gmail.com'
+const OTP_EXPIRES_AT = new Date(Date.now() + 1 * 60 * 1000)
 
 
 export class UserService implements IUserService {
 
   constructor(
-    private userRepo: IUserRepo
+    private userRepo: IUserRepo,
+    private userOtpRepo: IUserOtpRepo
   ) { }
 
   async signup(name: string, email: string, password: string) {
@@ -27,6 +34,23 @@ export class UserService implements IUserService {
         email,
         password: hashedPwd,
       }
+
+      // ! change this to
+      // ! sedning otp here 
+      // ! create user after verifying the otp
+      const otpResData = await this.sendOtp({ name, email, password: hashedPwd })
+      console.log(otpResData)
+      if (otpResData.err) return otpResData
+      console.log("otp send")
+      console.log(otpResData.data)
+      const response = {
+        user,
+        token: '',
+        refreshToken: ''
+      }
+      return { err: null, data: response }
+
+
       const newUser = await this.userRepo.create({ ...user, role: 'user' })
 
       const accessToken = jwt.sign(
@@ -49,11 +73,46 @@ export class UserService implements IUserService {
         refreshToken
       }
       return { err: null, data }
+
+
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, data: null }
     }
   }
+
+
+  async sendOtp(otpData: Partial<IUserOtp>, isPassword = false) {
+    try {
+      const { email, name, password } = otpData
+      if (!email || !name) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
+      const { otpHtmlTemplate, otp } = getOtpTemplate()
+      const mailOptions = {
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: 'verify email',
+        html: otpHtmlTemplate
+      }
+      const hashedOtp = await bcrypt.hash(String(otp), 10)
+
+      const newOtpData = await this.userOtpRepo.create({
+        name,
+        email,
+        password: password ? password : '',
+        otp: hashedOtp,
+        expireAt: OTP_EXPIRES_AT
+      })
+      if (!newOtpData) return { err: 500, data: null, errMsg: 'user not created.' }
+      await nodeMailerTransport.sendMail(mailOptions)
+
+      return { err: null, data: newOtpData }
+
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null, errMsg: message }
+    }
+  }
+
 
   async login(email: string, password: string) {
     try {
@@ -139,49 +198,6 @@ export class UserService implements IUserService {
 
 
   }
-
-  async jwtVerify(token: string) {
-
-    type ResType = {
-      err: number | null
-      data: string | null
-    }
-    try {
-      let res: ResType = { err: 0, data: null }
-      const verifyCallback: VerifyCallback = (err, decoded) => {
-        console.log(decoded)
-        console.log(err)
-
-        if (err || !decoded || typeof decoded === 'string') {
-          res.err = 403
-          res.data = null
-          return
-        }
-        const payload = decoded as JwtWithUsername
-        if (!payload?.username) {
-          res.err = 403
-          res.data = null
-          return
-        }
-        const username = payload.username
-        res.err = null
-        res.data = username
-      }
-
-      jwt.verify(
-        token,
-        ACCESS_TOKEN_SECRET,
-        verifyCallback
-      )
-      console.log(res)
-      return res
-
-    } catch (error) {
-      const { code, message } = handleError(error)
-      return { err: code as number, data: null }
-    }
-  }
-
 
   // * admin
   async adminSignup(name: string, email: string, password: string) {

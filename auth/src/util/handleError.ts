@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js'
 import { CustomError } from './CustomError'
+import { MongooseError } from 'mongoose'
 
 
 const handleError = (err: any) => {
@@ -15,10 +16,11 @@ const handleError = (err: any) => {
       code = err.code
       msg = err.message
     }
+  } else if (err instanceof MongooseError) {
+    msg = err.message
   } else if (err instanceof Error) {
     msg = err.message
   }
-
   return { message: msg, code }
 }
 

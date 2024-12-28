@@ -14,8 +14,6 @@ import handleError from "../util/handleError";
 import { convertUserForGrpc } from "../util/converter";
 import { validateRequest, validateResponse } from "../util/validations";
 import { IUser } from "../model/UserModel";
-import { JwtVerifyRequest__Output } from "../proto/authType/JwtVerifyRequest";
-import { JwtVerifyResponse } from "../proto/authType/JwtVerifyResponse";
 import { AdminSignUpRequest__Output } from "../proto/authType/AdminSignUpRequest";
 import { AdminSignUpResponse } from "../proto/authType/AdminSignUpResponse";
 import { AdminLoginRequest__Output } from "../proto/authType/AdminLoginRequest";
@@ -29,7 +27,6 @@ type LoginUserHandler = grpc.handleUnaryCall<LoginRequest__Output, LoginResponse
 type SignupUserHandler = grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
 type LogoutUserHandler = grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
 type RefreshUserHandler = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
-type JwtVerifyHandler = grpc.handleUnaryCall<JwtVerifyRequest__Output, JwtVerifyResponse>
 type AdminLoginHandler = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
 type AdminSignupHandler = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
 
@@ -145,26 +142,6 @@ export class UserController implements IUserController {
       cb(err, null)
     }
 
-  }
-
-  jwtVerify: JwtVerifyHandler = async (call, cb) => {
-    try {
-      const { accessToken } = call.request
-      const message = 'access token not found'
-      validateRequest(message, accessToken)
-      const res = await this.userService.jwtVerify(accessToken as string)
-      if (res?.err === 403) {
-        const code = grpc.status.UNAUTHENTICATED
-        const message = `error ${res.err}.`
-        throw new CustomError(code, message, 'cnt')
-      }
-      validateResponse(res)
-      const username = res.data as string
-      cb(null, { username })
-    } catch (error) {
-      const err = handleError(error)
-      cb(err, null)
-    }
   }
 
   adminSignup: AdminSignupHandler = async (call, cb) => {
