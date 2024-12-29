@@ -59,14 +59,15 @@ export class UserController implements IUserController {
 
   resendOtp: ResendOtpHandler = async (call, cb) => {
     try {
-      const { email } = call.request
+      const { email, otpId } = call.request
       validateRequest('email is required.', email)
-      const res = await this.userService.resendOtp(email as string)
+      const res = await this.userService.resendOtp(email as string, otpId as string)
       if (res?.err === 404) throw new CustomError(grpc.status.NOT_FOUND, res.errMsg as string, 'cnt')
       validateResponse(res)
       const response = {
         status: res.data ? 'success' : 'failed',
-        email: res.data?.email
+        email: res.data?.email,
+        otpId: res.data?._id
       }
       cb(null, response)
     } catch (error) {
@@ -83,15 +84,16 @@ export class UserController implements IUserController {
       refreshToken: string
     }
     try {
-      const { email, otp } = call.request
+      const { email, otp, otpId } = call.request
       validateRequest('email and otp is required', email, otp)
-      const res = await this.userService.verifyOtp(email as string, otp as number)
+      const res = await this.userService.verifyOtp(email as string, otp as number, otpId as string)
       if (res?.err === 404 || res?.err === 408) throw new CustomError(grpc.status.UNAVAILABLE, res.errMsg as string, 'cnt')
       if (res?.err === 410) throw new CustomError(grpc.status.ABORTED, res.errMsg as string, 'cnt')
       validateResponse(res)
       const { user: rawUser, ...rest } = res.data as Data
       const user = convertUserForGrpc(rawUser)
       const response = { user, ...rest }
+      console.log(response)
       cb(null, response)
     } catch (error) {
       const err = handleError(error)

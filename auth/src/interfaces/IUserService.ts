@@ -17,13 +17,15 @@ export type UserAuthInfo = {
 
 interface IUserService {
 
-  signup(name: string, email: string, password: string): SvcFuncReturnType<{ email: string, status: string }>
   login(email: string, password: string): SvcFuncReturnType<UserAuthInfo>
   logout(token: string): SvcFuncReturnType<{ status: string }>
   refresh(refreshToken: string): SvcFuncReturnType<{ user: IUser, accessToken: string }>
+  
+  signup(name: string, email: string, password: string): SvcFuncReturnType<{ email: string, status: string }>
   sendOtp(otpData: Partial<IUserOtp>, isPassword: boolean): SvcFuncReturnType<IUserOtp>
-  resendOtp(email: string): SvcFuncReturnType<IUserOtp>
-  verifyOtp(email: string, otp: number): SvcFuncReturnType<{ user: IUser, accessToken: string, refreshToken: string }>
+  resendOtp(email: string,otpId:string): SvcFuncReturnType<IUserOtp>
+  verifyOtp(email: string, otp: number, otpId: string): SvcFuncReturnType<{ user: IUser, accessToken: string, refreshToken: string }>
+
   adminSignup(name: string, email: string, password: string): SvcFuncReturnType<UserAuthInfo>
   adminLogin(email: string, password: string): SvcFuncReturnType<UserAuthInfo>
 }

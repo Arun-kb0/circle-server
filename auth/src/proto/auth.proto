@@ -6,9 +6,10 @@ package authType;
 service AuthService {
 
   rpc Login(LoginRequest) returns (LoginResponse) {};
-  rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
   rpc Logout(LogoutRequest) returns (LogoutResponse) {};
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {};
+
+  rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
   rpc ForgotPassword(ForgotPasswordRequest) returns(ForgotPasswordResponse){};
   rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {};
   rpc ResendOtp(ResendOtpRequest) returns (ResendOtpResponse) {};
@@ -74,6 +75,7 @@ message SignUpRequest {
 message SignUpResponse {
   string email=1;
   string status=2;
+  string otpId =3;
 }
 
 message LogoutRequest {
@@ -121,6 +123,7 @@ message AdminSignUpResponse {
 message VerifyEmailRequest {
   string email =1;
   int32 otp =2;
+  string otpId=3;
 }
 
 message VerifyEmailResponse {
@@ -131,11 +134,13 @@ message VerifyEmailResponse {
 
 message ResendOtpRequest {
   string email =1;
+  string otpId =2;
 }
 
 message ResendOtpResponse {
   string status= 1;
   string email=2;
+  string otpId=3;
 }
 
 

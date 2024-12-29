@@ -3,8 +3,10 @@
 
 export interface ResendOtpRequest {
   'email'?: (string);
+  'otpId'?: (string);
 }
 
 export interface ResendOtpRequest__Output {
   'email'?: (string);
+  'otpId'?: (string);
 }

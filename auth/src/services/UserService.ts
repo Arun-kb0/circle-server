@@ -16,7 +16,7 @@ const ACCESS_EXPIRES_IN = '60s'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
 const REFRESH_EXPIRES_IN = '1d'
 const ROOT_USER = 'arunkb@gmail.com'
-const OTP_EXPIRES_AT = new Date(Date.now() + 1 * 60 * 1000)
+const OTP_EXPIRES_AT = new Date(Date.now() + 2 * 60 * 1000)
 
 
 export class UserService implements IUserService {
@@ -33,12 +33,13 @@ export class UserService implements IUserService {
       if (otpResData.err) return otpResData
       const response = {
         email,
-        status: 'success'
+        status: 'success',
+        otpId: otpResData.data?._id
       }
       return { err: null, data: response }
     } catch (error) {
       const { code, message } = handleError(error)
-      return { err: code as number, data: null ,errMsg:message}
+      return { err: code as number, data: null, errMsg: message }
     }
   }
 
@@ -73,9 +74,9 @@ export class UserService implements IUserService {
     }
   }
 
-  async resendOtp(email: string) {
+  async resendOtp(email: string, otpId: string) {
     try {
-      const otpData = await this.userOtpRepo.find(email)
+      const otpData = await this.userOtpRepo.findById(otpId)
       if (!otpData) return { err: 404, errMsg: 'no otp details found in db', data: null }
       const { name, password } = otpData
       const res = await this.sendOtp({ email, password, name })
@@ -86,9 +87,9 @@ export class UserService implements IUserService {
     }
   }
 
-  async verifyOtp(email: string, otp: number): SvcFuncReturnType<{ user: IUser; accessToken: string; refreshToken: string; }> {
+  async verifyOtp(email: string, otp: number, otpId: string) {
     try {
-      const otpData = await this.userOtpRepo.find(email)
+      const otpData = await this.userOtpRepo.findById(otpId)
       console.log(otpData)
       if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
       const { expireAt, otp: hashedOtp, password, name } = otpData

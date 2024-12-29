@@ -3,6 +3,11 @@ import { IUserOtp, UserOtp } from '../model/UserOtpModel'
 
 class UserOtpRepo implements IUserOtpRepo {
 
+  async findById(otpId: string): Promise<IUserOtp | null> {
+    const foundOtpData = await UserOtp.findOne({ _id: otpId })
+    return foundOtpData ? foundOtpData.toObject() : null
+  }
+
   async update(email: string, otpData: Partial<IUserOtp>): Promise<IUserOtp | null> {
     const updatedOtpData = await UserOtp.findOneAndUpdate(
       { email: email },
@@ -17,7 +22,7 @@ class UserOtpRepo implements IUserOtpRepo {
     return deletedOtpData ? deletedOtpData.toObject() : null
   }
 
-  async find(email: string): Promise<IUserOtp | null> {
+  async findByEmail(email: string): Promise<IUserOtp | null> {
     const foundOtpData = await UserOtp.findOne({ email: email })
     return foundOtpData ? foundOtpData.toObject() : null
   }

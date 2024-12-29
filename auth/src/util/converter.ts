@@ -13,9 +13,15 @@ export const stringToDate = (str: string) => {
 }
 
 export const convertUserForGrpc = (user: Partial<IUser>) => {
-  const { createdAt, updatedAt, password, refreshToken, ...rest } = user
+  const {
+    _id, name, email, age, location, state, gender,
+    followeeCount, followerCount, createdAt, updatedAt,
+    status, isVerified, role, isOnline, image
+  } = user
   const convertedUser: User = {
-    ...rest,
+    _id, name, email, age, location, state, gender,
+    followeeCount, followerCount,
+    status, isVerified, role, isOnline, image,
     createdAt: dateToString(createdAt),
     updatedAt: dateToString(updatedAt),
   }
@@ -39,5 +45,5 @@ export const convertUserForDb = (user: User): Partial<IUser> => {
 }
 
 const convertUserOtpForGrpc = (otpData: IUserOtp) => {
-  
+
 }
