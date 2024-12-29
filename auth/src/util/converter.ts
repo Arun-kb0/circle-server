@@ -1,6 +1,7 @@
 import { Schema } from "mongoose"
 import { IUser } from "../model/UserModel"
 import { User } from "../proto/authType/User"
+import { IUserOtp } from "../model/UserOtpModel"
 
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {
@@ -37,3 +38,6 @@ export const convertUserForDb = (user: User): Partial<IUser> => {
   return convertedUser
 }
 
+const convertUserOtpForGrpc = (otpData: IUserOtp) => {
+  
+}

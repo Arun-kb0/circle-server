@@ -29,58 +29,18 @@ export class UserService implements IUserService {
   async signup(name: string, email: string, password: string) {
     try {
       const hashedPwd = await bcrypt.hash(password, 10)
-      const user = {
-        name,
-        email,
-        password: hashedPwd,
-      }
-
-      // ! change this to
-      // ! sedning otp here 
-      // ! create user after verifying the otp
       const otpResData = await this.sendOtp({ name, email, password: hashedPwd })
-      console.log(otpResData)
       if (otpResData.err) return otpResData
-      console.log("otp send")
-      console.log(otpResData.data)
       const response = {
-        user,
-        token: '',
-        refreshToken: ''
+        email,
+        status: 'success'
       }
       return { err: null, data: response }
-
-
-      const newUser = await this.userRepo.create({ ...user, role: 'user' })
-
-      const accessToken = jwt.sign(
-        { "username": newUser.email },
-        ACCESS_TOKEN_SECRET,
-        { expiresIn: ACCESS_EXPIRES_IN }
-      )
-      const refreshToken = jwt.sign(
-        { "username": newUser.email },
-        REFRESH_TOKEN_SECRET,
-        { expiresIn: REFRESH_EXPIRES_IN }
-      )
-
-      const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
-      if (!updatedUser) return { err: 409, data: null }
-
-      const data = {
-        user,
-        token: accessToken,
-        refreshToken
-      }
-      return { err: null, data }
-
-
     } catch (error) {
       const { code, message } = handleError(error)
-      return { err: code as number, data: null }
+      return { err: code as number, data: null ,errMsg:message}
     }
   }
-
 
   async sendOtp(otpData: Partial<IUserOtp>, isPassword = false) {
     try {
@@ -113,6 +73,60 @@ export class UserService implements IUserService {
     }
   }
 
+  async resendOtp(email: string) {
+    try {
+      const otpData = await this.userOtpRepo.find(email)
+      if (!otpData) return { err: 404, errMsg: 'no otp details found in db', data: null }
+      const { name, password } = otpData
+      const res = await this.sendOtp({ email, password, name })
+      return res
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null, errMsg: message }
+    }
+  }
+
+  async verifyOtp(email: string, otp: number): SvcFuncReturnType<{ user: IUser; accessToken: string; refreshToken: string; }> {
+    try {
+      const otpData = await this.userOtpRepo.find(email)
+      console.log(otpData)
+      if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
+      const { expireAt, otp: hashedOtp, password, name } = otpData
+      if (expireAt.getTime() < Date.now()) return { err: 408, errMsg: 'otp expired.', data: null }
+      const isValidOtp = await bcrypt.compare(String(otp), hashedOtp)
+      if (!isValidOtp) return { err: 410, errMsg: 'invalid otp.', data: null }
+      const user = {
+        name,
+        email,
+        password
+      }
+      const newUser = await this.userRepo.create({ ...user, role: 'user' })
+
+      const accessToken = jwt.sign(
+        { "username": newUser.email },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      )
+      const refreshToken = jwt.sign(
+        { "username": newUser.email },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+
+      const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
+      if (!updatedUser) return { err: 409, data: null }
+
+      const data = {
+        user: newUser,
+        accessToken,
+        refreshToken
+      }
+      return { err: null, data }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code, errMsg: message, data: null }
+    }
+  }
 
   async login(email: string, password: string) {
     try {

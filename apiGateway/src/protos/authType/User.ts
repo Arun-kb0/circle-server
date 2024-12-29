@@ -17,6 +17,7 @@ export interface User {
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'status'?: (_authType_Status);
+  'isVerified'?: (boolean);
   'role'?: (_authType_Role);
   'isOnline'?: (boolean);
   'image'?: (_authType_Image | null);
@@ -35,6 +36,7 @@ export interface User__Output {
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'status'?: (_authType_Status__Output);
+  'isVerified'?: (boolean);
   'role'?: (_authType_Role__Output);
   'isOnline'?: (boolean);
   'image'?: (_authType_Image__Output);

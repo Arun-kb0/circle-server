@@ -4,11 +4,15 @@ package authType;
 
 
 service AuthService {
+
   rpc Login(LoginRequest) returns (LoginResponse) {};
-  rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
   rpc Logout(LogoutRequest) returns (LogoutResponse) {};
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {};
-  rpc JwtVerify(JwtVerifyRequest) returns (JwtVerifyResponse) {};
+
+  rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
+  rpc ForgotPassword(ForgotPasswordRequest) returns(ForgotPasswordResponse){};
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {};
+  rpc ResendOtp(ResendOtpRequest) returns (ResendOtpResponse) {};
 
   rpc AdminSignUp(AdminSignUpRequest) returns (AdminSignUpResponse) {};
   rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse) {};
@@ -45,9 +49,10 @@ message User {
   string createdAt = 11;
   string updatedAt = 12;
   Status status = 13;
-  Role role = 14;
-  bool isOnline = 15;
-  Image image = 16;
+  bool isVerified=14;
+  Role role = 15;
+  bool isOnline = 16;
+  Image image = 17;
 }
 
 message LoginRequest {
@@ -68,9 +73,9 @@ message SignUpRequest {
 }
 
 message SignUpResponse {
-  User user =1;
-  string token =2;
-  string refreshToken = 3;
+  string email=1;
+  string status=2;
+  string otpId =3;
 }
 
 message LogoutRequest {
@@ -114,10 +119,35 @@ message AdminSignUpResponse {
   string refreshToken = 3;
 }
 
-message JwtVerifyRequest {
-  string accessToken =1;
+
+message VerifyEmailRequest {
+  string email =1;
+  int32 otp =2;
+  string otpId=3;
 }
 
-message JwtVerifyResponse {
-  string username =1;
+message VerifyEmailResponse {
+ User user =1; 
+ string accessToken=2;
+ string refreshToken=3;
+}
+
+message ResendOtpRequest {
+  string email =1;
+  string otpId =2;
+}
+
+message ResendOtpResponse {
+  string status= 1;
+  string email=2;
+  string otpId=3;
+}
+
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  Status status = 1;
 }

@@ -1,14 +1,14 @@
 // Original file: src/proto/auth.proto
 
 
-export interface SignUpResponse {
+export interface VerifyEmailRequest {
   'email'?: (string);
-  'status'?: (string);
+  'otp'?: (number);
   'otpId'?: (string);
 }
 
-export interface SignUpResponse__Output {
+export interface VerifyEmailRequest__Output {
   'email'?: (string);
-  'status'?: (string);
+  'otp'?: (number);
   'otpId'?: (string);
 }

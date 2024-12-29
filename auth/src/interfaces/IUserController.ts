@@ -11,14 +11,21 @@ import { AdminSignUpRequest__Output } from "../proto/authType/AdminSignUpRequest
 import { AdminSignUpResponse } from "../proto/authType/AdminSignUpResponse";
 import { AdminLoginRequest__Output } from "../proto/authType/AdminLoginRequest";
 import { AdminLoginResponse } from "../proto/authType/AdminLoginResponse";
+import { ResendOtpRequest__Output } from '../proto/authType/ResendOtpRequest';
+import { ResendOtpResponse } from '../proto/authType/ResendOtpResponse';
+import { VerifyEmailRequest__Output } from '../proto/authType/VerifyEmailRequest';
+import { VerifyEmailResponse } from '../proto/authType/VerifyEmailResponse';
 
 
 
 interface IUserController {
-  signup: grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
-  login: grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
+  signup: grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
+  login: grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
   logout: grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
   refresh: grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
+  resendOtp: grpc.handleUnaryCall<ResendOtpRequest__Output, ResendOtpResponse>
+  verifyEmail: grpc.handleUnaryCall<VerifyEmailRequest__Output,VerifyEmailResponse>
+
   adminLogin: grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
   adminSignup: grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
 }

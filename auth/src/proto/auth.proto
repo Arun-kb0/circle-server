@@ -72,9 +72,8 @@ message SignUpRequest {
 }
 
 message SignUpResponse {
-  User user =1;
-  string token =2;
-  string refreshToken = 3;
+  string email=1;
+  string status=2;
 }
 
 message LogoutRequest {
@@ -125,8 +124,9 @@ message VerifyEmailRequest {
 }
 
 message VerifyEmailResponse {
- string email =1; 
- int32 status=2;
+ User user =1; 
+ string accessToken=2;
+ string refreshToken=3;
 }
 
 message ResendOtpRequest {
@@ -135,6 +135,7 @@ message ResendOtpRequest {
 
 message ResendOtpResponse {
   string status= 1;
+  string email=2;
 }
 
 

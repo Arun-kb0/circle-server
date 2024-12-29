@@ -51,19 +51,59 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     client.signUp({ name, email, password }, (err, msg) => {
       if (err) return next(err)
       if (!msg) throw new Error('grpc response is empty')
-      const { refreshToken, token, ...data } = msg
-      res.cookie('jwt', refreshToken, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-        maxAge: 24 * 60 * 60 * 1000
-      })
-      res.status(httpStatus.OK).json({ message: 'signup success', accessToken: token, ...data })
+      const { email, status } = msg
+      res.status(httpStatus.OK).json({ message: 'signup success', email, status })
+
+      // res.cookie('jwt', refreshToken, {
+      //   httpOnly: true,
+      //   sameSite: 'none',
+      //   secure: true,
+      //   maxAge: 24 * 60 * 60 * 1000
+      // })
     })
   } catch (error) {
     next(error)
   }
 }
+
+
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otp } = req.body
+    if (!otp || !email) throw new HttpError(httpStatus.BAD_REQUEST, 'email and otp is required.')
+    client.verifyEmail({ email, otp },(err, msg) => {
+  if (err?.code === grpc.status.UNAVAILABLE) return (next(new HttpError(httpStatus.GONE, 'otp expired.')))
+  if (err?.code === grpc.status.ABORTED) return (next(new HttpError(httpStatus.UNAUTHORIZED, err?.message)))
+  if (err) return next(err)
+  if (!msg) throw new Error('grpc response is empty')
+  const { refreshToken, ...restMsg } = msg
+  res.cookie('jwt', refreshToken, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000
+  })
+  res.status(httpStatus.OK).json({ message: 'email verification success', ...restMsg })
+})
+  } catch (error) {
+  next(error)
+}
+}
+
+
+export const resendOtp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body
+    client.resendOtp({ email }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      res.status(httpStatus.OK).json({message: 'resend otp success', ...msg})
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -117,9 +157,6 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-export const verify = async (req: Request, res: Response, next: NextFunction) => {
-
-}
 
 
 // * admin
@@ -147,8 +184,6 @@ export const adminLogin = async (req: Request, res: Response, next: NextFunction
     next(error)
   }
 }
-
-
 
 export const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
   try {

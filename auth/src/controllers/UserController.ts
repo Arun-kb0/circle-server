@@ -20,6 +20,10 @@ import { AdminLoginRequest__Output } from "../proto/authType/AdminLoginRequest";
 import { AdminLoginResponse } from "../proto/authType/AdminLoginResponse";
 import IUserController from '../interfaces/IUserController'
 import IUserService, { UserAuthInfo } from "../interfaces/IUserService";
+import { ResendOtpRequest__Output } from "../proto/authType/ResendOtpRequest";
+import { ResendOtpResponse } from "../proto/authType/ResendOtpResponse";
+import { VerifyEmailRequest__Output } from "../proto/authType/VerifyEmailRequest";
+import { VerifyEmailResponse } from "../proto/authType/VerifyEmailResponse";
 
 
 
@@ -29,6 +33,8 @@ type LogoutUserHandler = grpc.handleUnaryCall<LogoutRequest__Output, LogoutRespo
 type RefreshUserHandler = grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
 type AdminLoginHandler = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
 type AdminSignupHandler = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
+type ResendOtpHandler = grpc.handleUnaryCall<ResendOtpRequest__Output, ResendOtpResponse>
+type VerifyEmailHandler = grpc.handleUnaryCall<VerifyEmailRequest__Output, VerifyEmailResponse>;
 
 export class UserController implements IUserController {
 
@@ -43,11 +49,50 @@ export class UserController implements IUserController {
       validateRequest(message, name, email, password)
       const res = await this.userService.signup(name as string, email as string, password as string)
       validateResponse(res)
-      const { user: rawUser, ...rest } = res.data as UserAuthInfo
-      const user = convertUserForGrpc(rawUser as IUser)
+      cb(null, res.data)
+
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  resendOtp: ResendOtpHandler = async (call, cb) => {
+    try {
+      const { email } = call.request
+      validateRequest('email is required.', email)
+      const res = await this.userService.resendOtp(email as string)
+      if (res?.err === 404) throw new CustomError(grpc.status.NOT_FOUND, res.errMsg as string, 'cnt')
+      validateResponse(res)
+      const response = {
+        status: res.data ? 'success' : 'failed',
+        email: res.data?.email
+      }
+      cb(null, response)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  // ! verification success but user data missing fields
+  verifyEmail: VerifyEmailHandler = async (call, cb) => {
+    type Data = {
+      user: IUser,
+      accessToken: string,
+      refreshToken: string
+    }
+    try {
+      const { email, otp } = call.request
+      validateRequest('email and otp is required', email, otp)
+      const res = await this.userService.verifyOtp(email as string, otp as number)
+      if (res?.err === 404 || res?.err === 408) throw new CustomError(grpc.status.UNAVAILABLE, res.errMsg as string, 'cnt')
+      if (res?.err === 410) throw new CustomError(grpc.status.ABORTED, res.errMsg as string, 'cnt')
+      validateResponse(res)
+      const { user: rawUser, ...rest } = res.data as Data
+      const user = convertUserForGrpc(rawUser)
       const response = { user, ...rest }
       cb(null, response)
-
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
