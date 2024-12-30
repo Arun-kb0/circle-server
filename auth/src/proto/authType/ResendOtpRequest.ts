@@ -4,9 +4,11 @@
 export interface ResendOtpRequest {
   'email'?: (string);
   'otpId'?: (string);
+  'isPassword'?: (boolean);
 }
 
 export interface ResendOtpRequest__Output {
   'email'?: (string);
   'otpId'?: (string);
+  'isPassword'?: (boolean);
 }

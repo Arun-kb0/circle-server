@@ -14,7 +14,7 @@ export interface IUserOtp extends Document {
 
 const UserOtpSchema = new Schema<IUserOtp>({
   email: { type: String, required: true },
-  name: { type: String, required: true },
+  name: { type: String },
   password: { type: String, required: true },
   otp: { type: String, required: true },
   expireAt: { type: Date, required: true, expires: 10 * 60 },

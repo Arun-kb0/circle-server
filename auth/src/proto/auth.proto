@@ -13,6 +13,8 @@ service AuthService {
   rpc ForgotPassword(ForgotPasswordRequest) returns(ForgotPasswordResponse){};
   rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {};
   rpc ResendOtp(ResendOtpRequest) returns (ResendOtpResponse) {};
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {};
+  rpc ResetPwdVerifyOtp(ResetPwdVerifyOtpRequest) returns (ResetPwdVerifyOtpResponse) {};
 
   rpc AdminSignUp(AdminSignUpRequest) returns (AdminSignUpResponse) {};
   rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse) {};
@@ -135,6 +137,7 @@ message VerifyEmailResponse {
 message ResendOtpRequest {
   string email =1;
   string otpId =2;
+  bool isPassword=3;
 }
 
 message ResendOtpResponse {
@@ -150,4 +153,25 @@ message ForgotPasswordRequest {
 
 message ForgotPasswordResponse {
   Status status = 1;
+}
+
+message ResetPasswordRequest {
+  string email=1;
+  string password=2;
+}
+
+message ResetPasswordResponse {
+  string email=1;
+  string otpId=2;
+}
+
+message ResetPwdVerifyOtpRequest {
+  string email=1;
+  int32 otp= 2;
+  string otpId=3;
+}
+
+message ResetPwdVerifyOtpResponse {
+  string status =1;
+  string email=2;
 }

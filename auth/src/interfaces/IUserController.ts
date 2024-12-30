@@ -15,16 +15,23 @@ import { ResendOtpRequest__Output } from '../proto/authType/ResendOtpRequest';
 import { ResendOtpResponse } from '../proto/authType/ResendOtpResponse';
 import { VerifyEmailRequest__Output } from '../proto/authType/VerifyEmailRequest';
 import { VerifyEmailResponse } from '../proto/authType/VerifyEmailResponse';
+import { ResetPasswordRequest__Output } from '../proto/authType/ResetPasswordRequest';
+import { ResetPasswordResponse } from '../proto/authType/ResetPasswordResponse';
+import { ResetPwdVerifyOtpRequest__Output } from '../proto/authType/ResetPwdVerifyOtpRequest';
+import { ResetPwdVerifyOtpResponse } from '../proto/authType/ResetPwdVerifyOtpResponse';
 
 
 
 interface IUserController {
-  signup: grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
   login: grpc.handleUnaryCall<LoginRequest__Output, LoginResponse>
   logout: grpc.handleUnaryCall<LogoutRequest__Output, LogoutResponse>
   refresh: grpc.handleUnaryCall<RefreshRequest__Output, RefreshResponse>
+
+  signup: grpc.handleUnaryCall<SignUpRequest__Output, SignUpResponse>
   resendOtp: grpc.handleUnaryCall<ResendOtpRequest__Output, ResendOtpResponse>
-  verifyEmail: grpc.handleUnaryCall<VerifyEmailRequest__Output,VerifyEmailResponse>
+  verifyEmail: grpc.handleUnaryCall<VerifyEmailRequest__Output, VerifyEmailResponse>
+  resetPassword: grpc.handleUnaryCall<ResetPasswordRequest__Output, ResetPasswordResponse>
+  resetPwdVerifyOtp: grpc.handleUnaryCall<ResetPwdVerifyOtpRequest__Output,ResetPwdVerifyOtpResponse>
 
   adminLogin: grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
   adminSignup: grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>

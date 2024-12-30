@@ -25,6 +25,10 @@ export interface ProtoGrpcType {
     RefreshResponse: MessageTypeDefinition
     ResendOtpRequest: MessageTypeDefinition
     ResendOtpResponse: MessageTypeDefinition
+    ResetPasswordRequest: MessageTypeDefinition
+    ResetPasswordResponse: MessageTypeDefinition
+    ResetPwdVerifyOtpRequest: MessageTypeDefinition
+    ResetPwdVerifyOtpResponse: MessageTypeDefinition
     Role: EnumTypeDefinition
     SignUpRequest: MessageTypeDefinition
     SignUpResponse: MessageTypeDefinition

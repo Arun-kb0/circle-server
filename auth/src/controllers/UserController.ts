@@ -24,6 +24,10 @@ import { ResendOtpRequest__Output } from "../proto/authType/ResendOtpRequest";
 import { ResendOtpResponse } from "../proto/authType/ResendOtpResponse";
 import { VerifyEmailRequest__Output } from "../proto/authType/VerifyEmailRequest";
 import { VerifyEmailResponse } from "../proto/authType/VerifyEmailResponse";
+import { ResetPasswordRequest__Output } from "../proto/authType/ResetPasswordRequest";
+import { ResetPasswordResponse } from "../proto/authType/ResetPasswordResponse";
+import { ResetPwdVerifyOtpRequest__Output } from "../proto/authType/ResetPwdVerifyOtpRequest";
+import { ResetPwdVerifyOtpResponse } from "../proto/authType/ResetPwdVerifyOtpResponse";
 
 
 
@@ -35,12 +39,42 @@ type AdminLoginHandler = grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLo
 type AdminSignupHandler = grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>
 type ResendOtpHandler = grpc.handleUnaryCall<ResendOtpRequest__Output, ResendOtpResponse>
 type VerifyEmailHandler = grpc.handleUnaryCall<VerifyEmailRequest__Output, VerifyEmailResponse>;
+type ResetPasswordHandler = grpc.handleUnaryCall<ResetPasswordRequest__Output, ResetPasswordResponse>;
+type ResetPwdVerifyOtpHandler = grpc.handleUnaryCall<ResetPwdVerifyOtpRequest__Output, ResetPwdVerifyOtpResponse>;
 
 export class UserController implements IUserController {
 
   constructor(
     private userService: IUserService
   ) { }
+
+  resetPassword: ResetPasswordHandler = async (call, cb) => {
+    try {
+      const { email, password } = call.request
+      validateRequest('email and password are required', email, password)
+      const res = await this.userService.resetPassword(email as string, password as string)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  resetPwdVerifyOtp: ResetPwdVerifyOtpHandler = async (call, cb) => {
+    try {
+      const { email, otp, otpId } = call.request
+      validateRequest('email , otp and otpId are required.', email, otp, otpId)
+      const res = await this.userService.resetPwdVerifyOtp(email as string, otp as number, otpId as string)
+      if (res?.err === 404 || res?.err === 408) throw new CustomError(grpc.status.UNAVAILABLE, res.errMsg as string, 'cnt')
+      if (res?.err === 410) throw new CustomError(grpc.status.ABORTED, res.errMsg as string, 'cnt')
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   signup: SignupUserHandler = async (call, cb) => {
     try {
@@ -59,9 +93,9 @@ export class UserController implements IUserController {
 
   resendOtp: ResendOtpHandler = async (call, cb) => {
     try {
-      const { email, otpId } = call.request
+      const { email, otpId ,isPassword} = call.request
       validateRequest('email is required.', email)
-      const res = await this.userService.resendOtp(email as string, otpId as string)
+      const res = await this.userService.resendOtp(email as string, otpId as string,isPassword)
       if (res?.err === 404) throw new CustomError(grpc.status.NOT_FOUND, res.errMsg as string, 'cnt')
       validateResponse(res)
       const response = {
@@ -76,7 +110,6 @@ export class UserController implements IUserController {
     }
   }
 
-  // ! verification success but user data missing fields
   verifyEmail: VerifyEmailHandler = async (call, cb) => {
     type Data = {
       user: IUser,

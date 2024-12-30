@@ -16,7 +16,7 @@ const ACCESS_EXPIRES_IN = '60s'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
 const REFRESH_EXPIRES_IN = '1d'
 const ROOT_USER = 'arunkb@gmail.com'
-const OTP_EXPIRES_AT = new Date(Date.now() + 2 * 60 * 1000)
+const SMTP_USER = process.env.SMTP_USER
 
 
 export class UserService implements IUserService {
@@ -45,41 +45,61 @@ export class UserService implements IUserService {
 
   async sendOtp(otpData: Partial<IUserOtp>, isPassword = false) {
     try {
+      const OTP_EXPIRES_AT = new Date(Date.now() + 2 * 60 * 1000)
       const { email, name, password } = otpData
-      if (!email || !name) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
-      const { otpHtmlTemplate, otp } = getOtpTemplate()
+      let templateDes = ''
+      if (isPassword) {
+        if (!email || !password) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
+        templateDes = 'verify email address to change password'
+      } else {
+        if (!email || !name || !password) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
+        templateDes = 'to verify your email address and complete signup to Circle'
+      }
+
+      const { otpHtmlTemplate, otp } = getOtpTemplate(templateDes)
       const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: SMTP_USER,
         to: email,
         subject: 'verify email',
         html: otpHtmlTemplate
       }
       const hashedOtp = await bcrypt.hash(String(otp), 10)
 
-      const newOtpData = await this.userOtpRepo.create({
-        name,
-        email,
-        password: password ? password : '',
-        otp: hashedOtp,
-        expireAt: OTP_EXPIRES_AT
-      })
-      if (!newOtpData) return { err: 500, data: null, errMsg: 'user not created.' }
+      let newOtpData: IUserOtp | null = null
+      if (isPassword) {
+        const hashedPwd = await bcrypt.hash(password, 10)
+        newOtpData = await this.userOtpRepo.create({
+          email,
+          password: hashedPwd,
+          otp: hashedOtp,
+          expireAt: OTP_EXPIRES_AT
+        })
+      } else {
+        newOtpData = await this.userOtpRepo.create({
+          name,
+          email,
+          password,
+          otp: hashedOtp,
+          expireAt: OTP_EXPIRES_AT
+        })
+      }
+
+      if (!newOtpData) return { err: 500, data: null, errMsg: 'otp user not created.' }
       await nodeMailerTransport.sendMail(mailOptions)
 
       return { err: null, data: newOtpData }
-
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, data: null, errMsg: message }
     }
   }
 
-  async resendOtp(email: string, otpId: string) {
+  async resendOtp(email: string, otpId: string,isPassword=false) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
       if (!otpData) return { err: 404, errMsg: 'no otp details found in db', data: null }
       const { name, password } = otpData
-      const res = await this.sendOtp({ email, password, name })
+      const res = await this.sendOtp({ email, password, name },isPassword)
       return res
     } catch (error) {
       const { code, message } = handleError(error)
@@ -90,12 +110,19 @@ export class UserService implements IUserService {
   async verifyOtp(email: string, otp: number, otpId: string) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
+      console.log("otpData from db")
       console.log(otpData)
+
       if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
+      console.log("expr = ", otpData?.expireAt?.toLocaleString())
+      console.log("now = ", new Date(Date.now()).toLocaleString())
+      console.log("time diff exp - now = ", otpData?.expireAt?.getTime() - Date.now())
+
       const { expireAt, otp: hashedOtp, password, name } = otpData
       if (expireAt.getTime() < Date.now()) return { err: 408, errMsg: 'otp expired.', data: null }
       const isValidOtp = await bcrypt.compare(String(otp), hashedOtp)
       if (!isValidOtp) return { err: 410, errMsg: 'invalid otp.', data: null }
+
       const user = {
         name,
         email,
@@ -128,6 +155,48 @@ export class UserService implements IUserService {
       return { err: code, errMsg: message, data: null }
     }
   }
+
+  async resetPassword(email: string, password: string) {
+    try {
+      const otpResData = await this.sendOtp({ email, password }, true)
+      if (otpResData.err) return otpResData
+      if (!otpResData.data) return { err: 404, errMsg: 'otpData is empty.', data: null }
+      const { _id: otpId } = otpResData.data
+      return { err: null, data: { email, otpId } }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code, errMsg: message, data: null }
+    }
+  }
+
+  async resetPwdVerifyOtp(email: string, otp: number, otpId: string) {
+    try {
+      const otpData = await this.userOtpRepo.findById(otpId)
+      console.log("otpData from db")
+      console.log(otpData)
+
+      if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
+      console.log("expr = ", otpData?.expireAt?.toLocaleString())
+      console.log("now = ", new Date(Date.now()).toLocaleString())
+      console.log("time diff exp - now = ", otpData?.expireAt?.getTime() - Date.now())
+
+      const { expireAt, otp: hashedOtp, password } = otpData
+      if (expireAt.getTime() < Date.now()) return { err: 408, errMsg: 'otp expired.', data: null }
+      const isValidOtp = await bcrypt.compare(String(otp), hashedOtp)
+      if (!isValidOtp) return { err: 410, errMsg: 'invalid otp.', data: null }
+
+      const user = {
+        password: password
+      }
+      const updatedUser = await this.userRepo.findByEmailAndUpdate(email, user)
+      if (!updatedUser) return { err: 409, errMsg: "updated user res is empty", data: null }
+      return { err: null, data: { status: 'success', email } }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code, errMsg: message, data: null }
+    }
+  }
+
 
   async login(email: string, password: string) {
     try {

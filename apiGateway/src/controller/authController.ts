@@ -58,7 +58,6 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   }
 }
 
-
 export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, otp, otpId } = req.body
@@ -82,7 +81,6 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-
 export const resendOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, otpId } = req.body
@@ -95,7 +93,6 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
     next(error)
   }
 }
-
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -144,6 +141,51 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
         })
     })
 
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const resetPassword = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body
+    if (!email || !password) throw new HttpError(httpStatus.BAD_REQUEST, 'email and password required.')
+    client.resetPassword({ email, password }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      res.status(httpStatus.OK).json({ ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const resetPwdVerifyOtp = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otp, otpId } = req.body
+    if (!email || !otp || !otpId) throw new HttpError(httpStatus.BAD_REQUEST, 'email ,otp and otpId are required.')
+    client.resetPwdVerifyOtp({ email, otp, otpId }, (err, msg) => {
+      if (err?.code === grpc.status.UNAVAILABLE) return (next(new HttpError(httpStatus.GONE, 'otp expired.')))
+      if (err?.code === grpc.status.ABORTED) return (next(new HttpError(httpStatus.UNAUTHORIZED, err?.message)))
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      res.status(httpStatus.OK).json({ ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const resetPwdResendOtp = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otpId } = req.body
+    if (!email || !otpId) throw new HttpError(httpStatus.BAD_REQUEST, 'email and otpId are required.')
+    client.resendOtp({ email, otpId, isPassword: true }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) throw new Error('grpc response is empty')
+      res.status(httpStatus.OK).json({ message: 'resend otp success', ...msg })
+    })
   } catch (error) {
     next(error)
   }

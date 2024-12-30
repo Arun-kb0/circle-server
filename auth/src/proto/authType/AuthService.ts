@@ -16,6 +16,10 @@ import type { RefreshRequest as _authType_RefreshRequest, RefreshRequest__Output
 import type { RefreshResponse as _authType_RefreshResponse, RefreshResponse__Output as _authType_RefreshResponse__Output } from '../authType/RefreshResponse';
 import type { ResendOtpRequest as _authType_ResendOtpRequest, ResendOtpRequest__Output as _authType_ResendOtpRequest__Output } from '../authType/ResendOtpRequest';
 import type { ResendOtpResponse as _authType_ResendOtpResponse, ResendOtpResponse__Output as _authType_ResendOtpResponse__Output } from '../authType/ResendOtpResponse';
+import type { ResetPasswordRequest as _authType_ResetPasswordRequest, ResetPasswordRequest__Output as _authType_ResetPasswordRequest__Output } from '../authType/ResetPasswordRequest';
+import type { ResetPasswordResponse as _authType_ResetPasswordResponse, ResetPasswordResponse__Output as _authType_ResetPasswordResponse__Output } from '../authType/ResetPasswordResponse';
+import type { ResetPwdVerifyOtpRequest as _authType_ResetPwdVerifyOtpRequest, ResetPwdVerifyOtpRequest__Output as _authType_ResetPwdVerifyOtpRequest__Output } from '../authType/ResetPwdVerifyOtpRequest';
+import type { ResetPwdVerifyOtpResponse as _authType_ResetPwdVerifyOtpResponse, ResetPwdVerifyOtpResponse__Output as _authType_ResetPwdVerifyOtpResponse__Output } from '../authType/ResetPwdVerifyOtpResponse';
 import type { SignUpRequest as _authType_SignUpRequest, SignUpRequest__Output as _authType_SignUpRequest__Output } from '../authType/SignUpRequest';
 import type { SignUpResponse as _authType_SignUpResponse, SignUpResponse__Output as _authType_SignUpResponse__Output } from '../authType/SignUpResponse';
 import type { VerifyEmailRequest as _authType_VerifyEmailRequest, VerifyEmailRequest__Output as _authType_VerifyEmailRequest__Output } from '../authType/VerifyEmailRequest';
@@ -85,6 +89,24 @@ export interface AuthServiceClient extends grpc.Client {
   resendOtp(argument: _authType_ResendOtpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResendOtpResponse__Output>): grpc.ClientUnaryCall;
   resendOtp(argument: _authType_ResendOtpRequest, callback: grpc.requestCallback<_authType_ResendOtpResponse__Output>): grpc.ClientUnaryCall;
   
+  ResetPassword(argument: _authType_ResetPasswordRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  ResetPassword(argument: _authType_ResetPasswordRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  ResetPassword(argument: _authType_ResetPasswordRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  ResetPassword(argument: _authType_ResetPasswordRequest, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  resetPassword(argument: _authType_ResetPasswordRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  resetPassword(argument: _authType_ResetPasswordRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  resetPassword(argument: _authType_ResetPasswordRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  resetPassword(argument: _authType_ResetPasswordRequest, callback: grpc.requestCallback<_authType_ResetPasswordResponse__Output>): grpc.ClientUnaryCall;
+  
+  ResetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  ResetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  ResetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  ResetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  resetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  resetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  resetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  resetPwdVerifyOtp(argument: _authType_ResetPwdVerifyOtpRequest, callback: grpc.requestCallback<_authType_ResetPwdVerifyOtpResponse__Output>): grpc.ClientUnaryCall;
+  
   SignUp(argument: _authType_SignUpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
   SignUp(argument: _authType_SignUpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
   SignUp(argument: _authType_SignUpRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_SignUpResponse__Output>): grpc.ClientUnaryCall;
@@ -120,6 +142,10 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   ResendOtp: grpc.handleUnaryCall<_authType_ResendOtpRequest__Output, _authType_ResendOtpResponse>;
   
+  ResetPassword: grpc.handleUnaryCall<_authType_ResetPasswordRequest__Output, _authType_ResetPasswordResponse>;
+  
+  ResetPwdVerifyOtp: grpc.handleUnaryCall<_authType_ResetPwdVerifyOtpRequest__Output, _authType_ResetPwdVerifyOtpResponse>;
+  
   SignUp: grpc.handleUnaryCall<_authType_SignUpRequest__Output, _authType_SignUpResponse>;
   
   VerifyEmail: grpc.handleUnaryCall<_authType_VerifyEmailRequest__Output, _authType_VerifyEmailResponse>;
@@ -134,6 +160,8 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   Logout: MethodDefinition<_authType_LogoutRequest, _authType_LogoutResponse, _authType_LogoutRequest__Output, _authType_LogoutResponse__Output>
   Refresh: MethodDefinition<_authType_RefreshRequest, _authType_RefreshResponse, _authType_RefreshRequest__Output, _authType_RefreshResponse__Output>
   ResendOtp: MethodDefinition<_authType_ResendOtpRequest, _authType_ResendOtpResponse, _authType_ResendOtpRequest__Output, _authType_ResendOtpResponse__Output>
+  ResetPassword: MethodDefinition<_authType_ResetPasswordRequest, _authType_ResetPasswordResponse, _authType_ResetPasswordRequest__Output, _authType_ResetPasswordResponse__Output>
+  ResetPwdVerifyOtp: MethodDefinition<_authType_ResetPwdVerifyOtpRequest, _authType_ResetPwdVerifyOtpResponse, _authType_ResetPwdVerifyOtpRequest__Output, _authType_ResetPwdVerifyOtpResponse__Output>
   SignUp: MethodDefinition<_authType_SignUpRequest, _authType_SignUpResponse, _authType_SignUpRequest__Output, _authType_SignUpResponse__Output>
   VerifyEmail: MethodDefinition<_authType_VerifyEmailRequest, _authType_VerifyEmailResponse, _authType_VerifyEmailRequest__Output, _authType_VerifyEmailResponse__Output>
 }
