@@ -1,7 +1,8 @@
 import { IUser } from '../model/UserModel'
 
 interface IUserRepo {
-  findAll(): Promise<IUser[]>
+  countDocs(): Promise<number>
+  findAll(limit:number, startIndex:number): Promise<IUser[]>
   findById(userId: string): Promise<IUser | null>
   update(userId: string, user: Partial<IUser>): Promise<IUser | null>
   delete(userId: string): Promise<string>

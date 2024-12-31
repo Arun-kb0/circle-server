@@ -4,10 +4,15 @@ import IUserRepo from "../interfaces/IUserRepo";
 
 
 export class UserRepo implements IUserRepo {
+  
+  async countDocs(): Promise<number> {
+    const count = await User.countDocuments()
+    return count
+  }
 
-  async findAll(): Promise<IUser[]> {
-    const res = await User.find()
-    const users = res.map(user=> user.toObject())
+  async findAll(limit: number, startIndex: number): Promise<IUser[]> {
+    const res = await User.find().sort().limit(limit).skip(startIndex)
+    const users = res.map(user => user.toObject())
     return users
   }
 

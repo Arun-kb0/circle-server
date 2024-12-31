@@ -33,17 +33,29 @@ export class UserController implements IUserController {
   ) { }
 
 
-  getAllUsers: GetAllUserHandler  = async (call, cb) =>{
+  getAllUsers: GetAllUserHandler = async (call, cb) => {
+    type ResDataType = {
+      users: IUser[],
+      numberOfPages: number
+      currentPage: number
+    }
     try {
-      const res = await this.userService.getAllUsers()
+      const { page } = call.request
+      validateRequest('page is required', page)
+      const res = await this.userService.getAllUsers(page as number)
       validateResponse(res)
+      const { users: rawUsers, numberOfPages, currentPage } = res.data as ResDataType
       const users: User[] = []
-      res.data?.forEach((user) => {
+      rawUsers.forEach((user) => {
         const data = convertUserForGrpc(user)
         users.push(data)
       })
-      cb(null, { users: users })
-
+      const response = {
+        users,
+        numberOfPages,
+        currentPage
+      }
+      cb(null, response)
     } catch (error) {
       const { message, code } = handleError(error)
       cb({ message, code }, null)

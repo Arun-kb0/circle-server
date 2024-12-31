@@ -4,8 +4,12 @@ import type { User as _user_User, User__Output as _user_User__Output } from '../
 
 export interface GetAllUsersResponse {
   'users'?: (_user_User)[];
+  'currentPage'?: (number);
+  'numberOfPages'?: (number);
 }
 
 export interface GetAllUsersResponse__Output {
   'users'?: (_user_User__Output)[];
+  'currentPage'?: (number);
+  'numberOfPages'?: (number);
 }

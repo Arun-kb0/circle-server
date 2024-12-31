@@ -22,10 +22,12 @@ const client = new userProto.user.UserService(
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    client.getAllUsers({}, (err, msg) => {
+    const { page } = req.query
+    if (!page || Number.isNaN(page)) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required')
+    client.getAllUsers({ page: Number(page) }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg || !msg.users) return next(new HttpError(httpStatus.NOT_FOUND, 'users not found'))
-      res.status(httpStatus.OK).json({ message: 'get users success', users: msg.users })
+      res.status(httpStatus.OK).json({ message: 'get users success', ...msg })
     })
   } catch (error) {
     next(error)
@@ -48,7 +50,7 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId ,user} = req.body
+    const { userId, user } = req.body
     if (!userId || !user) throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
     client.updateUser({ userId, user }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
@@ -63,7 +65,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 export const blockUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.query
-    if (!userId || typeof userId !== 'string' ) throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
+    if (!userId || typeof userId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
     client.blockUser({ userId }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
       if (!msg || !msg.userId) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
@@ -77,7 +79,7 @@ export const blockUser = async (req: Request, res: Response, next: NextFunction)
 export const unblockUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.query
-    if (!userId || typeof userId !== 'string' ) throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
+    if (!userId || typeof userId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
     client.unblockUser({ userId }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
       if (!msg || !msg.userId) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))

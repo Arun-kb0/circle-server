@@ -50,10 +50,14 @@ message User {
   Image image = 16;
 }
 
-message GetAllUsersRequest {}
+message GetAllUsersRequest {
+  int32 page =1;
+}
 
 message GetAllUsersResponse {
   repeated User users =1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
 }
 
 message GetUserRequest {

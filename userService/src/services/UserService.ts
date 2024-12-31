@@ -2,6 +2,9 @@ import { IUser } from '../model/UserModel'
 import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
 import IUserService from '../interfaces/IUserService'
+import { start } from 'repl'
+
+const LIMIT = 5
 
 export class UserService implements IUserService {
 
@@ -9,10 +12,18 @@ export class UserService implements IUserService {
     private userRepo: IUserRepo
   ) { }
 
-  async getAllUsers() {
+  async getAllUsers(page: number) {
     try {
-      const users = await this.userRepo.findAll()
-      return { err: null, data: users }
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.userRepo.countDocs()
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const users = await this.userRepo.findAll(LIMIT, startIndex)
+      const response = {
+        users: users,
+        numberOfPages,
+        currentPage: page
+      }
+      return { err: null, data: response }
     } catch (error) {
       console.log(error)
       return { err: 500, data: null }
