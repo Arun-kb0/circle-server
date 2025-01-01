@@ -14,7 +14,7 @@ import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
 
 const app = express()
-const PORT = 5001
+const PORT  = 5001
 
 
 app.use(express.json())

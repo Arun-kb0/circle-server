@@ -12,7 +12,7 @@ RUN npm i
 
 COPY . .
 
-EXPOSE 50051
-EXPOSE 8081
+EXPOSE 50052
+EXPOSE 8082
 
 CMD [ "npm","run","dev" ]

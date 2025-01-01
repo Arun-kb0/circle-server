@@ -1,3 +1,6 @@
+# root 
+.env
+
 # apiGateway
 apiGateway/node_modules
 apiGateway/logs
@@ -10,3 +13,4 @@ auth/.env
 # user service
 userService/node_modules
 userService/.env
+

@@ -1,18 +1,24 @@
 FROM node:20-alpine
 
-RUN npm i -g nodemon
+# Install build dependencies
+RUN apk add --no-cache make gcc g++ python3
 
 WORKDIR /app
 
-RUN apk add curl
+RUN npm i -g nodemon
 
-COPY package.json .
+COPY package.json package-lock.json ./
 
-RUN npm i
+# Install dependencies and rebuild bcrypt
+RUN npm cache clean --force
+RUN npm ci && npm rebuild bcrypt --build-from-source
+
+# Clean up build dependencies to keep the image small
+RUN apk del make gcc g++ python3 && \
+  rm -rf /var/cache/apk/*
 
 COPY . .
 
-EXPOSE 50051
-EXPOSE 8081
+EXPOSE 50051 8081
 
-CMD [ "npm","run","dev" ]
+CMD [ "npm", "run", "dev" ]

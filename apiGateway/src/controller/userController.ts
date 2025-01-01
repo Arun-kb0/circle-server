@@ -8,8 +8,8 @@ import httpStatus from "../constants/httpStatus";
 
 
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
-const HOST = process.env.AUTH_SERVICE_HOST || 'localhost'
-const PORT = process.env.AUTH_SERVICE_PORT || 50052
+const HOST = process.env.USER_SERVICE_HOST || 'localhost'
+const PORT = process.env.USER_SERVICE_PORT || 50052
 const IP_ADDRESS = `${HOST}:${PORT}`
 
 const packageDef = getPackageDef(PROTO_PATH)
