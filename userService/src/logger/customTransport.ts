@@ -37,7 +37,7 @@ export class CustomTransport extends Transport {
           capped: true,
           cappedSize: 5000,
           cappedMax: 20,
-          collection: 'api-gateway-logs'
+          collection: 'api-gateway-log'
         })
       ]
     })

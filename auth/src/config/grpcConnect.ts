@@ -4,7 +4,7 @@ import * as protoLoader from '@grpc/proto-loader'
 import { getGrpcServer, startGrpcServer } from '../config/grpc'
 import { ProtoGrpcType } from '../proto/auth'
 import { userController } from '../DI'
-
+import logInterceptor from '../util/logInterceptor'
 
 const PROTO_FILE = path.resolve(__dirname, '../proto/auth.proto')
 const packageDef = protoLoader.loadSync(
@@ -28,18 +28,18 @@ const grpcConnect = () => {
   server.addService(
     authProto.authType.AuthService.service,
     {
-      signUp: userController.signup,
-      verifyEmail: userController.verifyEmail,
-      resendOtp: userController.resendOtp,
-      resetPassword: userController.resetPassword,
-      resetPwdVerifyOtp: userController.resetPwdVerifyOtp,
+      signUp: logInterceptor(userController.signup),
+      verifyEmail: logInterceptor(userController.verifyEmail),
+      resendOtp: logInterceptor(userController.resendOtp),
+      resetPassword: logInterceptor(userController.resetPassword),
+      resetPwdVerifyOtp: logInterceptor(userController.resetPwdVerifyOtp),
 
-      login: userController.login,
-      logout: userController.logout,
-      refresh: userController.refresh,
+      login: logInterceptor(userController.login),
+      logout: logInterceptor(userController.logout),
+      refresh: logInterceptor(userController.refresh),
 
-      adminSignUp : userController.adminSignup,
-      adminLogin : userController.adminLogin
+      adminSignUp: logInterceptor(userController.adminSignup),
+      adminLogin : logInterceptor(userController.adminLogin)
     }
   )
 
