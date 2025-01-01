@@ -9,7 +9,7 @@ type FuncReturnType<T> = Promise<{
 }>
 
 interface IUserService {
-  getAllUsers(page: number): FuncReturnType<{ users: IUser[], numberOfPages: number, currentPage: number }>
+  getAllUsers(page: number, startDate?: string, endDate?: string, searchText?: string): FuncReturnType<{ users: IUser[], numberOfPages: number, currentPage: number }>
   getUser(userId: string): FuncReturnType<IUser | null>
   updateUser(userId: string, user: Partial<IUser>): FuncReturnType<IUser>
 

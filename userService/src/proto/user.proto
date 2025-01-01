@@ -52,6 +52,9 @@ message User {
 
 message GetAllUsersRequest {
   int32 page =1;
+  string startDate=2;
+  string endDate=3;
+  string searchText=4;
 }
 
 message GetAllUsersResponse {

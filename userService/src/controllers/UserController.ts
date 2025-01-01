@@ -40,9 +40,10 @@ export class UserController implements IUserController {
       currentPage: number
     }
     try {
-      const { page } = call.request
+      const { page, startDate, endDate, searchText } = call.request
       validateRequest('page is required', page)
-      const res = await this.userService.getAllUsers(page as number)
+      const res = await this.userService.getAllUsers(page as number, startDate, endDate, searchText)
+      if(res?.err===404) throw new CustomError(grpc.status.INVALID_ARGUMENT,'string to date conversion failed','cnt')
       validateResponse(res)
       const { users: rawUsers, numberOfPages, currentPage } = res.data as ResDataType
       const users: User[] = []

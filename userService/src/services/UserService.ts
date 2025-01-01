@@ -12,12 +12,27 @@ export class UserService implements IUserService {
     private userRepo: IUserRepo
   ) { }
 
-  async getAllUsers(page: number) {
+  async getAllUsers(page: number, startDate?: string, endDate?: string, searchText = '') {
     try {
       const startIndex = (page - 1) * LIMIT
       const total = await this.userRepo.countDocs()
       const numberOfPages = Math.ceil(total / LIMIT)
-      const users = await this.userRepo.findAll(LIMIT, startIndex)
+
+      let start: Date
+      let end: Date = new Date()
+      let users: IUser[]
+      if (startDate) {
+        start = new Date(startDate)
+        if (endDate) {
+          end = new Date(endDate)
+        }
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          return { err: 400, errMsg: 'dates are not valid', data: null }
+        }
+        users = await this.userRepo.findAll(LIMIT, startIndex, start, end, searchText)
+      } else {
+        users = await this.userRepo.findAll(LIMIT, startIndex)
+      }
       const response = {
         users: users,
         numberOfPages,
