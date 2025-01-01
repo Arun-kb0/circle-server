@@ -2,7 +2,7 @@ import { IUser } from '../model/UserModel'
 import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
 import IUserService from '../interfaces/IUserService'
-import { start } from 'repl'
+import httpStatus from '../constants/httpStatus'
 
 const LIMIT = 5
 
@@ -27,7 +27,7 @@ export class UserService implements IUserService {
           end = new Date(endDate)
         }
         if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-          return { err: 400, errMsg: 'dates are not valid', data: null }
+          return { err: httpStatus.BAD_REQUEST, errMsg: 'dates are not valid', data: null }
         }
         users = await this.userRepo.findAll(LIMIT, startIndex, start, end, searchText)
       } else {
@@ -40,8 +40,8 @@ export class UserService implements IUserService {
       }
       return { err: null, data: response }
     } catch (error) {
-      console.log(error)
-      return { err: 500, data: null }
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
     }
   }
 
@@ -58,11 +58,11 @@ export class UserService implements IUserService {
   async updateUser(userId: string, user: Partial<IUser>) {
     try {
       const updatedUser = await this.userRepo.update(userId, user)
-      if (!updatedUser) return { err: 404, data: null }
+      if (!updatedUser) return { err: httpStatus.NOT_FOUND, data: null }
       return { err: null, data: updatedUser }
     } catch (error) {
-      console.log(error)
-      return { err: 500, data: null }
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
     }
   }
 
@@ -70,20 +70,22 @@ export class UserService implements IUserService {
   async blockUser(userId: string) {
     try {
       const blockedUser = await this.userRepo.update(userId, { status: 'blocked' })
-      if (!blockedUser) return { err: 404, data: null }
+      if (!blockedUser) return { err: httpStatus.NOT_FOUND, data: null }
       return { err: null, data: blockedUser }
     } catch (error) {
-      return { err: 500, data: null }
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
     }
   }
 
   async unBlockUser(userId: string) {
     try {
       const blockedUser = await this.userRepo.update(userId, { status: 'active' })
-      if (!blockedUser) return { err: 404, data: null }
+      if (!blockedUser) return { err: httpStatus.NOT_FOUND, data: null }
       return { err: null, data: blockedUser }
     } catch (error) {
-      return { err: 500, data: null }
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
     }
   }
 

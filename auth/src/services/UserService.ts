@@ -7,8 +7,8 @@ import IUserService, { SvcFuncReturnType } from '../interfaces/IUserService'
 import { IUserOtp } from "../model/UserOtpModel";
 import getOtpTemplate from '../util/getOtpTemplate'
 import IUserOtpRepo from "../interfaces/IUserOtpRepo";
-import { validateRequest } from "../util/validations";
 import nodeMailerTransport from '../config/nodeMailerTransport'
+import httpStatus from '../constants/httpStatus'
 
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
@@ -49,10 +49,10 @@ export class UserService implements IUserService {
       const { email, name, password } = otpData
       let templateDes = ''
       if (isPassword) {
-        if (!email || !password) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
+        if (!email || !password) return { err: httpStatus.NOT_FOUND, data: null, errMsg: 'otp data fields are empty.' }
         templateDes = 'verify email address to change password'
       } else {
-        if (!email || !name || !password) return { err: 404, data: null, errMsg: 'otp data fields are empty.' }
+        if (!email || !name || !password) return { err: httpStatus.NOT_FOUND, data: null, errMsg: 'otp data fields are empty.' }
         templateDes = 'to verify your email address and complete signup to Circle'
       }
 
@@ -84,7 +84,7 @@ export class UserService implements IUserService {
         })
       }
 
-      if (!newOtpData) return { err: 500, data: null, errMsg: 'otp user not created.' }
+      if (!newOtpData) return { err: httpStatus.INTERNAL_SERVER_ERROR, data: null, errMsg: 'otp user not created.' }
       await nodeMailerTransport.sendMail(mailOptions)
 
       return { err: null, data: newOtpData }
@@ -97,7 +97,7 @@ export class UserService implements IUserService {
   async resendOtp(email: string, otpId: string,isPassword=false) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
-      if (!otpData) return { err: 404, errMsg: 'no otp details found in db', data: null }
+      if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'no otp details found in db', data: null }
       const { name, password } = otpData
       const res = await this.sendOtp({ email, password, name },isPassword)
       return res
@@ -113,15 +113,15 @@ export class UserService implements IUserService {
       console.log("otpData from db")
       console.log(otpData)
 
-      if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
+      if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'otp data not found.', data: null }
       console.log("expr = ", otpData?.expireAt?.toLocaleString())
       console.log("now = ", new Date(Date.now()).toLocaleString())
       console.log("time diff exp - now = ", otpData?.expireAt?.getTime() - Date.now())
 
       const { expireAt, otp: hashedOtp, password, name } = otpData
-      if (expireAt.getTime() < Date.now()) return { err: 408, errMsg: 'otp expired.', data: null }
+      if (expireAt.getTime() < Date.now()) return { err: httpStatus.REQUEST_TIMEOUT, errMsg: 'otp expired.', data: null }
       const isValidOtp = await bcrypt.compare(String(otp), hashedOtp)
-      if (!isValidOtp) return { err: 410, errMsg: 'invalid otp.', data: null }
+      if (!isValidOtp) return { err: httpStatus.GONE, errMsg: 'invalid otp.', data: null }
 
       const user = {
         name,
@@ -142,7 +142,7 @@ export class UserService implements IUserService {
       )
 
       const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
-      if (!updatedUser) return { err: 409, data: null }
+      if (!updatedUser) return { err: httpStatus.CONFLICT, data: null }
 
       const data = {
         user: newUser,
@@ -160,7 +160,7 @@ export class UserService implements IUserService {
     try {
       const otpResData = await this.sendOtp({ email, password }, true)
       if (otpResData.err) return otpResData
-      if (!otpResData.data) return { err: 404, errMsg: 'otpData is empty.', data: null }
+      if (!otpResData.data) return { err: httpStatus.NOT_FOUND, errMsg: 'otpData is empty.', data: null }
       const { _id: otpId } = otpResData.data
       return { err: null, data: { email, otpId } }
     } catch (error) {
@@ -175,21 +175,21 @@ export class UserService implements IUserService {
       console.log("otpData from db")
       console.log(otpData)
 
-      if (!otpData) return { err: 404, errMsg: 'otp data not found.', data: null }
+      if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'otp data not found.', data: null }
       console.log("expr = ", otpData?.expireAt?.toLocaleString())
       console.log("now = ", new Date(Date.now()).toLocaleString())
       console.log("time diff exp - now = ", otpData?.expireAt?.getTime() - Date.now())
 
       const { expireAt, otp: hashedOtp, password } = otpData
-      if (expireAt.getTime() < Date.now()) return { err: 408, errMsg: 'otp expired.', data: null }
+      if (expireAt.getTime() < Date.now()) return { err: httpStatus.REQUEST_TIMEOUT, errMsg: 'otp expired.', data: null }
       const isValidOtp = await bcrypt.compare(String(otp), hashedOtp)
-      if (!isValidOtp) return { err: 410, errMsg: 'invalid otp.', data: null }
+      if (!isValidOtp) return { err: httpStatus.GONE, errMsg: 'invalid otp.', data: null }
 
       const user = {
         password: password
       }
       const updatedUser = await this.userRepo.findByEmailAndUpdate(email, user)
-      if (!updatedUser) return { err: 409, errMsg: "updated user res is empty", data: null }
+      if (!updatedUser) return { err: httpStatus.CONFLICT, errMsg: "updated user res is empty", data: null }
       return { err: null, data: { status: 'success', email } }
     } catch (error) {
       const { code, message } = handleError(error)
@@ -201,12 +201,13 @@ export class UserService implements IUserService {
   async login(email: string, password: string) {
     try {
       const foundUser = await this.userRepo.findByEmail(email)
-      if (!foundUser) return { err: 404, data: null }
-      if (foundUser.status === 'blocked') return { err: 409, data: null }
-      if (foundUser.status === 'deleted') return { err: 410, data: null }
+      if (!foundUser) return { err: httpStatus.NOT_FOUND, data: null }
+      if (foundUser.status === 'blocked') return { err: httpStatus.CONFLICT, data: null }
+      if (foundUser.status === 'deleted') return { err: httpStatus.GONE, data: null }
 
       const isMatch = await bcrypt.compare(password, foundUser.password)
-      if (!isMatch) return { err: 401, data: null }
+      if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
+
       const accessToken = jwt.sign(
         { "username": foundUser.email },
         ACCESS_TOKEN_SECRET,
@@ -234,7 +235,7 @@ export class UserService implements IUserService {
   async logout(token: string) {
     try {
       const user = await this.userRepo.findByToken(token)
-      if (!user) return { err: 404, data: null }
+      if (!user) return { err: httpStatus.NOT_FOUND, data: null }
       await this.userRepo.update(user._id, { refreshToken: '' })
       return { err: null, data: { status: 'success' } }
     } catch (error) {
@@ -251,12 +252,12 @@ export class UserService implements IUserService {
 
     try {
       const user = await this.userRepo.findByToken(refreshToken)
-      if (!user) return { err: 404, data: null }
+      if (!user) return { err: httpStatus.NOT_FOUND, data: null }
 
       let res: ResType = { err: 0, data: null }
       const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
         if (err || !decoded || typeof decoded === 'string' || user.email !== decoded.username) {
-          res.err = 403
+          res.err = httpStatus.FORBIDDEN
           res.data = null
           return
         }
@@ -286,7 +287,7 @@ export class UserService implements IUserService {
   // * admin
   async adminSignup(name: string, email: string, password: string) {
     try {
-      if (name !== ROOT_USER) return { err: 404, data: null }
+      if (name !== ROOT_USER) return { err: httpStatus.NOT_FOUND, data: null }
       const hashedPwd = await bcrypt.hash(password, 10)
       const user = {
         name,
@@ -307,7 +308,7 @@ export class UserService implements IUserService {
       )
 
       const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
-      if (!updatedUser) return { err: 409, data: null }
+      if (!updatedUser) return { err: httpStatus.CONFLICT, data: null }
 
       const data = {
         user,
@@ -324,10 +325,10 @@ export class UserService implements IUserService {
   async adminLogin(email: string, password: string) {
     try {
       const foundUser = await this.userRepo.findByEmail(email)
-      if (!foundUser || foundUser.name !== ROOT_USER) return { err: 404, data: null }
+      if (!foundUser || foundUser.name !== ROOT_USER) return { err: httpStatus.NOT_FOUND, data: null }
 
       const isMatch = await bcrypt.compare(password, foundUser.password)
-      if (!isMatch) return { err: 401, data: null }
+      if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
       const accessToken = jwt.sign(
         { "username": foundUser.email, role: 'admin' },
         ACCESS_TOKEN_SECRET,
