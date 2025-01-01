@@ -1,3 +1,5 @@
+import dotenv from 'dotenv'
+dotenv.config()
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import authRouter from './router/authRoutes'
@@ -11,9 +13,9 @@ import postRouter from './router/postRouter'
 import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
 
-
 const app = express()
 const PORT = 5001
+
 
 app.use(express.json())
 app.use(cookieParser())

@@ -1,7 +1,9 @@
 import winston, { format, LogEntry, transport } from "winston";
 import Transport, { TransportStreamOptions } from "winston-transport";
+import 'winston-mongodb'
 
 const { timestamp, printf, json, combine } = format
+const URL = process.env.LOGGER_DB || ''
 
 export class CustomTransport extends Transport {
   constructor(opts: TransportStreamOptions) {
@@ -28,10 +30,14 @@ export class CustomTransport extends Transport {
           return JSON.stringify(response)
         }),
       ),
+
       transports: [
-        new winston.transports.File({
-          dirname: './logs',
-          filename: filename ? filename : 'httpLogs.log'
+        new winston.transports.MongoDB({
+          db: URL,
+          capped: true,
+          cappedSize: 5000,
+          cappedMax: 20,
+          collection: 'api-gateway-log'
         })
       ]
     })

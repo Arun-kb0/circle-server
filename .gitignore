@@ -1,6 +1,7 @@
 # apiGateway
 apiGateway/node_modules
 apiGateway/logs
+apiGateway/.env
 
 # auth service
 auth/node_modules
