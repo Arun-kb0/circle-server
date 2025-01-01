@@ -9,3 +9,4 @@ auth/.env
 
 # user service
 userService/node_modules
+userService/.env

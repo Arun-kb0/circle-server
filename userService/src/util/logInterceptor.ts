@@ -1,5 +1,16 @@
-import { ServerUnaryCall, sendUnaryData, handleUnaryCall, StatusObject, ServerErrorResponse } from '@grpc/grpc-js';
+import { ServerUnaryCall, sendUnaryData, handleUnaryCall } from '@grpc/grpc-js';
 import logger from '../logger/loggerIndex';
+
+
+const RESPONSE_SIZE_THRESHOLD = 500;
+
+const handleResponseSize = (res: any) => {
+  const resString = JSON.stringify(res)
+  const resSize = Buffer.byteLength(resString)
+  return resSize < RESPONSE_SIZE_THRESHOLD
+    ? res
+    : { message: "response size is too large ", resSize }
+}
 
 
 function logInterceptor<T, R>(handler: handleUnaryCall<T, R>): handleUnaryCall<T, R> {
@@ -7,36 +18,35 @@ function logInterceptor<T, R>(handler: handleUnaryCall<T, R>): handleUnaryCall<T
     // * request
     const path = call.getPath()
     const requestData = call.request
-
     // * response
-
     const wrappedCallback: sendUnaryData<R> = (err, response) => {
-      // * log
       if (err) {
         const formatted = {
           request: { path, requestData },
           response: { error: err }
         }
-        logger.log("error", "auth-service", {
+        logger.log("error", "user-service", {
           logData: formatted
         })
       } else {
+
         const formatted = {
           request: { path, requestData },
-          response: { requestData: response }
+          response: {
+            requestData: handleResponseSize(response)
+          }
         }
-        logger.log("info", "auth-service", {
+        logger.log("info", "user-service", {
           logData: formatted
         })
       }
 
-      callback(err, response);
-    };
+      callback(err, response)
+    }
 
-
-    // * Calling handler
-    handler(call, wrappedCallback);
-  };
+    // * handler call
+    handler(call, wrappedCallback)
+  }
 }
 
 export default logInterceptor 

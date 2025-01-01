@@ -1,4 +1,4 @@
-import winston, { format, LogEntry, transport } from "winston";
+import winston, { format, LogEntry } from "winston";
 import Transport, { TransportStreamOptions } from "winston-transport";
 import 'winston-mongodb'
 
@@ -37,7 +37,7 @@ export class CustomTransport extends Transport {
           capped: true,
           cappedSize: 5000,
           cappedMax: 20,
-          collection: 'api-gateway-log'
+          collection: 'user-service-logs'
         })
       ]
     })
