@@ -5,7 +5,7 @@ export interface IUser extends Document {
   _id: string
   name: string
   email: string
-  password: string
+  password?: string
   age?: number
   location?: string
   state?: string
@@ -13,10 +13,11 @@ export interface IUser extends Document {
   role: 'admin' | 'user'
   followeeCount: number
   followerCount: number
-  refreshToken: string 
+  refreshToken: string
   status: 'blocked' | 'deleted' | 'active',
   isVerified: boolean
   isOnline: boolean
+  provider: 'google' | 'facebook' | null
   image?: {
     url?: string
     name?: string
@@ -29,7 +30,7 @@ const UserSchema: Schema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
     age: { type: Number },
     location: { type: String },
     state: { type: String },
@@ -41,11 +42,12 @@ const UserSchema: Schema = new Schema<IUser>(
     status: { type: String, default: 'active' },
     isVerified: { type: Boolean, default: false },
     isOnline: { type: Boolean, default: false },
+    provider: { type: String, default: null },
     image: {
       url: { type: String, default: null },
       name: { type: String, default: null },
     }
-  }, 
+  },
   { timestamps: true }
 )
 

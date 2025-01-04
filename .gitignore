@@ -9,8 +9,9 @@ apiGateway/.env
 # auth service
 auth/node_modules
 auth/.env
+auth/logs
 
 # user service
 userService/node_modules
 userService/.env
-
+userService/logs

@@ -16,6 +16,8 @@ service AuthService {
   rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {};
   rpc ResetPwdVerifyOtp(ResetPwdVerifyOtpRequest) returns (ResetPwdVerifyOtpResponse) {};
 
+  rpc GoogleOauth(GoogleOauthRequest) returns (GoogleOauthResponse) {} ;
+
   rpc AdminSignUp(AdminSignUpRequest) returns (AdminSignUpResponse) {};
   rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse) {};
 }
@@ -174,4 +176,14 @@ message ResetPwdVerifyOtpRequest {
 message ResetPwdVerifyOtpResponse {
   string status =1;
   string email=2;
+}
+
+message GoogleOauthRequest {
+  string token =1;
+}
+
+message GoogleOauthResponse {
+  User user =1; 
+  string accessToken=2;
+  string refreshToken=3;
 }

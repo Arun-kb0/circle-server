@@ -16,6 +16,8 @@ export interface ProtoGrpcType {
     AuthService: SubtypeConstructor<typeof grpc.Client, _authType_AuthServiceClient> & { service: _authType_AuthServiceDefinition }
     ForgotPasswordRequest: MessageTypeDefinition
     ForgotPasswordResponse: MessageTypeDefinition
+    GoogleOauthRequest: MessageTypeDefinition
+    GoogleOauthResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
     LoginRequest: MessageTypeDefinition
     LoginResponse: MessageTypeDefinition

@@ -9,8 +9,10 @@ import getOtpTemplate from '../util/getOtpTemplate'
 import IUserOtpRepo from "../interfaces/IUserOtpRepo";
 import nodeMailerTransport from '../config/nodeMailerTransport'
 import httpStatus from '../constants/httpStatus'
+import googleOauthClient from '../config/googleOauthClient'
 
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || ''
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 const ACCESS_EXPIRES_IN = '60s'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
@@ -26,8 +28,64 @@ export class UserService implements IUserService {
     private userOtpRepo: IUserOtpRepo
   ) { }
 
+
+  async googleOauthLogin(token: string) {
+    try {
+      const ticket = await googleOauthClient.verifyIdToken({
+        idToken: token,
+        audience: GOOGLE_CLIENT_ID
+      })
+      const payload = ticket.getPayload()
+      console.log(payload)
+      if (!payload || typeof payload.email !== 'string' || typeof payload.name !== 'string') return { err: httpStatus.BAD_REQUEST, errMsg: "name ,email are required.", data: null }
+      let newUser = await this.userRepo.findByEmail(payload.email)
+
+      if (!newUser) {
+        const user = {
+          name: payload.name,
+          email: payload.email,
+          image: {
+            url: payload.picture ? payload.picture : '',
+            name : payload.name
+          },
+          password: null
+        }
+        newUser = await this.userRepo.createForOAuth({ ...user, provider: 'google', role: 'user' })
+      }
+
+      console.log(newUser)
+      if (newUser?.provider !== 'google') return { err: httpStatus.CONFLICT, data: null }
+
+      const accessToken = jwt.sign(
+        { "username": newUser.email },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      )
+      const refreshToken = jwt.sign(
+        { "username": newUser.email },
+        REFRESH_TOKEN_SECRET,
+        { expiresIn: REFRESH_EXPIRES_IN }
+      )
+
+      const updatedUser = await this.userRepo.update(newUser._id, { refreshToken })
+      if (!updatedUser) return { err: httpStatus.CONFLICT, data: null }
+
+      const data = {
+        user: newUser,
+        accessToken,
+        refreshToken
+      }
+      return { err: null, data }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null, errMsg: message }
+    }
+  }
+
   async signup(name: string, email: string, password: string) {
     try {
+      const isUserExists = await this.userRepo.findByEmail(email)
+      if (isUserExists) return { err: httpStatus.CONFLICT, data: null }
       const hashedPwd = await bcrypt.hash(password, 10)
       const otpResData = await this.sendOtp({ name, email, password: hashedPwd })
       if (otpResData.err) return otpResData
@@ -94,12 +152,12 @@ export class UserService implements IUserService {
     }
   }
 
-  async resendOtp(email: string, otpId: string,isPassword=false) {
+  async resendOtp(email: string, otpId: string, isPassword = false) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
       if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'no otp details found in db', data: null }
       const { name, password } = otpData
-      const res = await this.sendOtp({ email, password, name },isPassword)
+      const res = await this.sendOtp({ email, password, name }, isPassword)
       return res
     } catch (error) {
       const { code, message } = handleError(error)
@@ -110,9 +168,6 @@ export class UserService implements IUserService {
   async verifyOtp(email: string, otp: number, otpId: string) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
-      console.log("otpData from db")
-      console.log(otpData)
-
       if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'otp data not found.', data: null }
       console.log("expr = ", otpData?.expireAt?.toLocaleString())
       console.log("now = ", new Date(Date.now()).toLocaleString())
@@ -129,7 +184,6 @@ export class UserService implements IUserService {
         password
       }
       const newUser = await this.userRepo.create({ ...user, role: 'user' })
-
       const accessToken = jwt.sign(
         { "username": newUser.email },
         ACCESS_TOKEN_SECRET,
@@ -158,6 +212,10 @@ export class UserService implements IUserService {
 
   async resetPassword(email: string, password: string) {
     try {
+      const isUserExists = await this.userRepo.findByEmail(email)
+      if (!isUserExists) return { err: httpStatus.NOT_FOUND, errMsg: "user doesn't exists.", data: null }
+      if (isUserExists.provider === 'google') return { err: httpStatus.BAD_REQUEST, errMsg: "sign up done using google.", data: null }
+
       const otpResData = await this.sendOtp({ email, password }, true)
       if (otpResData.err) return otpResData
       if (!otpResData.data) return { err: httpStatus.NOT_FOUND, errMsg: 'otpData is empty.', data: null }
@@ -172,9 +230,6 @@ export class UserService implements IUserService {
   async resetPwdVerifyOtp(email: string, otp: number, otpId: string) {
     try {
       const otpData = await this.userOtpRepo.findById(otpId)
-      console.log("otpData from db")
-      console.log(otpData)
-
       if (!otpData) return { err: httpStatus.NOT_FOUND, errMsg: 'otp data not found.', data: null }
       console.log("expr = ", otpData?.expireAt?.toLocaleString())
       console.log("now = ", new Date(Date.now()).toLocaleString())
@@ -201,11 +256,11 @@ export class UserService implements IUserService {
   async login(email: string, password: string) {
     try {
       const foundUser = await this.userRepo.findByEmail(email)
-      if (!foundUser) return { err: httpStatus.NOT_FOUND, data: null }
+      if (!foundUser) return { err: httpStatus.NOT_FOUND, errMsg:"user doesn't exists" ,data: null }
       if (foundUser.status === 'blocked') return { err: httpStatus.CONFLICT, data: null }
       if (foundUser.status === 'deleted') return { err: httpStatus.GONE, data: null }
 
-      const isMatch = await bcrypt.compare(password, foundUser.password)
+      const isMatch = await bcrypt.compare(password, foundUser.password as string)
       if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
 
       const accessToken = jwt.sign(
@@ -327,7 +382,7 @@ export class UserService implements IUserService {
       const foundUser = await this.userRepo.findByEmail(email)
       if (!foundUser || foundUser.name !== ROOT_USER) return { err: httpStatus.NOT_FOUND, data: null }
 
-      const isMatch = await bcrypt.compare(password, foundUser.password)
+      const isMatch = await bcrypt.compare(password, foundUser.password as string)
       if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
       const accessToken = jwt.sign(
         { "username": foundUser.email, role: 'admin' },

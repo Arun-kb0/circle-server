@@ -8,6 +8,8 @@ import type { AdminSignUpRequest as _authType_AdminSignUpRequest, AdminSignUpReq
 import type { AdminSignUpResponse as _authType_AdminSignUpResponse, AdminSignUpResponse__Output as _authType_AdminSignUpResponse__Output } from '../authType/AdminSignUpResponse';
 import type { ForgotPasswordRequest as _authType_ForgotPasswordRequest, ForgotPasswordRequest__Output as _authType_ForgotPasswordRequest__Output } from '../authType/ForgotPasswordRequest';
 import type { ForgotPasswordResponse as _authType_ForgotPasswordResponse, ForgotPasswordResponse__Output as _authType_ForgotPasswordResponse__Output } from '../authType/ForgotPasswordResponse';
+import type { GoogleOauthRequest as _authType_GoogleOauthRequest, GoogleOauthRequest__Output as _authType_GoogleOauthRequest__Output } from '../authType/GoogleOauthRequest';
+import type { GoogleOauthResponse as _authType_GoogleOauthResponse, GoogleOauthResponse__Output as _authType_GoogleOauthResponse__Output } from '../authType/GoogleOauthResponse';
 import type { LoginRequest as _authType_LoginRequest, LoginRequest__Output as _authType_LoginRequest__Output } from '../authType/LoginRequest';
 import type { LoginResponse as _authType_LoginResponse, LoginResponse__Output as _authType_LoginResponse__Output } from '../authType/LoginResponse';
 import type { LogoutRequest as _authType_LogoutRequest, LogoutRequest__Output as _authType_LogoutRequest__Output } from '../authType/LogoutRequest';
@@ -52,6 +54,15 @@ export interface AuthServiceClient extends grpc.Client {
   forgotPassword(argument: _authType_ForgotPasswordRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_ForgotPasswordResponse__Output>): grpc.ClientUnaryCall;
   forgotPassword(argument: _authType_ForgotPasswordRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_ForgotPasswordResponse__Output>): grpc.ClientUnaryCall;
   forgotPassword(argument: _authType_ForgotPasswordRequest, callback: grpc.requestCallback<_authType_ForgotPasswordResponse__Output>): grpc.ClientUnaryCall;
+  
+  GoogleOauth(argument: _authType_GoogleOauthRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  GoogleOauth(argument: _authType_GoogleOauthRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  GoogleOauth(argument: _authType_GoogleOauthRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  GoogleOauth(argument: _authType_GoogleOauthRequest, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  googleOauth(argument: _authType_GoogleOauthRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  googleOauth(argument: _authType_GoogleOauthRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  googleOauth(argument: _authType_GoogleOauthRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
+  googleOauth(argument: _authType_GoogleOauthRequest, callback: grpc.requestCallback<_authType_GoogleOauthResponse__Output>): grpc.ClientUnaryCall;
   
   Login(argument: _authType_LoginRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_authType_LoginResponse__Output>): grpc.ClientUnaryCall;
   Login(argument: _authType_LoginRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_authType_LoginResponse__Output>): grpc.ClientUnaryCall;
@@ -134,6 +145,8 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   ForgotPassword: grpc.handleUnaryCall<_authType_ForgotPasswordRequest__Output, _authType_ForgotPasswordResponse>;
   
+  GoogleOauth: grpc.handleUnaryCall<_authType_GoogleOauthRequest__Output, _authType_GoogleOauthResponse>;
+  
   Login: grpc.handleUnaryCall<_authType_LoginRequest__Output, _authType_LoginResponse>;
   
   Logout: grpc.handleUnaryCall<_authType_LogoutRequest__Output, _authType_LogoutResponse>;
@@ -156,6 +169,7 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   AdminLogin: MethodDefinition<_authType_AdminLoginRequest, _authType_AdminLoginResponse, _authType_AdminLoginRequest__Output, _authType_AdminLoginResponse__Output>
   AdminSignUp: MethodDefinition<_authType_AdminSignUpRequest, _authType_AdminSignUpResponse, _authType_AdminSignUpRequest__Output, _authType_AdminSignUpResponse__Output>
   ForgotPassword: MethodDefinition<_authType_ForgotPasswordRequest, _authType_ForgotPasswordResponse, _authType_ForgotPasswordRequest__Output, _authType_ForgotPasswordResponse__Output>
+  GoogleOauth: MethodDefinition<_authType_GoogleOauthRequest, _authType_GoogleOauthResponse, _authType_GoogleOauthRequest__Output, _authType_GoogleOauthResponse__Output>
   Login: MethodDefinition<_authType_LoginRequest, _authType_LoginResponse, _authType_LoginRequest__Output, _authType_LoginResponse__Output>
   Logout: MethodDefinition<_authType_LogoutRequest, _authType_LogoutResponse, _authType_LogoutRequest__Output, _authType_LogoutResponse__Output>
   Refresh: MethodDefinition<_authType_RefreshRequest, _authType_RefreshResponse, _authType_RefreshRequest__Output, _authType_RefreshResponse__Output>

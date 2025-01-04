@@ -16,7 +16,7 @@ export const validateResponse = (res: ValidateResponseArgs) => {
   }
   if (res.err) {
     const code = grpc.status.INTERNAL
-    const message = `error ${res.err}.`
+    const message = `${res.err}.`
     throw new CustomError(code, message, 'cnt')
   }
   if (!res.data) {

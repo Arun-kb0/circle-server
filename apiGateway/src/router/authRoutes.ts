@@ -1,6 +1,6 @@
 import express from 'express'
 import {
-  adminLogin, adminSignup, login,
+  adminLogin, adminSignup, googleOauthLogin, login,
   logout, refresh, resendOtp, resetPassword,
   resetPwdResendOtp,
   resetPwdVerifyOtp,
@@ -16,6 +16,8 @@ router.post('/resend-otp', resendOtp)
 router.post('/reset-password', resetPassword)
 router.post('/reset-pwd-verify-otp', resetPwdVerifyOtp)
 router.post('/reset-resend-otp', resetPwdResendOtp)
+
+router.post('/google-oauth-login', googleOauthLogin)
 
 router.post('/login', login)
 router.get('/logout', logout)

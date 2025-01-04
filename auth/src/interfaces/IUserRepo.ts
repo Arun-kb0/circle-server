@@ -6,8 +6,15 @@ type CreateUserArg = Pick<
   & Partial<Omit<IUser, '_id' | 'followeeCount' | 'followerCount' | 'email' | 'name' | 'password'>
   >
 
+type CreateForOAuthArgs = Pick<
+  IUser, 'email' | 'name' | 'provider' | 'role'>
+  & Partial<Omit<IUser, '_id' | 'followeeCount' | 'followerCount' | 'email' | 'name' | 'password'>
+  >
+
+
 interface IUserRepo {
   create(user: CreateUserArg): Promise<IUser>
+  createForOAuth(user: CreateForOAuthArgs): Promise<IUser>
   findById(id: string): Promise<IUser | null>
   findByEmail(email: string): Promise<IUser | null>
   findByEmailAndStatus(email: string, status: 'blocked' | 'deleted' | 'active'): Promise<IUser | null>

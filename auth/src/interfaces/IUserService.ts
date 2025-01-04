@@ -27,6 +27,7 @@ interface IUserService {
   verifyOtp(email: string, otp: number, otpId: string): SvcFuncReturnType<{ user: IUser, accessToken: string, refreshToken: string }>
   resetPassword(email: string, password: string): SvcFuncReturnType<{ email: string, otpId: string }>
   resetPwdVerifyOtp(email: string, otp: number, otpId: string): SvcFuncReturnType<{ status:string, email: string }>
+  googleOauthLogin(token: string): SvcFuncReturnType<{ user: IUser, accessToken: string, refreshToken: string }>
 
   adminSignup(name: string, email: string, password: string): SvcFuncReturnType<UserAuthInfo>
   adminLogin(email: string, password: string): SvcFuncReturnType<UserAuthInfo>

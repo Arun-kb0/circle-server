@@ -28,6 +28,9 @@ import { ResetPasswordRequest__Output } from "../proto/authType/ResetPasswordReq
 import { ResetPasswordResponse } from "../proto/authType/ResetPasswordResponse";
 import { ResetPwdVerifyOtpRequest__Output } from "../proto/authType/ResetPwdVerifyOtpRequest";
 import { ResetPwdVerifyOtpResponse } from "../proto/authType/ResetPwdVerifyOtpResponse";
+import { GoogleOauthRequest__Output } from "../proto/authType/GoogleOauthRequest";
+import { GoogleOauthResponse } from "../proto/authType/GoogleOauthResponse";
+import httpStatus from "../constants/httpStatus";
 
 
 
@@ -41,12 +44,39 @@ type ResendOtpHandler = grpc.handleUnaryCall<ResendOtpRequest__Output, ResendOtp
 type VerifyEmailHandler = grpc.handleUnaryCall<VerifyEmailRequest__Output, VerifyEmailResponse>;
 type ResetPasswordHandler = grpc.handleUnaryCall<ResetPasswordRequest__Output, ResetPasswordResponse>;
 type ResetPwdVerifyOtpHandler = grpc.handleUnaryCall<ResetPwdVerifyOtpRequest__Output, ResetPwdVerifyOtpResponse>;
+type GoogleOauthHandler = grpc.handleUnaryCall<GoogleOauthRequest__Output, GoogleOauthResponse>;
 
 export class UserController implements IUserController {
 
   constructor(
     private userService: IUserService
   ) { }
+
+  googleOauth: GoogleOauthHandler = async (call, cb) => {
+    type Data = {
+      user: IUser,
+      accessToken: string,
+      refreshToken: string
+    }
+    try {
+      const { token } = call.request
+      validateRequest('token is required.', token)
+      const res = await this.userService.googleOauthLogin(token as string)
+      if (res?.err === httpStatus.CONFLICT) throw new CustomError(grpc.status.ABORTED, 'email already exits', 'cnt')
+      validateResponse(res)
+      const { user: rawUser, accessToken, refreshToken } = res.data as Data
+      const user = convertUserForGrpc(rawUser)
+      const response = {
+        user,
+        accessToken,
+        refreshToken
+      }
+      cb(null, response)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   resetPassword: ResetPasswordHandler = async (call, cb) => {
     try {
@@ -82,6 +112,7 @@ export class UserController implements IUserController {
       const message = 'name, email and password is required.'
       validateRequest(message, name, email, password)
       const res = await this.userService.signup(name as string, email as string, password as string)
+      if (res?.err === httpStatus.CONFLICT) throw new CustomError(grpc.status.ABORTED, 'email already exits', 'cnt')
       validateResponse(res)
       cb(null, res.data)
 
@@ -93,9 +124,9 @@ export class UserController implements IUserController {
 
   resendOtp: ResendOtpHandler = async (call, cb) => {
     try {
-      const { email, otpId ,isPassword} = call.request
+      const { email, otpId, isPassword } = call.request
       validateRequest('email is required.', email)
-      const res = await this.userService.resendOtp(email as string, otpId as string,isPassword)
+      const res = await this.userService.resendOtp(email as string, otpId as string, isPassword)
       if (res?.err === 404) throw new CustomError(grpc.status.NOT_FOUND, res.errMsg as string, 'cnt')
       validateResponse(res)
       const response = {
@@ -145,6 +176,7 @@ export class UserController implements IUserController {
       const message = 'email and password is required.'
       validateRequest(message, email, password)
       const res = await this.userService.login(email as string, password as string)
+      console.log(res)
       if (res.err === 401) {
         const code = grpc.status.INVALID_ARGUMENT
         const message = 'email or password mis match'
@@ -155,7 +187,7 @@ export class UserController implements IUserController {
         const message = 'account blocked'
         throw new CustomError(code, message, 'cnt')
       }
-      if (res.err === 410) {
+      if (res.err === 410 || res.err === httpStatus.NOT_FOUND) {
         const code = grpc.status.NOT_FOUND
         const message = 'user not found'
         throw new CustomError(code, message, 'cnt')

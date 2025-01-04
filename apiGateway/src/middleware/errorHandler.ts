@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
 import logger from '../logger/loggerIndex'
+import { grpcCodeToHttpStatus } from '../util/converters'
 
 const red = '\x1b[31m'; // Red color
 const reset = '\x1b[0m'; // Reset color
@@ -27,18 +28,25 @@ const formattedErrorLog = (error: HttpError, req: Request, res: Response) => {
 
 
 const errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
-  console.warn(error)
-  
+
   if (error.name === 'TokenExpiredError') {
     error.statusCode = httpStatus.UNAUTHORIZED
   }
 
-  let resJson: any =  {}
+  let resJson: any = {}
   let statusCode = httpStatus.INTERNAL_SERVER_ERROR
+
   if (error instanceof HttpError) {
     statusCode = error.statusCode
     resJson = {
       status: error.status,
+      name: error.name,
+      message: error.message
+    }
+  } else if ('code' in error && 'details' in error) {
+    statusCode = grpcCodeToHttpStatus(error.code)
+    resJson = {
+      status: statusCode < 500 ? 'error' : 'failed',
       name: error.name,
       message: error.message
     }
@@ -57,7 +65,7 @@ const errorHandler = (error: any, req: Request, res: Response, next: NextFunctio
     error.message,
     {
       logData: formattedErrorLog(error, req, res),
-      filename: 'ErrorLogs.log'
+      filename: 'api-gateway-error.json.log'
     }
   )
 

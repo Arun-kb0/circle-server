@@ -30,7 +30,7 @@ const handleError = (err: any) => {
   logger.log("error", msg,
     {
       logData: { message: msg, grpcStatus: code, stack: errStack },
-      filename: 'errorLogs'
+      filename: 'user-service-error.json.log'
     }
   )
   return { message: msg, code }

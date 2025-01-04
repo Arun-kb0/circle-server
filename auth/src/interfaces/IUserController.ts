@@ -19,6 +19,8 @@ import { ResetPasswordRequest__Output } from '../proto/authType/ResetPasswordReq
 import { ResetPasswordResponse } from '../proto/authType/ResetPasswordResponse';
 import { ResetPwdVerifyOtpRequest__Output } from '../proto/authType/ResetPwdVerifyOtpRequest';
 import { ResetPwdVerifyOtpResponse } from '../proto/authType/ResetPwdVerifyOtpResponse';
+import { GoogleOauthRequest__Output } from '../proto/authType/GoogleOauthRequest';
+import { GoogleOauthResponse } from '../proto/authType/GoogleOauthResponse';
 
 
 
@@ -32,6 +34,7 @@ interface IUserController {
   verifyEmail: grpc.handleUnaryCall<VerifyEmailRequest__Output, VerifyEmailResponse>
   resetPassword: grpc.handleUnaryCall<ResetPasswordRequest__Output, ResetPasswordResponse>
   resetPwdVerifyOtp: grpc.handleUnaryCall<ResetPwdVerifyOtpRequest__Output,ResetPwdVerifyOtpResponse>
+  googleOauth: grpc.handleUnaryCall<GoogleOauthRequest__Output,GoogleOauthResponse>
 
   adminLogin: grpc.handleUnaryCall<AdminLoginRequest__Output, AdminLoginResponse>
   adminSignup: grpc.handleUnaryCall<AdminSignUpRequest__Output, AdminSignUpResponse>

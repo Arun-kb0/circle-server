@@ -28,6 +28,11 @@ export class UserRepo implements IUserRepo {
     const newUser = await User.create(user)
     return newUser
   }
+  
+  async createForOAuth(user: IUser): Promise<IUser> {
+    const newUser = await User.create(user)
+    return newUser
+  }
 
   async findById(id: string): Promise<IUser | null> {
     const foundUser = await User.findOne({ _id: id })

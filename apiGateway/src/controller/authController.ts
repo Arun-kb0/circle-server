@@ -6,6 +6,8 @@ import { ProtoGrpcType } from "../protos/auth";
 import httpStatus from "../constants/httpStatus";
 import HttpError from "../util/HttpError";
 
+
+const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'auth.proto')
 const HOST = process.env.AUTH_SERVICE_HOST || 'localhost'
 const PORT = process.env.AUTH_SERVICE_PORT || 50051
@@ -18,6 +20,30 @@ const client = new authProto.authType.AuthService(
   grpc.credentials.createInsecure()
 )
 
+export const googleOauthLogin = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token } = req.body
+    const TOKEN_LENGTH = 1180
+    
+    if (typeof token !== 'string') {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'token required')
+    }
+    client.googleOauth({ token }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new Error('grpc oauth response is empty'))
+      const { refreshToken, accessToken, ...data } = msg
+      res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+        maxAge: REFRESH_TOKEN_MAX_AGE
+      })
+      res.status(httpStatus.OK).json({ message: 'Oauth login success', accessToken , ...data })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,7 +62,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: REFRESH_TOKEN_MAX_AGE
       })
       res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data })
     })
@@ -50,7 +76,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     const { name, email, password } = req.body
     client.signUp({ name, email, password }, (err, msg) => {
       if (err) return next(err)
-      if (!msg) throw new Error('grpc response is empty')
+      if (!msg) return next(new Error('grpc response is empty'))
       res.status(httpStatus.OK).json({ message: 'signup success', ...msg })
     })
   } catch (error) {
@@ -72,7 +98,7 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: REFRESH_TOKEN_MAX_AGE
       })
       res.status(httpStatus.OK).json({ message: 'email verification success', ...restMsg })
     })
@@ -210,7 +236,7 @@ export const adminLogin = async (req: Request, res: Response, next: NextFunction
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: REFRESH_TOKEN_MAX_AGE
       })
       res.status(httpStatus.OK).json({ message: 'admin login success', accessToken: token, ...data })
     })
@@ -233,7 +259,7 @@ export const adminSignup = async (req: Request, res: Response, next: NextFunctio
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: REFRESH_TOKEN_MAX_AGE
       })
       res.status(httpStatus.OK).json({ message: 'admin signup success', accessToken: token, ...data })
     })

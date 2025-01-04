@@ -34,6 +34,8 @@ const grpcConnect = () => {
       resetPassword: logInterceptor(userController.resetPassword),
       resetPwdVerifyOtp: logInterceptor(userController.resetPwdVerifyOtp),
 
+      googleOauth : logInterceptor(userController.googleOauth),
+
       login: logInterceptor(userController.login),
       logout: logInterceptor(userController.logout),
       refresh: logInterceptor(userController.refresh),
