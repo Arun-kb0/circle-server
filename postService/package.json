@@ -1,5 +1,5 @@
 {
-  "name": "userservice",
+  "name": "postservice",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,13 +11,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@grpc/grpc-js": "^1.12.2",
     "@grpc/proto-loader": "^0.7.13",
-    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
-    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
@@ -26,8 +23,6 @@
     "winston-transport": "^4.9.0"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.2",
     "grpc_tools_node_protoc_ts": "^5.3.3"
   }

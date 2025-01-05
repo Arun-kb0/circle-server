@@ -15,3 +15,8 @@ auth/logs
 userService/node_modules
 userService/.env
 userService/logs
+
+# post service
+postService/node_modules
+postService/.env
+postService/logs

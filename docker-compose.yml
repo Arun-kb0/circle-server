@@ -64,5 +64,28 @@ services:
       - USER_DB_URI=${USER_DB_URI}
       - LOGGER_DB=${USER_LOGGER_DB}
 
+  post-service:
+    build: ./postService
+    container_name: post-service
+    ports: 
+      - 50053:50053
+      - 8083:8083
+    volumes:
+      - ./postService:/app
+      - ./postService/node_modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "curl" , "-f", "http://localhost:8083/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - POST_SERVICE_PORT=${POST_SERVICE_PORT}
+      - POST_SERVICE_HOST=${POST_SERVICE_HOST}
+      - POST_HEALTH_CHECK_PORT=${POST_HEALTH_CHECK_PORT}
+      - POST_DB_URI=${POST_DB_URI}
+
+
+
 volumes:
   node_modules: 

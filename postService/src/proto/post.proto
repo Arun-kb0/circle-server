@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+  rpc GetGlobalFeed(GetGlobalFeedRequest) returns (GetGlobalFeedResponse) {};
+  rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
+
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {};
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {};
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {};
+
+  rpc CommentPost(CommentPostRequest) returns (CommentPostResponse) {};
+  rpc LikePost(LikePostRequest) returns (LikePostResponse) {};
+
+}
+
+
+message Image {
+  string url =1;
+  string name=2;
+}
+
+
+enum Status {
+  active=0;
+  deleted=2;
+}
+
+message Post  {
+
+}
+
+message Comment {
+
+}
+
+
+message GetGlobalFeedRequest {}
+
+message GetGlobalFeedResponse {
+  repeated Post posts=1;
+}
+
+message GetUserFeedRequest {}
+
+message GetUserFeedResponse {
+  repeated Post posts=1;
+}
+
+message CreatePostRequest {
+  Post post = 1;
+}
+
+message CreatePostResponse {
+  Post post = 1;
+}
+
+message UpdatePostRequest {
+  Post post = 1;
+}
+
+message UpdatePostResponse {
+  Post post = 1;
+}
+
+message DeletePostRequest {
+  string postId=1;
+  string postAuthorId=2;
+}
+
+message DeletePostResponse {
+  string postId=1;
+}
+
+message LikePostRequest {
+  string userId =1;
+  bool isLike=2;
+}
+
+message LikePostResponse {
+  int32 likeCount=1;
+}
+
+message CommentPostRequest {
+  string comment =1;
+  string commentAuthorId =2;
+  string postId =3;
+}
+
+message CommentPostResponse {
+  Comment comment =1;
+  string commentAuthorId =2;
+  string postAuthorId =3;
+  string postId =4;
+}
