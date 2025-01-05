@@ -1,21 +1,5 @@
-import mongoose, { Schema, Document, Model, Date, mongo } from 'mongoose'
-
-
-export interface IPost extends Document {
-  _id: string,
-  desc?: string
-  tags?: string[]
-  mediaType: 'image' | 'video' | 'text',
-  media?: string[],
-  authorId: string,
-  status: 'active' | 'deleted' | 'blocked'
-  likesCount: number
-  reportsCount: number
-  commentCount: number
-  shareCount: number
-  updateAt: Date
-  createAt: Date
-}
+import mongoose, { Schema } from 'mongoose'
+import IPost from '../interfaces/IPost'
 
 const PostSchema = new Schema<IPost>(
   {

@@ -10,19 +10,17 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 export interface ProtoGrpcType {
   post: {
     Comment: MessageTypeDefinition
+    CommentEnums: MessageTypeDefinition
     CommentPostRequest: MessageTypeDefinition
     CommentPostResponse: MessageTypeDefinition
     CreatePostRequest: MessageTypeDefinition
     CreatePostResponse: MessageTypeDefinition
     DeletePostRequest: MessageTypeDefinition
     DeletePostResponse: MessageTypeDefinition
-    GetGlobalFeedRequest: MessageTypeDefinition
-    GetGlobalFeedResponse: MessageTypeDefinition
-    GetUserFeedRequest: MessageTypeDefinition
-    GetUserFeedResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
     LikePostRequest: MessageTypeDefinition
     LikePostResponse: MessageTypeDefinition
+    Media: EnumTypeDefinition
     Post: MessageTypeDefinition
     PostService: SubtypeConstructor<typeof grpc.Client, _post_PostServiceClient> & { service: _post_PostServiceDefinition }
     Status: EnumTypeDefinition

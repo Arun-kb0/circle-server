@@ -8,10 +8,6 @@ import type { CreatePostRequest as _post_CreatePostRequest, CreatePostRequest__O
 import type { CreatePostResponse as _post_CreatePostResponse, CreatePostResponse__Output as _post_CreatePostResponse__Output } from '../post/CreatePostResponse';
 import type { DeletePostRequest as _post_DeletePostRequest, DeletePostRequest__Output as _post_DeletePostRequest__Output } from '../post/DeletePostRequest';
 import type { DeletePostResponse as _post_DeletePostResponse, DeletePostResponse__Output as _post_DeletePostResponse__Output } from '../post/DeletePostResponse';
-import type { GetGlobalFeedRequest as _post_GetGlobalFeedRequest, GetGlobalFeedRequest__Output as _post_GetGlobalFeedRequest__Output } from '../post/GetGlobalFeedRequest';
-import type { GetGlobalFeedResponse as _post_GetGlobalFeedResponse, GetGlobalFeedResponse__Output as _post_GetGlobalFeedResponse__Output } from '../post/GetGlobalFeedResponse';
-import type { GetUserFeedRequest as _post_GetUserFeedRequest, GetUserFeedRequest__Output as _post_GetUserFeedRequest__Output } from '../post/GetUserFeedRequest';
-import type { GetUserFeedResponse as _post_GetUserFeedResponse, GetUserFeedResponse__Output as _post_GetUserFeedResponse__Output } from '../post/GetUserFeedResponse';
 import type { LikePostRequest as _post_LikePostRequest, LikePostRequest__Output as _post_LikePostRequest__Output } from '../post/LikePostRequest';
 import type { LikePostResponse as _post_LikePostResponse, LikePostResponse__Output as _post_LikePostResponse__Output } from '../post/LikePostResponse';
 import type { UpdatePostRequest as _post_UpdatePostRequest, UpdatePostRequest__Output as _post_UpdatePostRequest__Output } from '../post/UpdatePostRequest';
@@ -45,24 +41,6 @@ export interface PostServiceClient extends grpc.Client {
   deletePost(argument: _post_DeletePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_DeletePostResponse__Output>): grpc.ClientUnaryCall;
   deletePost(argument: _post_DeletePostRequest, callback: grpc.requestCallback<_post_DeletePostResponse__Output>): grpc.ClientUnaryCall;
   
-  GetGlobalFeed(argument: _post_GetGlobalFeedRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetGlobalFeed(argument: _post_GetGlobalFeedRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetGlobalFeed(argument: _post_GetGlobalFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetGlobalFeed(argument: _post_GetGlobalFeedRequest, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  getGlobalFeed(argument: _post_GetGlobalFeedRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  getGlobalFeed(argument: _post_GetGlobalFeedRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  getGlobalFeed(argument: _post_GetGlobalFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  getGlobalFeed(argument: _post_GetGlobalFeedRequest, callback: grpc.requestCallback<_post_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
-  
-  GetUserFeed(argument: _post_GetUserFeedRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetUserFeed(argument: _post_GetUserFeedRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetUserFeed(argument: _post_GetUserFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  GetUserFeed(argument: _post_GetUserFeedRequest, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  getUserFeed(argument: _post_GetUserFeedRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  getUserFeed(argument: _post_GetUserFeedRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  getUserFeed(argument: _post_GetUserFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  getUserFeed(argument: _post_GetUserFeedRequest, callback: grpc.requestCallback<_post_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
-  
   LikePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
   LikePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
   LikePost(argument: _post_LikePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
@@ -90,10 +68,6 @@ export interface PostServiceHandlers extends grpc.UntypedServiceImplementation {
   
   DeletePost: grpc.handleUnaryCall<_post_DeletePostRequest__Output, _post_DeletePostResponse>;
   
-  GetGlobalFeed: grpc.handleUnaryCall<_post_GetGlobalFeedRequest__Output, _post_GetGlobalFeedResponse>;
-  
-  GetUserFeed: grpc.handleUnaryCall<_post_GetUserFeedRequest__Output, _post_GetUserFeedResponse>;
-  
   LikePost: grpc.handleUnaryCall<_post_LikePostRequest__Output, _post_LikePostResponse>;
   
   UpdatePost: grpc.handleUnaryCall<_post_UpdatePostRequest__Output, _post_UpdatePostResponse>;
@@ -104,8 +78,6 @@ export interface PostServiceDefinition extends grpc.ServiceDefinition {
   CommentPost: MethodDefinition<_post_CommentPostRequest, _post_CommentPostResponse, _post_CommentPostRequest__Output, _post_CommentPostResponse__Output>
   CreatePost: MethodDefinition<_post_CreatePostRequest, _post_CreatePostResponse, _post_CreatePostRequest__Output, _post_CreatePostResponse__Output>
   DeletePost: MethodDefinition<_post_DeletePostRequest, _post_DeletePostResponse, _post_DeletePostRequest__Output, _post_DeletePostResponse__Output>
-  GetGlobalFeed: MethodDefinition<_post_GetGlobalFeedRequest, _post_GetGlobalFeedResponse, _post_GetGlobalFeedRequest__Output, _post_GetGlobalFeedResponse__Output>
-  GetUserFeed: MethodDefinition<_post_GetUserFeedRequest, _post_GetUserFeedResponse, _post_GetUserFeedRequest__Output, _post_GetUserFeedResponse__Output>
   LikePost: MethodDefinition<_post_LikePostRequest, _post_LikePostResponse, _post_LikePostRequest__Output, _post_LikePostResponse__Output>
   UpdatePost: MethodDefinition<_post_UpdatePostRequest, _post_UpdatePostResponse, _post_UpdatePostRequest__Output, _post_UpdatePostResponse__Output>
 }

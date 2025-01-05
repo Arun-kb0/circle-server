@@ -10,6 +10,7 @@ services:
     depends_on:
       - auth-service
       - user-service
+      - post-service
     environment:
       - LOGGER_DB=${GT_LOGGER_DB}
       - AUTH_SERVICE_HOST=${GT_AUTH_SERVICE_HOST}
