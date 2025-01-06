@@ -9,7 +9,7 @@ export type SvcFuncReturnType<T> = Promise<{
 
 interface IPostService {
   createPost(post: Partial<IPost>): SvcFuncReturnType<IPost>
-  updatePost(post: Partial<IPost>): SvcFuncReturnType<IPost>
+  updatePost(postId:string , post: Partial<IPost>): SvcFuncReturnType<IPost>
   deletePost(postId: string): SvcFuncReturnType<{ postId: string }>
   commentPost(comment: string, commentAuthorId: string, postId: string): SvcFuncReturnType<{ comment: IComment, postAuthorId: string, postId: string }>
 }

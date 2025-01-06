@@ -1,18 +1,28 @@
 import IPost from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo'
+import { Post } from '../model/postModel'
 
 class PostRepo implements IPostRepo {
 
-  create(post: Partial<IPost>): Promise<IPost> {
-    throw new Error('Method not implemented.');
+  async create(post: Partial<IPost>): Promise<IPost> {
+    const newPost = await Post.create(post)
+    return newPost
   }
-  update(postId: string, post: Partial<IPost>): Promise<IPost> {
-    throw new Error('Method not implemented.');
+
+  async update(postId: string, post: Partial<IPost>): Promise<IPost | null> {
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId },
+      { $set: post },
+      { new: true }
+    )
+    return updatedPost ? updatedPost.toObject() : null
   }
-  delete(postId: string): Promise<{ postId: string; }> {
-    throw new Error('Method not implemented.');
+
+  async delete(postId: string): Promise<{ postId: string; } | null> {
+    const post = await Post.findOneAndDelete({ _id: postId })
+    return post ? { postId: post._id } : null
   }
-  
+
 }
 
 export default PostRepo

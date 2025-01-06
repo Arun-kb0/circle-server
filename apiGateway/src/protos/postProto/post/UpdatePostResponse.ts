@@ -2,12 +2,10 @@
 
 import type { Post as _post_Post, Post__Output as _post_Post__Output } from '../post/Post';
 
-export interface UpdatePostRequest {
+export interface UpdatePostResponse {
   'post'?: (_post_Post | null);
-  'postId'?: (string);
 }
 
-export interface UpdatePostRequest__Output {
+export interface UpdatePostResponse__Output {
   'post'?: (_post_Post__Output);
-  'postId'?: (string);
 }

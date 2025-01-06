@@ -13,8 +13,8 @@ interface IPost extends Document {
   reportsCount: number
   commentCount: number
   shareCount: number
-  updateAt: Date
-  createAt: Date
+  updatedAt: Date
+  createdAt: Date
 }
 
 export default IPost

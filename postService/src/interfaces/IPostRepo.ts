@@ -7,8 +7,8 @@ interface IPostRepo {
   // getCount(limit: number, startIndex: number): Promise<{ count: number }>
 
   create(post: Partial<IPost>): Promise<IPost>
-  update(postId: string, post: Partial<IPost>): Promise<IPost>
-  delete(postId: string): Promise<{ postId: string }>
+  update(postId: string, post: Partial<IPost>): Promise<IPost | null>
+  delete(postId: string): Promise<{ postId: string } | null>
 }
 
 export default IPostRepo

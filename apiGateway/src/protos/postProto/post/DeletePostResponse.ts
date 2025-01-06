@@ -1,10 +1,10 @@
 // Original file: src/proto/post.proto
 
 
-export interface DeletePostRequest {
+export interface DeletePostResponse {
   'postId'?: (string);
 }
 
-export interface DeletePostRequest__Output {
+export interface DeletePostResponse__Output {
   'postId'?: (string);
 }
