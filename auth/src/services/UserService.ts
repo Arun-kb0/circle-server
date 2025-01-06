@@ -46,7 +46,7 @@ export class UserService implements IUserService {
           email: payload.email,
           image: {
             url: payload.picture ? payload.picture : '',
-            name : payload.name
+            name: payload.name
           },
           password: null
         }
@@ -57,7 +57,7 @@ export class UserService implements IUserService {
       if (newUser?.provider !== 'google') return { err: httpStatus.CONFLICT, data: null }
 
       const accessToken = jwt.sign(
-        { "username": newUser.email },
+        { "username": newUser.email, "userId": newUser._id },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -185,7 +185,7 @@ export class UserService implements IUserService {
       }
       const newUser = await this.userRepo.create({ ...user, role: 'user' })
       const accessToken = jwt.sign(
-        { "username": newUser.email },
+        { "username": newUser.email, "userId": newUser._id },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -256,7 +256,7 @@ export class UserService implements IUserService {
   async login(email: string, password: string) {
     try {
       const foundUser = await this.userRepo.findByEmail(email)
-      if (!foundUser) return { err: httpStatus.NOT_FOUND, errMsg:"user doesn't exists" ,data: null }
+      if (!foundUser) return { err: httpStatus.NOT_FOUND, errMsg: "user doesn't exists", data: null }
       if (foundUser.status === 'blocked') return { err: httpStatus.CONFLICT, data: null }
       if (foundUser.status === 'deleted') return { err: httpStatus.GONE, data: null }
 
@@ -264,7 +264,7 @@ export class UserService implements IUserService {
       if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
 
       const accessToken = jwt.sign(
-        { "username": foundUser.email },
+        { "username": foundUser.email, "userId": foundUser._id },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -318,7 +318,7 @@ export class UserService implements IUserService {
         }
 
         const accessToken = jwt.sign(
-          { username: decoded.username },
+          { username: decoded.username, userId: user._id },
           ACCESS_TOKEN_SECRET,
           { expiresIn: REFRESH_EXPIRES_IN }
         )
@@ -352,7 +352,7 @@ export class UserService implements IUserService {
       const newUser = await this.userRepo.create({ ...user, role: 'admin' })
 
       const accessToken = jwt.sign(
-        { "username": newUser.email, role: 'admin' },
+        { "username": newUser.email, "userId": newUser._id, role: 'admin' },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -385,7 +385,7 @@ export class UserService implements IUserService {
       const isMatch = await bcrypt.compare(password, foundUser.password as string)
       if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
       const accessToken = jwt.sign(
-        { "username": foundUser.email, role: 'admin' },
+        { "username": foundUser.email, "userId": foundUser._id, role: 'admin' },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
