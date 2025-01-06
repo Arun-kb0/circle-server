@@ -28,13 +28,15 @@ export const convertPostForGrpc = (post: Partial<IPost>) => {
 }
 
 export const convertPostForDb = (post: Post): Partial<IPost> => {
-  const { createdAt, updatedAt, mediaType, status, ...rest } = post
+  const { createdAt, updatedAt, mediaType, status, _id, ...rest } = post
   const convertedPost: Partial<IPost> = {
     ...rest,
     mediaType: mediaType as 'image' | 'video' | 'text',
     status: status as 'active' | 'deleted' | 'blocked',
-    createdAt: stringToDate(createdAt as string),
-    updatedAt: stringToDate(updatedAt as string)
+    // createdAt: stringToDate(createdAt as string),
+    // updatedAt: stringToDate(updatedAt as string)
+    ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
+    ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }
   return convertedPost
 }

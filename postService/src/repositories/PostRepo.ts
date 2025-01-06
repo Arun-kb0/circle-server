@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import IPost from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo'
 import { Post } from '../model/postModel'
@@ -10,6 +11,10 @@ class PostRepo implements IPostRepo {
   }
 
   async update(postId: string, post: Partial<IPost>): Promise<IPost | null> {
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      throw new Error('Invalid postId: must be a valid ObjectId');
+    }
+    console.log(post)
     const updatedPost = await Post.findOneAndUpdate(
       { _id: postId },
       { $set: post },

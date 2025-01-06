@@ -8,7 +8,7 @@ const PostSchema = new Schema<IPost>(
     mediaType: { type: String },
     media: { type: [String], default: [] },
     authorId: { type: String },
-    status: { type: String },
+    status: { type: String , default: "active" },
     likesCount: { type: Number, default: 0 },
     reportsCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },

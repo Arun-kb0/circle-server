@@ -1,11 +1,6 @@
 import IComment from "./IComment";
 import IPost from "./IPost";
-
-export type SvcFuncReturnType<T> = Promise<{
-  err: number | null;
-  errMsg?: string
-  data: T | null;
-}>
+import SvcFuncReturnType from '../constants/SvcReturnType'
 
 interface IPostService {
   createPost(post: Partial<IPost>): SvcFuncReturnType<IPost>

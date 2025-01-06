@@ -5,8 +5,9 @@ import IPostController, {
 import IPostService from '../interfaces/IPostService';
 import handleError from '../util/handleError';
 import { validateRequest, validateResponse } from '../util/validations'
-import { convertPostForGrpc } from '../util/converter'
+import { convertPostForDb, convertPostForGrpc } from '../util/converter'
 import IPost from '../interfaces/IPost';
+import { Post__Output } from '../proto/post/Post';
 
 class PostController implements IPostController {
 
@@ -18,7 +19,8 @@ class PostController implements IPostController {
     try {
       const { post } = call.request
       validateRequest('post is required.', post)
-      const res = await this.postService.createPost(post as Partial<IPost>)
+      const convertedPost = convertPostForDb(post as Post__Output)
+      const res = await this.postService.createPost(convertedPost)
       validateResponse(res)
       const newPost = convertPostForGrpc(res.data as IPost)
       cb(null, { post: newPost })
@@ -32,7 +34,8 @@ class PostController implements IPostController {
     try {
       const { post, postId } = call.request
       validateRequest('post is required.', post)
-      const res = await this.postService.updatePost(postId as string, post as Partial<IPost>)
+      const convertedPost = convertPostForDb(post as Post__Output)
+      const res = await this.postService.updatePost(postId as string, convertedPost)
       validateResponse(res)
       const updatedPost = convertPostForGrpc(res.data as IPost)
       cb(null, { post: updatedPost })

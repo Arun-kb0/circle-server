@@ -11,10 +11,12 @@ export interface ProtoGrpcType {
   post: {
     Comment: MessageTypeDefinition
     CommentEnums: MessageTypeDefinition
-    CommentPostRequest: MessageTypeDefinition
-    CommentPostResponse: MessageTypeDefinition
+    CreateCommentRequest: MessageTypeDefinition
+    CreateCommentResponse: MessageTypeDefinition
     CreatePostRequest: MessageTypeDefinition
     CreatePostResponse: MessageTypeDefinition
+    DeleteCommentRequest: MessageTypeDefinition
+    DeleteCommentResponse: MessageTypeDefinition
     DeletePostRequest: MessageTypeDefinition
     DeletePostResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
@@ -24,6 +26,8 @@ export interface ProtoGrpcType {
     Post: MessageTypeDefinition
     PostService: SubtypeConstructor<typeof grpc.Client, _post_PostServiceClient> & { service: _post_PostServiceDefinition }
     Status: EnumTypeDefinition
+    UpdateCommentRequest: MessageTypeDefinition
+    UpdateCommentResponse: MessageTypeDefinition
     UpdatePostRequest: MessageTypeDefinition
     UpdatePostResponse: MessageTypeDefinition
   }

@@ -2,7 +2,7 @@ import * as grpc from '@grpc/grpc-js'
 import { CustomError } from './CustomError'
 
 // * specific for controller 
-export const validateResponse = (res: { err: number | null, data: any }) => {
+export const validateResponse = (res: { err: number | null, data: any  ,errMsg?:string}) => {
   if (!res) {
     const code = grpc.status.NOT_FOUND
     const message = 'res is empty.'
@@ -10,12 +10,12 @@ export const validateResponse = (res: { err: number | null, data: any }) => {
   }
   if (res.err) {
     const code = grpc.status.INTERNAL
-    const message = `error ${res.err}.`
+    const message = `${res.errMsg}.`
     throw new CustomError(code, message, 'cnt')
   }
   if (!res.data) {
     const code = grpc.status.NOT_FOUND
-    const message = `user not found.`
+    const message = `res data empty.`
     throw new CustomError(code, message, 'cnt')
   }
 }

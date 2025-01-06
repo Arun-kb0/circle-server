@@ -1,9 +1,10 @@
 import IComment from '../interfaces/IComment';
 import IPost from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo';
-import IPostService, { SvcFuncReturnType } from '../interfaces/IPostService'
+import IPostService from '../interfaces/IPostService'
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
+import SvcFuncReturnType from '../constants/SvcReturnType';
 
 class PostService implements IPostService {
 
@@ -24,7 +25,7 @@ class PostService implements IPostService {
   async updatePost(postId: string, post: Partial<IPost>): SvcFuncReturnType<IPost> {
     try {
       const updatedUser = await this.postRepo.update(postId, post)
-      if (updatedUser) return { err: httpStatus.NOT_FOUND, errMsg: 'user not found', data: null }
+      if (!updatedUser) return { err: httpStatus.NOT_FOUND, errMsg: 'post not found', data: null }
       return { err: null, data: updatedUser }
     } catch (error) {
       const { code, message } = handleError(error)
