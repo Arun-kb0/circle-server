@@ -10,9 +10,11 @@ service PostService {
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {};
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {};
 
-  rpc CommentPost(CommentPostRequest) returns (CommentPostResponse) {};
-  rpc LikePost(LikePostRequest) returns (LikePostResponse) {};
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {};
+  rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {};
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {};
 
+  rpc LikePost(LikePostRequest) returns (LikePostResponse) {};
 }
 
 
@@ -42,16 +44,16 @@ message CommentEnums {
 }
 
 message Comment {
-  string _id=1;
+  string _id =1;
   string media=2;
   CommentEnums.Media mediaType=3;
-  int32 likeCount=4;
+  int32 likesCount=4;
   int32 replayCount=5;
   string parentId =6;
   Status status=7;
   string contentId=8;
   string contentType=9; 
-  string createAt=10;
+  string createdAt=10;
   string updatedAt=11;
   string authorId=12;
 }
@@ -119,14 +121,29 @@ message LikePostResponse {
   int32 likeCount=1;
 }
 
-message CommentPostRequest {
-  string comment =1;
-  string commentAuthorId =2;
-  string postId =3;
+message CreateCommentRequest {
+  Comment comment =1;
+  string contentType=2;
+  string contentId =3;
 }
 
-message CommentPostResponse {
+message CreateCommentResponse {
   Comment comment =1;
-  string postAuthorId =3;
-  string postId =4;
+}
+
+message UpdateCommentRequest {
+  Comment comment =1;
+  string commentId =2;
+}
+
+message UpdateCommentResponse {
+  Comment comment=1;
+}
+
+message DeleteCommentRequest {
+  string commentId=1;
+}
+
+message DeleteCommentResponse {
+  string commentId=1;
 }

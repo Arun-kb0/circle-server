@@ -10,6 +10,7 @@ import errorHandler from './middleware/errorHandler'
 import cookieParser from 'cookie-parser'
 import userRouter from './router/userRoutes'
 import postRouter from './router/postRouter'
+import commentRouter from './router/commentRouter'
 import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
 
@@ -26,6 +27,7 @@ app.use(cors(corsOptions))
 app.use('/auth', authRouter)
 app.use('/user', authorize, userRouter)
 app.use('/post', authorize, postRouter)
+app.use('/comment', authorize, commentRouter)
 
 
 app.use('/test', (req, res) => {

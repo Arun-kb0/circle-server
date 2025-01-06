@@ -44,16 +44,16 @@ message CommentEnums {
 }
 
 message Comment {
-  string _id=1;
+  string _id =1;
   string media=2;
   CommentEnums.Media mediaType=3;
-  int32 likeCount=4;
+  int32 likesCount=4;
   int32 replayCount=5;
   string parentId =6;
   Status status=7;
   string contentId=8;
   string contentType=9; 
-  string createAt=10;
+  string createdAt=10;
   string updatedAt=11;
   string authorId=12;
 }
@@ -133,8 +133,7 @@ message CreateCommentResponse {
 
 message UpdateCommentRequest {
   Comment comment =1;
-  string contentType=2;
-  string contentId =3;
+  string commentId =2;
 }
 
 message UpdateCommentResponse {

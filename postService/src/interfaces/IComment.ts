@@ -11,8 +11,8 @@ interface IComment extends Document {
   replayCount: number
   contentId: string
   contentType: 'post' | 'story' | 'comment'
-  updateAt: Date
-  createAt: Date
+  updatedAt: Date
+  createdAt: Date
 }
 
 export default IComment

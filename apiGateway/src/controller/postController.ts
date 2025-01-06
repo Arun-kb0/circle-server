@@ -1,26 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "../constants/httpStatus";
-import path from "path";
-import getPackageDef from "../util/getPackageDef";
-import * as grpc from '@grpc/grpc-js'
-import { ProtoGrpcType } from "../protos/postProto/post";
 import { AuthRequest } from "../constants/types";
 import HttpError from "../util/HttpError";
+import PostGrpcClient from '../config/PostGrpcClient'
 
 
-const PROTO_PATH = path.join(__dirname, '..', 'protos', 'postProto', 'post.proto')
-const PORT = process.env.POST_SERVICE_PORT || 50053
-const HOST = process.env.POST_SERVICE_HOST || 'host.docker.internal'
-const IP_ADDRESS = `${HOST}:${PORT}`
-console.log("post service ip = ",IP_ADDRESS)
-
-const packageDef = getPackageDef(PROTO_PATH)
-const authProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-const client = new authProto.post.PostService(
-  IP_ADDRESS,
-  grpc.credentials.createInsecure()
-)
-
+const client = PostGrpcClient.getClient()
 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -76,18 +61,3 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
   }
 }
 
-export const CommentPost = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.status(httpStatus.OK).json({ message: "get posts success", posts: [] })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const LikePost = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.status(httpStatus.OK).json({ message: "get posts success", posts: [] })
-  } catch (error) {
-    next(error)
-  }
-}

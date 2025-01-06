@@ -2,12 +2,14 @@
 
 import type { Comment as _post_Comment, Comment__Output as _post_Comment__Output } from '../post/Comment';
 
-export interface UpdateCommentRequest {
+export interface CreateCommentRequest {
   'comment'?: (_post_Comment | null);
-  'commentId'?: (string);
+  'contentType'?: (string);
+  'contentId'?: (string);
 }
 
-export interface UpdateCommentRequest__Output {
+export interface CreateCommentRequest__Output {
   'comment'?: (_post_Comment__Output);
-  'commentId'?: (string);
+  'contentType'?: (string);
+  'contentId'?: (string);
 }

@@ -4,7 +4,7 @@ import { getGrpcServer, startGrpcServer } from '../config/grpc'
 import { ProtoGrpcType } from '../proto/post'
 import path from 'path'
 import logInterceptor from '../util/logInterceptor'
-import { postController } from '../DI'
+import { commentController, postController } from '../DI'
 
 
 const PROTO_FILE = path.resolve(__dirname, '../proto/post.proto')
@@ -31,6 +31,10 @@ const grpcConnect = () => {
       createPost: logInterceptor(postController.createPost),
       updatePost: logInterceptor(postController.updatePost),
       deletePost: logInterceptor(postController.deletePost),
+
+      createComment: logInterceptor(commentController.createComment),
+      updateComment: logInterceptor(commentController.updateComment),
+      deleteComment: logInterceptor(commentController.deleteComment),
       
     }
   )
