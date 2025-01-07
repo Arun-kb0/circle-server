@@ -2,11 +2,17 @@ import mongoose from 'mongoose';
 import IPost from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo'
 import { Post } from '../model/postModel'
+import { publishMessage } from '../util/rabbitmq'
+import { addPostToCache } from '../util/redisCache'
+
+const QUEUE_NAME = 'post-popular'
 
 class PostRepo implements IPostRepo {
 
   async create(post: Partial<IPost>): Promise<IPost> {
     const newPost = await Post.create(post)
+    publishMessage(QUEUE_NAME, JSON.stringify(newPost) )
+    addPostToCache()
     return newPost
   }
 

@@ -1,23 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import * as grpc from '@grpc/grpc-js'
-import path from 'path'
-import getPackageDef from '../util/getPackageDef'
-import { ProtoGrpcType } from '../protos/user'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
+import UserGrpcClient from '../config/UserGrpcClient'
 
+// const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
+// const HOST = process.env.USER_SERVICE_HOST || 'localhost'
+// const PORT = process.env.USER_SERVICE_PORT || 50052
+// const IP_ADDRESS = `${HOST}:${PORT}`
 
-const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
-const HOST = process.env.USER_SERVICE_HOST || 'localhost'
-const PORT = process.env.USER_SERVICE_PORT || 50052
-const IP_ADDRESS = `${HOST}:${PORT}`
+// const packageDef = getPackageDef(PROTO_PATH)
+// const userProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
+// const client = new userProto.user.UserService(
+//   IP_ADDRESS,
+//   grpc.credentials.createInsecure()
+// )
 
-const packageDef = getPackageDef(PROTO_PATH)
-const userProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-const client = new userProto.user.UserService(
-  IP_ADDRESS,
-  grpc.credentials.createInsecure()
-)
+const client = UserGrpcClient.getClient()
 
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {

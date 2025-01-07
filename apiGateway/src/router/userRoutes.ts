@@ -2,7 +2,7 @@ import express from "express";
 import {
   blockUser, getAllUsers,
   getUser, unblockUser, updateUser
-} from "../controller/userController";
+} from "../controller/UserController";
 
 
 const router = express.Router()
