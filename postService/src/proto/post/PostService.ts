@@ -10,8 +10,10 @@ import type { DeleteCommentRequest as _post_DeleteCommentRequest, DeleteCommentR
 import type { DeleteCommentResponse as _post_DeleteCommentResponse, DeleteCommentResponse__Output as _post_DeleteCommentResponse__Output } from '../post/DeleteCommentResponse';
 import type { DeletePostRequest as _post_DeletePostRequest, DeletePostRequest__Output as _post_DeletePostRequest__Output } from '../post/DeletePostRequest';
 import type { DeletePostResponse as _post_DeletePostResponse, DeletePostResponse__Output as _post_DeletePostResponse__Output } from '../post/DeletePostResponse';
-import type { LikePostRequest as _post_LikePostRequest, LikePostRequest__Output as _post_LikePostRequest__Output } from '../post/LikePostRequest';
-import type { LikePostResponse as _post_LikePostResponse, LikePostResponse__Output as _post_LikePostResponse__Output } from '../post/LikePostResponse';
+import type { LikeRequest as _post_LikeRequest, LikeRequest__Output as _post_LikeRequest__Output } from '../post/LikeRequest';
+import type { LikeResponse as _post_LikeResponse, LikeResponse__Output as _post_LikeResponse__Output } from '../post/LikeResponse';
+import type { UnlikeRequest as _post_UnlikeRequest, UnlikeRequest__Output as _post_UnlikeRequest__Output } from '../post/UnlikeRequest';
+import type { UnlikeResponse as _post_UnlikeResponse, UnlikeResponse__Output as _post_UnlikeResponse__Output } from '../post/UnlikeResponse';
 import type { UpdateCommentRequest as _post_UpdateCommentRequest, UpdateCommentRequest__Output as _post_UpdateCommentRequest__Output } from '../post/UpdateCommentRequest';
 import type { UpdateCommentResponse as _post_UpdateCommentResponse, UpdateCommentResponse__Output as _post_UpdateCommentResponse__Output } from '../post/UpdateCommentResponse';
 import type { UpdatePostRequest as _post_UpdatePostRequest, UpdatePostRequest__Output as _post_UpdatePostRequest__Output } from '../post/UpdatePostRequest';
@@ -54,14 +56,23 @@ export interface PostServiceClient extends grpc.Client {
   deletePost(argument: _post_DeletePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_DeletePostResponse__Output>): grpc.ClientUnaryCall;
   deletePost(argument: _post_DeletePostRequest, callback: grpc.requestCallback<_post_DeletePostResponse__Output>): grpc.ClientUnaryCall;
   
-  LikePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  LikePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  LikePost(argument: _post_LikePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  LikePost(argument: _post_LikePostRequest, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  likePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  likePost(argument: _post_LikePostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  likePost(argument: _post_LikePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
-  likePost(argument: _post_LikePostRequest, callback: grpc.requestCallback<_post_LikePostResponse__Output>): grpc.ClientUnaryCall;
+  Like(argument: _post_LikeRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  Like(argument: _post_LikeRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  Like(argument: _post_LikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  Like(argument: _post_LikeRequest, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  like(argument: _post_LikeRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  like(argument: _post_LikeRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  like(argument: _post_LikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  like(argument: _post_LikeRequest, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
+  
+  UnLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  UnLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  UnLike(argument: _post_UnlikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  UnLike(argument: _post_UnlikeRequest, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  unLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  unLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  unLike(argument: _post_UnlikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
+  unLike(argument: _post_UnlikeRequest, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
   
   UpdateComment(argument: _post_UpdateCommentRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UpdateCommentResponse__Output>): grpc.ClientUnaryCall;
   UpdateComment(argument: _post_UpdateCommentRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_UpdateCommentResponse__Output>): grpc.ClientUnaryCall;
@@ -92,7 +103,9 @@ export interface PostServiceHandlers extends grpc.UntypedServiceImplementation {
   
   DeletePost: grpc.handleUnaryCall<_post_DeletePostRequest__Output, _post_DeletePostResponse>;
   
-  LikePost: grpc.handleUnaryCall<_post_LikePostRequest__Output, _post_LikePostResponse>;
+  Like: grpc.handleUnaryCall<_post_LikeRequest__Output, _post_LikeResponse>;
+  
+  UnLike: grpc.handleUnaryCall<_post_UnlikeRequest__Output, _post_UnlikeResponse>;
   
   UpdateComment: grpc.handleUnaryCall<_post_UpdateCommentRequest__Output, _post_UpdateCommentResponse>;
   
@@ -105,7 +118,8 @@ export interface PostServiceDefinition extends grpc.ServiceDefinition {
   CreatePost: MethodDefinition<_post_CreatePostRequest, _post_CreatePostResponse, _post_CreatePostRequest__Output, _post_CreatePostResponse__Output>
   DeleteComment: MethodDefinition<_post_DeleteCommentRequest, _post_DeleteCommentResponse, _post_DeleteCommentRequest__Output, _post_DeleteCommentResponse__Output>
   DeletePost: MethodDefinition<_post_DeletePostRequest, _post_DeletePostResponse, _post_DeletePostRequest__Output, _post_DeletePostResponse__Output>
-  LikePost: MethodDefinition<_post_LikePostRequest, _post_LikePostResponse, _post_LikePostRequest__Output, _post_LikePostResponse__Output>
+  Like: MethodDefinition<_post_LikeRequest, _post_LikeResponse, _post_LikeRequest__Output, _post_LikeResponse__Output>
+  UnLike: MethodDefinition<_post_UnlikeRequest, _post_UnlikeResponse, _post_UnlikeRequest__Output, _post_UnlikeResponse__Output>
   UpdateComment: MethodDefinition<_post_UpdateCommentRequest, _post_UpdateCommentResponse, _post_UpdateCommentRequest__Output, _post_UpdateCommentResponse__Output>
   UpdatePost: MethodDefinition<_post_UpdatePostRequest, _post_UpdatePostResponse, _post_UpdatePostRequest__Output, _post_UpdatePostResponse__Output>
 }

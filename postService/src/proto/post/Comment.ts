@@ -2,6 +2,7 @@
 
 import type { _post_CommentEnums_Media, _post_CommentEnums_Media__Output } from '../post/CommentEnums';
 import type { Status as _post_Status, Status__Output as _post_Status__Output } from '../post/Status';
+import type { _post_CommentEnums_ContentType, _post_CommentEnums_ContentType__Output } from '../post/CommentEnums';
 
 export interface Comment {
   '_id'?: (string);
@@ -12,7 +13,7 @@ export interface Comment {
   'parentId'?: (string);
   'status'?: (_post_Status);
   'contentId'?: (string);
-  'contentType'?: (string);
+  'contentType'?: (_post_CommentEnums_ContentType);
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'authorId'?: (string);
@@ -27,7 +28,7 @@ export interface Comment__Output {
   'parentId'?: (string);
   'status'?: (_post_Status__Output);
   'contentId'?: (string);
-  'contentType'?: (string);
+  'contentType'?: (_post_CommentEnums_ContentType__Output);
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'authorId'?: (string);

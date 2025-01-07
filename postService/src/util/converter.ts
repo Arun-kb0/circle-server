@@ -1,8 +1,10 @@
-import { Schema } from "mongoose"
+import { Date, Schema } from "mongoose"
 import IPost from "../interfaces/IPost"
 import { Post } from "../proto/post/Post"
 import { Comment } from "../proto/post/Comment"
 import IComment from "../interfaces/IComment"
+import { Like } from "../proto/post/Like"
+import ILike from '../interfaces/ILike'
 
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {
@@ -77,4 +79,26 @@ export const convertCommentForDb = (comment: Comment): Partial<IComment> => {
     ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }
   return convertedComment
+}
+
+export const convertLikeForGrpc = (like: ILike): Like => {
+  const { contentType, updatedAt, createdAt, _id, contentId, authorId } = like
+  const convertedLike: Like = {
+    _id, contentId, authorId,
+    contentType: contentType as ILike["contentType"],
+    createdAt: dateToString(createdAt),
+    updatedAt: dateToString(updatedAt),
+  }
+  return convertedLike
+}
+
+export const convertLikeForDb = (like: Like): ILike => {
+  const { contentType, updatedAt, createdAt, _id, contentId, authorId } = like
+  const convertedLike: Partial<ILike> = {
+    _id, contentId, authorId,
+    contentType: contentType as ILike["contentType"],
+    ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
+    ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
+  }
+  return convertedLike as ILike
 }

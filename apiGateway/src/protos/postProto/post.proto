@@ -14,7 +14,8 @@ service PostService {
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {};
   rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {};
 
-  rpc LikePost(LikePostRequest) returns (LikePostResponse) {};
+  rpc Like(LikeRequest) returns (LikeResponse) {};
+  rpc UnLike(UnlikeRequest) returns (UnlikeResponse) {};
 }
 
 
@@ -41,6 +42,21 @@ message CommentEnums {
     text=0;
     gif=1;
   }
+  enum ContentType {
+    post=0;
+    story=1;
+    comment=2;
+  }
+}
+
+
+message Like {
+  string _id=1;
+  string authorId=2;
+  string contentId=3;
+  CommentEnums.ContentType contentType=4;
+  string updatedAt=5;
+  string createdAt=6;
 }
 
 message Comment {
@@ -52,7 +68,7 @@ message Comment {
   string parentId =6;
   Status status=7;
   string contentId=8;
-  string contentType=9; 
+  CommentEnums.ContentType contentType=9; 
   string createdAt=10;
   string updatedAt=11;
   string authorId=12;
@@ -73,6 +89,7 @@ message Post  {
   string updatedAt=11;
   string createdAt=12;
 }
+
 
 
 // message GetGlobalFeedRequest {}
@@ -112,13 +129,23 @@ message DeletePostResponse {
   string postId=1;
 }
 
-message LikePostRequest {
-  string userId =1;
-  bool isLike=2;
+message LikeRequest {
+  string authorId =1;
+  CommentEnums.ContentType contentType=2;
+  string contentId =3;
 }
 
-message LikePostResponse {
-  int32 likeCount=1;
+message LikeResponse {
+  Like like=1;
+}
+
+message UnlikeRequest {
+  string contentId=1;
+  string authorId=2;
+}
+
+message UnlikeResponse {
+  Like like=1;
 }
 
 message CreateCommentRequest {
