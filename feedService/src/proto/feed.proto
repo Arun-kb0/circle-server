@@ -1,0 +1,104 @@
+syntax = "proto3";
+package feed;
+
+
+service FeedService {
+  rpc GetGlobalFeed(GetGlobalFeedRequest) returns (GetGlobalFeedResponse) {};
+  rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
+  rpc GetPost(GetPostRequest) returns (GetPostResponse) {};
+  
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
+};
+
+
+
+message Image {
+  string url =1;
+  string name=2;
+};
+
+
+enum Media {
+  image=0;
+  video=1;
+  text=2;
+};
+
+enum Status {
+  active=0;
+  deleted=1;
+  blocked=2;
+};
+
+message CommentEnums {
+  enum Media {
+    text=0;
+    gif=1;
+  }
+  enum ContentType {
+    post=0;
+    story=1;
+    comment=2;
+  }
+};
+
+message Comment {
+  string _id =1;
+  string media=2;
+  CommentEnums.Media mediaType=3;
+  int32 likesCount=4;
+  int32 replayCount=5;
+  string parentId =6;
+  Status status=7;
+  string contentId=8;
+  CommentEnums.ContentType contentType=9; 
+  string createdAt=10;
+  string updatedAt=11;
+  string authorId=12;
+};
+
+message Post  {
+  string _id=1;
+  string desc=2;
+  Media mediaType=3;
+  repeated string media=4;
+  repeated string tags=13;
+  string authorId=5;
+  Status status =6;
+  int32 likesCount=7;
+  int32 reportsCount=8;
+  int32 commentCount=9;
+  int32 shareCount=10;
+  string updatedAt=11;
+  string createdAt=12;
+};
+
+
+
+message GetGlobalFeedRequest {};
+
+message GetGlobalFeedResponse {
+  repeated Post posts=1;
+};
+
+message GetUserFeedRequest {};
+
+message GetUserFeedResponse {
+  repeated Post posts=1;
+};
+
+message GetCommentRequest {
+  string contentId=1;
+};
+
+message GetCommentResponse {
+  repeated Comment comments =1;
+};
+
+message GetPostRequest {
+  string postId=1;
+}
+
+message GetPostResponse {
+  Post post=2;
+}

@@ -1,11 +1,8 @@
 syntax = "proto3";
-
 package post;
 
 service PostService {
-  // rpc GetGlobalFeed(GetGlobalFeedRequest) returns (GetGlobalFeedResponse) {};
-  // rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
-
+  
   rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {};
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {};
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {};
@@ -92,17 +89,6 @@ message Post  {
 
 
 
-// message GetGlobalFeedRequest {}
-
-// message GetGlobalFeedResponse {
-//   repeated Post posts=1;
-// }
-
-// message GetUserFeedRequest {}
-
-// message GetUserFeedResponse {
-//   repeated Post posts=1;
-// }
 
 message CreatePostRequest {
   Post post = 1;

@@ -20,3 +20,8 @@ userService/logs
 postService/node_modules
 postService/.env
 postService/logs
+
+# feed service
+feedService/node_modules
+feedService/.env
+feedService/logs
