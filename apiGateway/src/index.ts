@@ -14,9 +14,10 @@ import commentRouter from './router/commentRouter'
 import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
 import likeRouter from './router/likeRouter'
+import feedRouter from './router/feedRouter'
 
 const app = express()
-const PORT  = 5001
+const PORT = 5001
 
 
 app.use(express.json())
@@ -30,6 +31,7 @@ app.use('/user', authorize, userRouter)
 app.use('/post', authorize, postRouter)
 app.use('/comment', authorize, commentRouter)
 app.use('/like', authorize, likeRouter)
+app.use('/feed', authorize, feedRouter)
 
 
 app.use('/test', (req, res) => {

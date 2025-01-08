@@ -19,6 +19,8 @@ services:
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       # - POST_SERVICE_HOST=${GT_POST_SERVICE_HOST}
       # - POST_SERVICE_PORT=${POST_SERVICE_PORT}
+      # - FEED_SERVICE_HOST=${FEED_SERVICE_HOST}
+      # - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
 
   auth-service:
     build: ./auth

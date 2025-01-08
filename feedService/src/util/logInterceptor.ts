@@ -25,7 +25,7 @@ function logInterceptor<T, R>(handler: handleUnaryCall<T, R>): handleUnaryCall<T
           request: { path, requestData },
           response: { error: err }
         }
-        logger.log("error", "post-service", {
+        logger.log("error", "feed-service", {
           logData: formatted
         })
       } else {
@@ -36,7 +36,7 @@ function logInterceptor<T, R>(handler: handleUnaryCall<T, R>): handleUnaryCall<T
             requestData: handleResponseSize(response)
           }
         }
-        logger.log("info", "post-service", {
+        logger.log("info", "feed-service", {
           logData: formatted
         })
       }
