@@ -6,6 +6,7 @@ service FeedService {
   rpc GetGlobalFeed(GetGlobalFeedRequest) returns (GetGlobalFeedResponse) {};
   rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
   rpc GetPost(GetPostRequest) returns (GetPostResponse) {};
+  rpc SearchPost(SearchPostRequest) returns (SearchPostResponse) {};
   
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
 };
@@ -42,6 +43,15 @@ message CommentEnums {
   }
 };
 
+message Like {
+  string _id=1;
+  string authorId=2;
+  string contentId=3;
+  CommentEnums.ContentType contentType=4;
+  string updatedAt=5;
+  string createdAt=6;
+};
+
 message Comment {
   string _id =1;
   string media=2;
@@ -75,24 +85,35 @@ message Post  {
 
 
 
-message GetGlobalFeedRequest {};
+message GetGlobalFeedRequest {
+  int32 page=1;
+};
 
 message GetGlobalFeedResponse {
   repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
 };
 
-message GetUserFeedRequest {};
+message GetUserFeedRequest {
+  int32 page=1;
+};
 
 message GetUserFeedResponse {
   repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
 };
 
 message GetCommentRequest {
   string contentId=1;
+  int32 page=2;
 };
 
 message GetCommentResponse {
   repeated Comment comments =1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
 };
 
 message GetPostRequest {
@@ -100,5 +121,18 @@ message GetPostRequest {
 }
 
 message GetPostResponse {
-  Post post=2;
+  Post post=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+}
+
+message SearchPostRequest {
+  string searchText=1;
+  int32 page=2;
+}
+
+message SearchPostResponse {
+  repeated Post post=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
 }

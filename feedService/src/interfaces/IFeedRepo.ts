@@ -3,6 +3,10 @@ import IComment from '../interfaces/IComment'
 
 interface IFeedRepo {
 
+  getSearchPostsCount(searchText: string): Promise<number>
+  getPostCount(followeeIds?: string[]): Promise<number>
+  getCommentCount(contentId: string): Promise<number>
+
   getGlobalPosts(limit: number, startIndex: number): Promise<IPost[]>
   getUserPosts(limit: number, startIndex: number): Promise<IPost[]>
   getPost(postId: string): Promise<IPost | null>

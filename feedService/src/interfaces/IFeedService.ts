@@ -1,14 +1,16 @@
-import SvcReturnType from '../constants/SvcReturnType'
+import { PaginationComment, PaginationPost, SvcReturnType } from '../constants/SvcTypes'
 import IComment from './IComment'
 import IPost from './IPost'
 
 interface IFeedService {
 
-  getGlobalFeed(): SvcReturnType<IPost[]>
-  getUserFeed(): SvcReturnType<IPost[]>
-  getPost(): SvcReturnType<IPost>
+  getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPost[]>>
+  getUserFeed(page: number): SvcReturnType<PaginationPost<IPost[]>>
 
-  getComments(contentId:string) :SvcReturnType<IComment[]>
+  getPost(postId: string): SvcReturnType<IPost | null>
+  searchPost(searchText: string, page: number): SvcReturnType<PaginationPost<IPost[] | null>>
+
+  getComments(contentId: string, page: number): SvcReturnType<PaginationComment<IComment[]>>
 }
 
 export default IFeedService

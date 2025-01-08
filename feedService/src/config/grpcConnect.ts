@@ -4,7 +4,7 @@ import { getGrpcServer, startGrpcServer } from './grpc'
 import { ProtoGrpcType } from '../proto/feed'
 import path from 'path'
 import logInterceptor from '../util/logInterceptor'
-import { } from '../DI'
+import { feedController } from '../DI'
 
 
 const PROTO_FILE = path.resolve(__dirname, '../proto/feed.proto')
@@ -28,7 +28,11 @@ const grpcConnect = () => {
   server.addService(
     userProto.feed.FeedService.service,
     {
-      
+      getGlobalFeed: logInterceptor(feedController.getGlobalFeed),
+      getUserFeed: logInterceptor(feedController.getUserFeed),
+      getPost: logInterceptor(feedController.getPost),
+      searchPost: logInterceptor(feedController.searchPost),
+      getComment: logInterceptor(feedController.getComments)
     }
   )
 

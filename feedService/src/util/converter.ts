@@ -1,9 +1,9 @@
 import { Date, Schema } from "mongoose"
 import IPost from "../interfaces/IPost"
-import { Post } from "../proto/post/Post"
-import { Comment } from "../proto/post/Comment"
+import { Post } from "../proto/feed/Post"
+import { Comment } from "../proto/feed/Comment"
 import IComment from "../interfaces/IComment"
-import { Like } from "../proto/post/Like"
+import { Like } from "../proto/feed/Like"
 import ILike from '../interfaces/ILike'
 
 
@@ -37,8 +37,6 @@ export const convertPostForDb = (post: Post): Partial<IPost> => {
     ...rest,
     mediaType: mediaType as 'image' | 'video' | 'text',
     status: status as 'active' | 'deleted' | 'blocked',
-    // createdAt: stringToDate(createdAt as string),
-    // updatedAt: stringToDate(updatedAt as string)
     ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
     ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }

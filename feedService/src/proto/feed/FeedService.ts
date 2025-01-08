@@ -10,6 +10,8 @@ import type { GetPostRequest as _feed_GetPostRequest, GetPostRequest__Output as 
 import type { GetPostResponse as _feed_GetPostResponse, GetPostResponse__Output as _feed_GetPostResponse__Output } from '../feed/GetPostResponse';
 import type { GetUserFeedRequest as _feed_GetUserFeedRequest, GetUserFeedRequest__Output as _feed_GetUserFeedRequest__Output } from '../feed/GetUserFeedRequest';
 import type { GetUserFeedResponse as _feed_GetUserFeedResponse, GetUserFeedResponse__Output as _feed_GetUserFeedResponse__Output } from '../feed/GetUserFeedResponse';
+import type { SearchPostRequest as _feed_SearchPostRequest, SearchPostRequest__Output as _feed_SearchPostRequest__Output } from '../feed/SearchPostRequest';
+import type { SearchPostResponse as _feed_SearchPostResponse, SearchPostResponse__Output as _feed_SearchPostResponse__Output } from '../feed/SearchPostResponse';
 
 export interface FeedServiceClient extends grpc.Client {
   GetComment(argument: _feed_GetCommentRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
@@ -48,6 +50,15 @@ export interface FeedServiceClient extends grpc.Client {
   getUserFeed(argument: _feed_GetUserFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
   getUserFeed(argument: _feed_GetUserFeedRequest, callback: grpc.requestCallback<_feed_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
   
+  SearchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  SearchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  SearchPost(argument: _feed_SearchPostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  SearchPost(argument: _feed_SearchPostRequest, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  searchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  searchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  searchPost(argument: _feed_SearchPostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  searchPost(argument: _feed_SearchPostRequest, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
+  
 }
 
 export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
@@ -59,6 +70,8 @@ export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetUserFeed: grpc.handleUnaryCall<_feed_GetUserFeedRequest__Output, _feed_GetUserFeedResponse>;
   
+  SearchPost: grpc.handleUnaryCall<_feed_SearchPostRequest__Output, _feed_SearchPostResponse>;
+  
 }
 
 export interface FeedServiceDefinition extends grpc.ServiceDefinition {
@@ -66,4 +79,5 @@ export interface FeedServiceDefinition extends grpc.ServiceDefinition {
   GetGlobalFeed: MethodDefinition<_feed_GetGlobalFeedRequest, _feed_GetGlobalFeedResponse, _feed_GetGlobalFeedRequest__Output, _feed_GetGlobalFeedResponse__Output>
   GetPost: MethodDefinition<_feed_GetPostRequest, _feed_GetPostResponse, _feed_GetPostRequest__Output, _feed_GetPostResponse__Output>
   GetUserFeed: MethodDefinition<_feed_GetUserFeedRequest, _feed_GetUserFeedResponse, _feed_GetUserFeedRequest__Output, _feed_GetUserFeedResponse__Output>
+  SearchPost: MethodDefinition<_feed_SearchPostRequest, _feed_SearchPostResponse, _feed_SearchPostRequest__Output, _feed_SearchPostResponse__Output>
 }
