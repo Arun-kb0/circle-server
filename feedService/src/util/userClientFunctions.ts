@@ -1,8 +1,10 @@
 import UserGrpcClient from '../config/UserGrpcClient'
+import IComment, { ICommentExt } from '../interfaces/IComment'
 import IPost, { IPostExt } from '../interfaces/IPost'
 import { User } from '../proto/userProto/user/User'
 
 const client = UserGrpcClient.getClient()
+
 
 const getMultipleUsers = async (userIds: string[]) => {
   try {
@@ -21,7 +23,25 @@ const getMultipleUsers = async (userIds: string[]) => {
   }
 }
 
-export const addUserToPost = async (posts: IPost[]) => {
+const getUser = async (userId: string) => {
+  try {
+    const user: User = await new Promise((resolve, reject) => {
+      client.getUser({ userId }, (err, msg) => {
+        if (err) return reject(new Error(err.message));
+        if (!msg || !msg?.user) return reject(new Error('getMultipleUser response is empty.'));
+        resolve(msg.user as User);
+      })
+    })
+    return user
+  } catch (error) {
+    console.warn('getUser failed')
+    console.log(error)
+    return undefined
+  }
+}
+
+
+export const addUserToPosts = async (posts: IPost[]) => {
   try {
     const userIds = posts.map(post => post.authorId)
     const users = await getMultipleUsers(userIds)
@@ -32,11 +52,47 @@ export const addUserToPost = async (posts: IPost[]) => {
         ...postsObj,
         authorName: user?.name || undefined,
         authorImage: user?.image?.url || undefined,
-      };
-    });
+      }
+    })
     return postsWithUsers
   } catch (error) {
-    console.log('getMultipleUsers failed')
+    console.log('users and posts merging failed')
+    console.log(error)
+    return []
+  }
+}
+
+export const addUserToPost = async (post: IPost): Promise<IPostExt | null> => {
+  try {
+    const user = await getUser(post.authorId)
+    return {
+      ...post,
+      authorName: user?.name,
+      authorImage: user?.image?.url
+    } as IPostExt
+  } catch (error) {
+    console.log('get single user and post merging failed')
+    console.log(error)
+    return null
+  }
+}
+
+export const addUserToComments = async (comments: IComment[]) => {
+  try {
+    const userIds = comments.map(comment => comment.authorId)
+    const users = await getMultipleUsers(userIds)
+    const commentsWithUsers = comments.map((comment) => {
+      const user = users.find((user) => user._id === comment.authorId);
+      const commentObj = comment?.toObject ? comment.toObject() : comment
+      return {
+        ...commentObj,
+        authorName: user?.name || undefined,
+        authorImage: user?.image?.url || undefined,
+      }
+    })
+    return commentsWithUsers as ICommentExt[]
+  } catch (error) {
+    console.log('comment and user merging failed')
     console.log(error)
     return []
   }

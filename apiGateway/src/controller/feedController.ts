@@ -70,7 +70,7 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
     client.getComment({ contentId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'search post failed'))
-      res.status(httpStatus.OK).json({ message: 'search post success', ...msg })
+      res.status(httpStatus.OK).json({ message: 'get comments success', ...msg })
     })
   } catch (error) {
     next(error)

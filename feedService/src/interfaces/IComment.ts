@@ -15,4 +15,10 @@ interface IComment extends Document {
   createdAt: Date
 }
 
+
+export interface ICommentExt extends IComment {
+  authorName: string | undefined
+  authorImage: string | undefined
+}
+
 export default IComment

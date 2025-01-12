@@ -1,5 +1,5 @@
 import { SvcReturnType, PaginationPost, PaginationComment } from '../constants/SvcTypes';
-import IComment from '../interfaces/IComment';
+import IComment, { ICommentExt } from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo';
 import IFeedService from '../interfaces/IFeedService'
 import IPost, { IPostExt } from '../interfaces/IPost';
@@ -54,7 +54,7 @@ class FeedService implements IFeedService {
     }
   }
 
-  async getPost(postId: string): SvcReturnType<IPost | null> {
+  async getPost(postId: string): SvcReturnType<IPostExt | null> {
     try {
       const post = await this.feedRepo.getPost(postId)
       return { err: null, data: post }
@@ -64,7 +64,7 @@ class FeedService implements IFeedService {
     }
   }
 
-  async searchPost(searchText: string, page: number): SvcReturnType<PaginationPost<IPost[] | null>> {
+  async searchPost(searchText: string, page: number): SvcReturnType<PaginationPost<IPostExt[] | null>> {
     try {
       const startIndex = (page - 1) * LIMIT
       const total = await this.feedRepo.getSearchPostsCount(searchText)
@@ -83,7 +83,7 @@ class FeedService implements IFeedService {
     }
   }
 
-  async getComments(contentId: string, page: number): SvcReturnType<PaginationComment<IComment[]>> {
+  async getComments(contentId: string, page: number): SvcReturnType<PaginationComment<ICommentExt[]>> {
     try {
       const startIndex = (page - 1) * LIMIT
       const total = await this.feedRepo.getCommentCount(contentId)

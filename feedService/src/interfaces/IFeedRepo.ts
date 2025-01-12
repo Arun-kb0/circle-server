@@ -1,5 +1,5 @@
 import IPost, { IPostExt } from '../interfaces/IPost'
-import IComment from '../interfaces/IComment'
+import IComment, { ICommentExt } from '../interfaces/IComment'
 
 interface IFeedRepo {
 
@@ -9,9 +9,9 @@ interface IFeedRepo {
 
   getGlobalPosts(limit: number, startIndex: number): Promise<IPostExt[]>
   getUserPosts(limit: number, startIndex: number): Promise<IPostExt[]>
-  getPost(postId: string): Promise<IPost | null>
-  searchPost(searchText: string, limit: number, startIndex: number): Promise<IPost[] | null>
-  getComments(contentId: string, limit: number, startIndex: number): Promise<IComment[]>
+  getPost(postId: string): Promise<IPostExt | null>
+  searchPost(searchText: string, limit: number, startIndex: number): Promise<IPostExt[] | null>
+  getComments(contentId: string, limit: number, startIndex: number): Promise<ICommentExt[]>
 
 }
 

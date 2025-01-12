@@ -1,5 +1,5 @@
 import { PaginationComment, PaginationPost } from "../constants/SvcTypes";
-import IComment from "../interfaces/IComment";
+import IComment, { ICommentExt } from "../interfaces/IComment";
 import IFeedController, {
   GetCommentsHandler, GetGlobalFeedHandler,
   GetPostHandler, GetUserFeedHandler, SearchPostHandler
@@ -85,7 +85,7 @@ class FeedController implements IFeedController {
       validateRequest('contentId and page are required.', contentId, page)
       const res = await this.feedService.getComments(contentId as string, page as number)
       validateResponse(res)
-      const { comments: rawComments, ...rest } = res.data as PaginationComment<IComment[]>
+      const { comments: rawComments, ...rest } = res.data as PaginationComment<ICommentExt[]>
       const comments = rawComments.map(comment => convertCommentForGrpc(comment))
       const response = { comments, ...rest }
       cb(null, response)

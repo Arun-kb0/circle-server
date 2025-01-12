@@ -2,7 +2,7 @@ import { Date, Schema } from "mongoose"
 import IPost, { IPostExt } from "../interfaces/IPost"
 import { Post } from "../proto/feed/Post"
 import { Comment } from "../proto/feed/Comment"
-import IComment from "../interfaces/IComment"
+import IComment, { ICommentExt } from "../interfaces/IComment"
 import { Like } from "../proto/feed/Like"
 import ILike from '../interfaces/ILike'
 
@@ -45,17 +45,18 @@ export const convertPostForDb = (post: Post): Partial<IPost> => {
 }
 
 
-export const convertCommentForGrpc = (comment: IComment): Comment => {
+export const convertCommentForGrpc = (comment: ICommentExt): Comment => {
   const {
     _id, contentId, contentType, status,
     media, mediaType, authorId, parentId,
-    likesCount, replayCount,
+    likesCount, replayCount, authorImage,authorName,
     createdAt, updatedAt
   } = comment
   const convertedComment: Comment = {
     _id, contentId, contentType, status,
     media, mediaType, authorId,
     parentId, likesCount, replayCount,
+    authorImage, authorName,
     createdAt: dateToString(createdAt),
     updatedAt: dateToString(updatedAt),
   }
