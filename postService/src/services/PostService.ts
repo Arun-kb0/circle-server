@@ -1,5 +1,5 @@
-import IComment from '../interfaces/IComment';
-import IPost from '../interfaces/IPost';
+import IComment, { ICommentExt } from '../interfaces/IComment';
+import IPost, { IPostExt } from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo';
 import IPostService from '../interfaces/IPostService'
 import handleError from '../util/handleError'
@@ -12,7 +12,7 @@ class PostService implements IPostService {
     private postRepo: IPostRepo
   ) { }
 
-  async createPost(post: Partial<IPost>): SvcFuncReturnType<IPost> {
+  async createPost(post: Partial<IPost>): SvcFuncReturnType<IPostExt> {
     try {
       const newPost = await this.postRepo.create(post)
       return { err: null, data: newPost }
@@ -22,7 +22,7 @@ class PostService implements IPostService {
     }
   }
 
-  async updatePost(postId: string, post: Partial<IPost>): SvcFuncReturnType<IPost> {
+  async updatePost(postId: string, post: Partial<IPost>): SvcFuncReturnType<IPostExt> {
     try {
       const updatedUser = await this.postRepo.update(postId, post)
       if (!updatedUser) return { err: httpStatus.NOT_FOUND, errMsg: 'post not found', data: null }
@@ -44,7 +44,7 @@ class PostService implements IPostService {
     }
   }
 
-  commentPost(comment: string, commentAuthorId: string, postId: string): SvcFuncReturnType<{ comment: IComment; postAuthorId: string; postId: string; }> {
+  commentPost(comment: string, commentAuthorId: string, postId: string): SvcFuncReturnType<{ comment: ICommentExt; postAuthorId: string; postId: string; }> {
     throw new Error('Method not implemented.');
   }
 

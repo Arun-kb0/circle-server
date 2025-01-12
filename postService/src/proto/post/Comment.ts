@@ -17,6 +17,8 @@ export interface Comment {
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'authorId'?: (string);
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }
 
 export interface Comment__Output {
@@ -32,4 +34,6 @@ export interface Comment__Output {
   'createdAt'?: (string);
   'updatedAt'?: (string);
   'authorId'?: (string);
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }

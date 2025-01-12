@@ -65,11 +65,13 @@ message Comment {
   string parentId =6;
   Status status=7;
   string contentId=8;
-  CommentEnums.ContentType contentType=9; 
+  CommentEnums.ContentType contentType=9;
   string createdAt=10;
   string updatedAt=11;
   string authorId=12;
-}
+  string authorName=13;
+  string authorImage=14;
+};
 
 message Post  {
   string _id=1;
@@ -85,8 +87,9 @@ message Post  {
   int32 shareCount=10;
   string updatedAt=11;
   string createdAt=12;
-}
-
+  string authorName=14;
+  string authorImage=15;
+};
 
 
 

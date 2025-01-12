@@ -5,17 +5,15 @@ import { UpdatePostRequest__Output } from '../proto/post/UpdatePostRequest'
 import { UpdatePostResponse } from '../proto/post/UpdatePostResponse'
 import { DeletePostRequest__Output } from '../proto/post/DeletePostRequest'
 import { DeletePostResponse } from '../proto/post/DeletePostResponse'
-import { CommentPostRequest__Output } from '../proto/post/CommentPostRequest'
-import { CommentPostResponse } from '../proto/post/CommentPostResponse'
-import { LikePostRequest__Output } from '../proto/post/LikePostRequest'
-import { LikePostResponse } from '../proto/post/LikePostResponse'
+import { CreateCommentRequest__Output } from '../proto/post/CreateCommentRequest'
+import { CreateCommentResponse } from '../proto/post/CreateCommentResponse'
+import { LikeRequest__Output } from '../proto/post/LikeRequest'
+import { LikeResponse } from '../proto/post/LikeResponse'
 
 
 export type CreatePostHandler = grpc.handleUnaryCall<CreatePostRequest__Output, CreatePostResponse>
 export type UpdatePostHandler = grpc.handleUnaryCall<UpdatePostRequest__Output, UpdatePostResponse>
 export type DeletePostHandler = grpc.handleUnaryCall<DeletePostRequest__Output, DeletePostResponse>
-export type CommentPostHandler = grpc.handleUnaryCall<CommentPostRequest__Output, CommentPostResponse>
-export type LikePostHandler = grpc.handleUnaryCall<LikePostRequest__Output, LikePostResponse>
 
 
 interface IPostController {
@@ -23,9 +21,6 @@ interface IPostController {
   createPost: CreatePostHandler
   updatePost: UpdatePostHandler
   deletePost: DeletePostHandler
-
-  commentPost: CommentPostHandler
-  likePost: LikePostHandler
 }
 
 export default IPostController

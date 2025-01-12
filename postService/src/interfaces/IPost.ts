@@ -17,4 +17,9 @@ interface IPost extends Document {
   createdAt: Date
 }
 
+export interface IPostExt extends IPost {
+  authorName: string | undefined
+  authorImage: string | undefined
+}
+
 export default IPost

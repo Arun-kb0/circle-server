@@ -1,4 +1,4 @@
-import IComment from "../interfaces/IComment";
+import IComment, { ICommentExt } from "../interfaces/IComment";
 import ICommentController, {
   CreateCommentHandler, DeleteCommentHandler, UpdateCommentHandler
 } from "../interfaces/ICommentController";
@@ -22,7 +22,10 @@ class CommentController implements ICommentController {
       const convertedComment = convertCommentForDb(comment as Comment)
       const res = await this.commentService.createComment(contentType as IComment["contentType"], contentId as string, convertedComment)
       validateResponse(res)
-      const response = convertCommentForGrpc(res.data as IComment)
+      const response = convertCommentForGrpc(res.data as ICommentExt)
+      console.log(res.data)
+      console.log("----------")
+      console.log(response)
       cb(null, { comment: response })
     } catch (error) {
       const err = handleError(error)
@@ -36,7 +39,7 @@ class CommentController implements ICommentController {
       validateRequest('comment , commentId are required', comment, commentId)
       const res = await this.commentService.updateComment(commentId as string, comment as Partial<IComment>)
       validateResponse(res)
-      const response = convertCommentForGrpc(res.data as IComment)
+      const response = convertCommentForGrpc(res.data as ICommentExt)
       cb(null, { comment: response })
     } catch (error) {
       const err = handleError(error)
