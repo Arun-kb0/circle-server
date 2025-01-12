@@ -17,6 +17,8 @@ export interface Post {
   'updatedAt'?: (string);
   'createdAt'?: (string);
   'tags'?: (string)[];
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }
 
 export interface Post__Output {
@@ -33,4 +35,6 @@ export interface Post__Output {
   'updatedAt'?: (string);
   'createdAt'?: (string);
   'tags'?: (string)[];
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }

@@ -1,7 +1,7 @@
 import { IUser } from '../model/UserModel'
 import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
-import IUserService from '../interfaces/IUserService'
+import IUserService, { FuncReturnType } from '../interfaces/IUserService'
 import httpStatus from '../constants/httpStatus'
 
 const LIMIT = 5
@@ -11,6 +11,16 @@ export class UserService implements IUserService {
   constructor(
     private userRepo: IUserRepo
   ) { }
+
+  async getMultipleUsers(userIds: string[]) {
+    try {
+      const user = await this.userRepo.getMultipleUsers(userIds)
+      return { err: null, data: user }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
 
   async getAllUsers(page: number, startDate?: string, endDate?: string, searchText = '') {
     try {

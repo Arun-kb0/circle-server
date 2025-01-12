@@ -2,7 +2,7 @@ import { SvcReturnType, PaginationPost, PaginationComment } from '../constants/S
 import IComment from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo';
 import IFeedService from '../interfaces/IFeedService'
-import IPost from '../interfaces/IPost';
+import IPost, { IPostExt } from '../interfaces/IPost';
 import handleError from '../util/handleError'
 
 const LIMIT = Number(process.env.PAGINATION_LIMIT) || 5
@@ -13,7 +13,7 @@ class FeedService implements IFeedService {
     private feedRepo: IFeedRepo
   ) { }
 
-  async getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPost[]>> {
+  async getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>> {
     try {
       const startIndex = (page - 1) * LIMIT
       const total = await this.feedRepo.getPostCount()
@@ -32,7 +32,7 @@ class FeedService implements IFeedService {
     }
   }
 
-  async getUserFeed(page: number): SvcReturnType<PaginationPost<IPost[]>> {
+  async getUserFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>> {
     try {
       // ! find followees before proceeding
       //  ! getPostCount(followeeIds)

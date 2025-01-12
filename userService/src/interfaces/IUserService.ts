@@ -1,6 +1,6 @@
 import { IUser } from '../model/UserModel'
 
-type FuncReturnType<T> = Promise<{
+export type FuncReturnType<T> = Promise<{
   err: null;
   data: T;
 } | {
@@ -15,6 +15,8 @@ interface IUserService {
 
   blockUser(userId: string): FuncReturnType<IUser>
   unBlockUser(userId: string): FuncReturnType<IUser>
+
+  getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
 }
 
 

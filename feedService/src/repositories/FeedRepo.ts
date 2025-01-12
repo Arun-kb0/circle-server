@@ -1,9 +1,10 @@
 import IComment from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo'
-import IPost from '../interfaces/IPost';
+import IPost, { IPostExt } from '../interfaces/IPost';
 import { Post } from '../model/postModel'
 import { Comment } from '../model/commentModel'
 import { getPopularPostsFromCache } from '../util/redisCache'
+import { addUserToPost } from '../util/userClientFunctions'
 
 class FeedRepo implements IFeedRepo {
 
@@ -32,12 +33,13 @@ class FeedRepo implements IFeedRepo {
     return count
   }
 
-  async getGlobalPosts(limit: number, startIndex: number): Promise<IPost[]> {
+  async getGlobalPosts(limit: number, startIndex: number): Promise<IPostExt[]> {
     const endIndex = startIndex + limit
     const { posts: postsInCache, isCacheExhausted } = await getPopularPostsFromCache(startIndex, endIndex)
     if (isCacheExhausted) {
       const posts = await Post.find().sort({ likesCount: -1 }).limit(limit).skip(startIndex)
-      return posts
+      const updatedPosts = await addUserToPost(posts)
+      return updatedPosts as IPostExt[]
     }
 
     const dbStartIndex = Math.max(0, startIndex - postsInCache.length)
@@ -45,13 +47,15 @@ class FeedRepo implements IFeedRepo {
     const uniquePosts = dbPosts.filter(
       dbPost => !postsInCache.some(cachePost => cachePost._id === dbPost._id)
     )
-    return [...postsInCache, ...uniquePosts]
+    const updatedPosts = await addUserToPost([...postsInCache, ...uniquePosts])
+    return updatedPosts as IPostExt[]
   }
 
   // ! need to implement way to get following userIds
-  async getUserPosts(limit: number, startIndex: number): Promise<IPost[]> {
+  async getUserPosts(limit: number, startIndex: number): Promise<IPostExt[]> {
     const posts = await Post.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-    return posts
+    const updatedPosts = await addUserToPost(posts)
+    return updatedPosts as IPostExt[]
   }
 
   async getPost(postId: string): Promise<IPost | null> {

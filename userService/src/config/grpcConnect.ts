@@ -32,7 +32,9 @@ const grpcConnect = () => {
       getUser: logInterceptor(userController.getUser),
       updateUser: logInterceptor(userController.updateUser),
       blockUser: logInterceptor(userController.blockUser),
-      unblockUser: logInterceptor(userController.unblockUser)
+      unblockUser: logInterceptor(userController.unblockUser),
+
+      getMultipleUser: logInterceptor(userController.getMultipleUsers)
     }
   )
 

@@ -14,7 +14,7 @@ export const startGrpcServer = () => {
         console.log(error)
         return
       }
-      console.log(`post service is running on ${IP_ADDRESS}`)
+      console.log(`feed service is running on ${IP_ADDRESS}`)
     }
   )
 }

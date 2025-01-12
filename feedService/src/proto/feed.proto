@@ -65,6 +65,8 @@ message Comment {
   string createdAt=10;
   string updatedAt=11;
   string authorId=12;
+  string authorName=13;
+  string authorImage=14;
 };
 
 message Post  {
@@ -81,6 +83,8 @@ message Post  {
   int32 shareCount=10;
   string updatedAt=11;
   string createdAt=12;
+  string authorName=14;
+  string authorImage=15;
 };
 
 

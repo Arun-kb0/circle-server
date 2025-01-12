@@ -5,6 +5,11 @@ import IUserRepo from "../interfaces/IUserRepo";
 
 export class UserRepo implements IUserRepo {
 
+  async getMultipleUsers(userIds: string[]): Promise<IUser[]> {
+    const users = await User.find({ _id: { $in: userIds } })
+    return users
+  }
+
   async countDocs(): Promise<number> {
     const count = await User.countDocuments()
     return count
@@ -21,7 +26,7 @@ export class UserRepo implements IUserRepo {
         $lte: new Date(endDate),
       },
     };
-    if (searchText.length>0) {
+    if (searchText.length > 0) {
       query.$or = [
         { name: { $regex: searchText, $options: "i" } },
         { email: { $regex: searchText, $options: "i" } },

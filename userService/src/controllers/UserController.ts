@@ -17,6 +17,8 @@ import { validateRequest, validateResponse } from '../util/validations'
 import { IUser } from "../model/UserModel";
 import IUserController from '../interfaces/IUserController'
 import IUserService from "../interfaces/IUserService";
+import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
+import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
 
 
 type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
@@ -24,6 +26,7 @@ type GetUserHandler = grpc.handleUnaryCall<GetUserRequest__Output, GetUserRespon
 type BlockUserHandler = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
 type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
 type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
+type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
 
 
 export class UserController implements IUserController {
@@ -31,6 +34,20 @@ export class UserController implements IUserController {
   constructor(
     private userService: IUserService
   ) { }
+
+  getMultipleUsers: GetMultipleUsersHandler = async (call, cb) => {
+    try {
+      const { userIds } = call.request
+      validateRequest('userId is required', userIds)
+      const res = await this.userService.getMultipleUsers(userIds as string[])
+      validateResponse(res)
+      const convertedUsers = res.data?.map((user) => convertUserForGrpc(user))
+      cb(null, { users: convertedUsers });
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
 
   getAllUsers: GetAllUserHandler = async (call, cb) => {
@@ -43,7 +60,7 @@ export class UserController implements IUserController {
       const { page, startDate, endDate, searchText } = call.request
       validateRequest('page is required', page)
       const res = await this.userService.getAllUsers(page as number, startDate, endDate, searchText)
-      if(res?.err===404) throw new CustomError(grpc.status.INVALID_ARGUMENT,'string to date conversion failed','cnt')
+      if (res?.err === 404) throw new CustomError(grpc.status.INVALID_ARGUMENT, 'string to date conversion failed', 'cnt')
       validateResponse(res)
       const { users: rawUsers, numberOfPages, currentPage } = res.data as ResDataType
       const users: User[] = []

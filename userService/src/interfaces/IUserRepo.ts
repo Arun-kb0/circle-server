@@ -8,6 +8,7 @@ interface IUserRepo {
   delete(userId: string): Promise<string>
   findByEmail(email: string): Promise<IUser | null>
   findByName(name: string): Promise<IUser | null>
+  getMultipleUsers(userIds: string[]): Promise<IUser[]>
 }
 
 export default IUserRepo

@@ -1,5 +1,5 @@
 import { Date, Schema } from "mongoose"
-import IPost from "../interfaces/IPost"
+import IPost, { IPostExt } from "../interfaces/IPost"
 import { Post } from "../proto/feed/Post"
 import { Comment } from "../proto/feed/Comment"
 import IComment from "../interfaces/IComment"
@@ -15,16 +15,17 @@ export const stringToDate = (str: string) => {
   return new Date(str) as unknown as Schema.Types.Date
 }
 
-export const convertPostForGrpc = (post: Partial<IPost>) => {
+export const convertPostForGrpc = (post: Partial<IPostExt>) => {
   const {
     _id, desc, tags, mediaType, media,
     authorId, status, likesCount, reportsCount,
+    authorImage , authorName,
     commentCount, shareCount, updatedAt, createdAt
   } = post
   const convertedPost: Post = {
     _id, desc, tags, mediaType, media,
     authorId, status, likesCount, reportsCount,
-    commentCount, shareCount,
+    commentCount, shareCount, authorImage, authorName,
     createdAt: dateToString(createdAt),
     updatedAt: dateToString(updatedAt),
   }
