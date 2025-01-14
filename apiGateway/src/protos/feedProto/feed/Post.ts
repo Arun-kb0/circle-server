@@ -19,6 +19,7 @@ export interface Post {
   'tags'?: (string)[];
   'authorName'?: (string);
   'authorImage'?: (string);
+  'isLiked'?: (boolean);
 }
 
 export interface Post__Output {
@@ -37,4 +38,5 @@ export interface Post__Output {
   'tags'?: (string)[];
   'authorName'?: (string);
   'authorImage'?: (string);
+  'isLiked'?: (boolean);
 }

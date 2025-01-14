@@ -3,6 +3,7 @@ import ILikeRepo from '../interfaces/ILikeRepo'
 import { Comment } from '../model/commentModel';
 import { Like } from '../model/likeModel'
 import { Post } from '../model/postModel';
+import { updatePostInCache } from '../util/redisCache';
 
 class LikeRepo implements ILikeRepo {
 
@@ -14,29 +15,31 @@ class LikeRepo implements ILikeRepo {
 
   async like(like: Partial<ILike>): Promise<ILike> {
     const newLike = await Like.create(like)
-    const isSuccess = await this.handleCount(newLike.contentType, newLike.contentId, true)
-    console.log('handle count success')
+    await this.handleCount(newLike?.contentType, newLike?.contentId, true)
     return newLike
   }
 
   async unlike(authorId: string, contentId: string): Promise<ILike | null> {
     const deletedLike = await Like.findOneAndDelete({ contentId, authorId })
     const deletedLikeObj = deletedLike ? deletedLike.toObject() : null
-    const isSuccess = await this.handleCount(deletedLikeObj?.contentType, deletedLikeObj?.contentId, false)
+    await this.handleCount(deletedLikeObj?.contentType, deletedLikeObj?.contentId, false)
     return deletedLikeObj
   }
 
   async handleCount(contentType: ILike['contentType'] | undefined, contentId: string | undefined, isInc: boolean): Promise<boolean> {
     try {
       if (!contentId) return false
-
       const count = isInc ? 1 : -1
+      console.log("count = ", count)
+
       switch (contentType) {
         case 'post': {
-          await Post.findOneAndUpdate(
+          const updatedPost = await Post.findOneAndUpdate(
             { _id: contentId },
             { $inc: { likesCount: count } }
           )
+          if (!updatedPost) throw new Error('update post comment count failed')
+          await updatePostInCache(updatedPost?.toObject())
           return true
         }
         case 'comment': {

@@ -10,3 +10,4 @@ router.route('/')
 router.delete('/:postId',deletePost)
 
 export default router
+

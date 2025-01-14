@@ -19,6 +19,7 @@ export interface Comment {
   'authorId'?: (string);
   'authorName'?: (string);
   'authorImage'?: (string);
+  'isLiked'?: (boolean);
 }
 
 export interface Comment__Output {
@@ -36,4 +37,5 @@ export interface Comment__Output {
   'authorId'?: (string);
   'authorName'?: (string);
   'authorImage'?: (string);
+  'isLiked'?: (boolean);
 }

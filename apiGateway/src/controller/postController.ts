@@ -9,7 +9,7 @@ const client = PostGrpcClient.getClient()
 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
+
     res.status(httpStatus.OK).json({ message: "get posts success", posts: [] })
   } catch (error) {
     next(error)
@@ -18,10 +18,13 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
 
 export const createPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const {post} = req.body
+    const { post } = req.body
     const { userId } = req
+    console.log("create post --- --")
+    console.log(req.body)
+    console.log(userId)
     post.authorId = userId
-    console.log(post)
+
     client.createPost({ post }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'post not created.'))

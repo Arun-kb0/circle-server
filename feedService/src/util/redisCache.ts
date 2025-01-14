@@ -9,7 +9,7 @@ export const getPopularPostsFromCache = async (startIdx: number, endIdx: number)
     const len = await redisClient.llen(QUEUE_NAME)
     if (!len || startIdx >= len) return { posts: [], isCacheExhausted: true }
     if (endIdx >= len) endIdx = len - 1;
-   
+
     const postsInCache = await redisClient.lrange(QUEUE_NAME, startIdx, endIdx)
     const posts = postsInCache.map(post => JSON.parse(post) as IPost)
     return { posts, isCacheExhausted: false }
@@ -17,6 +17,16 @@ export const getPopularPostsFromCache = async (startIdx: number, endIdx: number)
     console.log('get popular posts from cache failed')
     console.log(error)
     return { posts: [], isCacheExhausted: true }
+  }
+}
+
+export const getCachedPostCount = async () => {
+  try {
+    const count = await redisClient.llen(QUEUE_NAME)
+    return count
+  } catch (error) {
+    console.log(error)
+    return 0
   }
 }
 

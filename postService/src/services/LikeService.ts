@@ -31,6 +31,8 @@ class LikeService implements ILikeService {
 
   async unlike(authorId: string,contentId: string, ): SvcFuncReturnType<ILike> {
     try {
+      const isLiked = await this.likeRepo.checkIsLiked(authorId, contentId)
+      if (!isLiked) return { err: httpStatus.CONFLICT, errMsg: 'already unliked', data: null }
       const deletedLike = await this.likeRepo.unlike(authorId, contentId)
       return { err: null, data: deletedLike }
     } catch (error) {

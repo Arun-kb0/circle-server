@@ -13,7 +13,6 @@ export const getGlobalFeed = async (req: Request, res: Response, next: NextFunct
     client.getGlobalFeed({ page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get global posts failed'))
-      console.log(msg.posts)
       res.status(httpStatus.OK).json({ message: 'get global posts success', ...msg })
     })
   } catch (error) {

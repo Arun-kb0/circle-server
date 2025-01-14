@@ -71,3 +71,24 @@ export const addPostToCache = async () => {
   }
 }
 
+export const updatePostInCache = async (post: IPost) => {
+  try {
+    const postsJson = await redisClient.lrange(QUEUE_NAME, 0, -1)
+    if (!postsJson || postsJson.length === 0) {
+      throw new Error('Posts not found in Redis');
+    }
+    const posts = postsJson.map(post => JSON.parse(post)) as IPost[]
+    const updatedPosts = posts.filter(item => item._id !== post._id)
+    updatedPosts.push(post)
+    await redisClient.del(QUEUE_NAME)
+    await redisClient.rpush(
+      QUEUE_NAME,
+      ...updatedPosts.map((item) => JSON.stringify(item))
+    )
+    console.log('redis update cache success ')
+    console.log(updatedPosts)
+  } catch (error) {
+    console.log('redis update cache failed ')
+    console.error(error)
+  }
+}

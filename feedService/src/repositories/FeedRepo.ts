@@ -1,12 +1,15 @@
-import IComment, { ICommentExt } from '../interfaces/IComment';
+import { ICommentExt } from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo'
-import IPost, { IPostExt } from '../interfaces/IPost';
+import { IPostExt } from '../interfaces/IPost';
 import { Post } from '../model/postModel'
 import { Comment } from '../model/commentModel'
-import { getPopularPostsFromCache } from '../util/redisCache'
+import { getCachedPostCount, getPopularPostsFromCache } from '../util/redisCache'
 import { addUserToPosts, addUserToPost, addUserToComments } from '../util/userClientFunctions'
+import { Like } from '../model/likeModel'
+import ILike from '../interfaces/ILike';
 
 class FeedRepo implements IFeedRepo {
+
 
   async getSearchPostsCount(searchText: string): Promise<number> {
     const query = {
@@ -25,29 +28,21 @@ class FeedRepo implements IFeedRepo {
   }
 
   async getPostCount(followeeIds?: string[]): Promise<number> {
-    if (!followeeIds) {
-      const count = await Post.countDocuments()
+    if (followeeIds) {
+      const count = await Post.countDocuments({ authorId: { $in: followeeIds } })
       return count
     }
-    const count = await Post.countDocuments({ authorId: { $in: followeeIds } })
+    const count = await Post.countDocuments()
+    // const count = await getCachedPostCount()
     return count
   }
 
   async getGlobalPosts(limit: number, startIndex: number): Promise<IPostExt[]> {
     const endIndex = startIndex + limit
-    const { posts: postsInCache, isCacheExhausted } = await getPopularPostsFromCache(startIndex, endIndex)
-    if (isCacheExhausted) {
-      const posts = await Post.find().sort({ likesCount: -1 }).limit(limit).skip(startIndex)
-      const updatedPosts = await addUserToPosts(posts)
-      return updatedPosts as IPostExt[]
-    }
-
-    const dbStartIndex = Math.max(0, startIndex - postsInCache.length)
-    const dbPosts = await Post.find().sort({ likesCount: -1 }).limit(limit).skip(dbStartIndex)
-    const uniquePosts = dbPosts.filter(
-      dbPost => !postsInCache.some(cachePost => cachePost._id === dbPost._id)
-    )
-    const updatedPosts = await addUserToPosts([...postsInCache, ...uniquePosts])
+    // ! cache code
+    // const { posts, isCacheExhausted } = await getPopularPostsFromCache(startIndex, endIndex)
+    const posts = await Post.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const updatedPosts = await addUserToPosts(posts)
     return updatedPosts as IPostExt[]
   }
 
@@ -84,6 +79,14 @@ class FeedRepo implements IFeedRepo {
     return updatedComments
   }
 
+  async getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILike[]> {
+    const likes = await Like.find({ contentType, contentId: { $in: contentIds } })
+    return likes
+  }
+  async getLike(contentId: string, contentType: ILike['contentType']): Promise<ILike | null> {
+    const like = await Like.findOne({ contentType, contentId })
+    return like ? like.toObject() : null
+  }
 
 }
 

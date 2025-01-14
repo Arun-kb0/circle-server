@@ -10,6 +10,8 @@ services:
     depends_on:
       - auth-service
       - user-service
+      - post-cache
+      - post-rabbitmq
       # - post-service
     environment:
       - LOGGER_DB=${GT_LOGGER_DB}
