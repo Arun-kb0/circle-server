@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "../constants/httpStatus";
-import { AuthRequest } from "../constants/types";
+import { AuthRequest, MulterRequest } from "../constants/types";
 import HttpError from "../util/HttpError";
 import PostGrpcClient from '../config/PostGrpcClient'
-
+import { uploadFile } from '../util/gcpBucket'
 
 const client = PostGrpcClient.getClient()
 
@@ -20,11 +20,17 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
   try {
     const { post } = req.body
     const { userId } = req
-    console.log("create post --- --")
-    console.log(req.body)
-    console.log(userId)
-    post.authorId = userId
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    if (post.mediaType !== 'text' && !files) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'file is required.')
+    }
 
+    // const urls = await uploadFile(files as unknown as Express.Multer.File[])
+    // console.log('gcp bucket response')
+    // console.log(urls)
+    // post.media = urls
+
+    post.authorId = userId
     client.createPost({ post }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'post not created.'))
