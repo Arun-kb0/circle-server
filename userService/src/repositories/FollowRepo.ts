@@ -56,9 +56,13 @@ class FollowRepo implements IFollowRepo {
   }
 
   async getFollowers(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
-    const followers = await Follow.find({ userId })
+    console.warn("getFollowers Repo", userId)
+
+    const followers = await Follow.find({ userId: userId }).limit(limit).skip(startIndex)
+    console.log(followers)
     if (!followers) return []
     const userIds = followers.map(user => user.targetUserId)
+    console.log(userIds)
     const users = await this.userRepo.getMultipleUsers(userIds)
     return users ? users : []
   }
@@ -69,6 +73,7 @@ class FollowRepo implements IFollowRepo {
   }
 
   async getFollowersCount(userId: string): Promise<number> {
+    console.warn("getFollowersCount repo" ,userId)
     const userCount = await Follow.countDocuments({ userId })
     return userCount
   }

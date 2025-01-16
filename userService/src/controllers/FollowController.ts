@@ -53,8 +53,8 @@ class FollowController implements IFollowController {
       const { userId, targetId } = call.request
       validateRequest('userId and targetId are required', userId, targetId)
       const res = await this.followService.followUser(userId as string, targetId as string)
-      if (res.err === httpStatus.CONFLICT) throw new CustomError(grpc.status.ABORTED, res.errMsg as string, 'cnt')
       validateResponse(res)
+      if (res.err === httpStatus.CONFLICT) throw new CustomError(grpc.status.ABORTED, res.errMsg as string, 'cnt')
       const rawUser = res.data as IUser
       const user = convertUserForGrpc(rawUser)
       cb(null, { user })

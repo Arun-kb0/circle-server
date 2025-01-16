@@ -83,6 +83,7 @@ export class UserController implements IUserController {
   getUser: GetUserHandler = async (call, cb) => {
     try {
       const { userId } = call.request
+      console.warn("user controller getUser = ",userId)
       validateRequest('userId is required', userId)
       const res = await this.userService.getUser(userId as string)
       validateResponse(res)

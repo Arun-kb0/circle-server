@@ -5,6 +5,7 @@ import logger from '../logger/loggerIndex'
 
 
 const handleError = (err: any) => {
+  console.log(err)
   let msg = 'unexpected error occurred.'
   let code = grpc.status.INTERNAL
   let errStack = null

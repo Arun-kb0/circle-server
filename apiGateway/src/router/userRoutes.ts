@@ -9,9 +9,10 @@ import {
 
 const router = express.Router()
 
+console.warn('user route')
 
 router.get('/all', getAllUsers)
-router.get('/:userId', getUser)
+router.get('/', getUser)
 router.patch('/', updateUser)
 
 // * accessible only to admins

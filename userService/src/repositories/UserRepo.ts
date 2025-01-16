@@ -27,7 +27,9 @@ export class UserRepo implements IUserRepo {
         $lte: new Date(endDate),
       },
     };
-    if (searchText.length > 0) {
+    if (!startDate && !endDate) {
+      res = await User.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    }else if (searchText && searchText.length > 0) {
       query.$or = [
         { name: { $regex: searchText, $options: "i" } },
         { email: { $regex: searchText, $options: "i" } },

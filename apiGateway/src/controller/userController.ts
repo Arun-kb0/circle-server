@@ -103,7 +103,7 @@ export const followUser = (req: AuthRequest, res: Response, next: NextFunction) 
 
 export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const {  targetId } = req.body
+    const { targetId } = req.body
     const { userId } = req
     if (typeof userId !== 'string' || typeof targetId !== 'string') {
       throw new HttpError(httpStatus.BAD_REQUEST, 'userId and targetId is required.')
@@ -120,12 +120,11 @@ export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction
 
 export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page } = req.body
+    const { page } = req.query
     const { userId } = req
-    if (typeof userId !== 'string' || !page) {
-      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and page is required.')
-    }
-    client.getFollowers({ userId, page }, (err, msg) => {
+    console.warn('get followers ', userId)
+    if (isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required.')
+    client.getFollowers({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
       res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
@@ -137,11 +136,9 @@ export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction
 
 export const getSuggestedPeople = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page } = req.body
+    const { page } = req.query
     const { userId } = req
-    if (typeof userId !== 'string' || !isNaN(Number(page))) {
-      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and page is required.')
-    }
+    if (isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required.')
     client.getSuggestedPeople({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
