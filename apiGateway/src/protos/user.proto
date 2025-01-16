@@ -12,6 +12,11 @@ service UserService {
   rpc BlockUser(BlockUserRequest) returns (BlockUserResponse) {};
   rpc UnblockUser(UnblockUserRequest) returns (UnblockUserResponse) {};
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {};
+
+  rpc GetFollowers(GetFollowersRequest) returns (GetFollowersResponse) {};
+  rpc GetSuggestedPeople(GetSuggestedPeopleRequest) returns (GetSuggestedPeopleResponse) {};
+  rpc FollowUser(FollowUserRequest) returns (FollowUserResponse) {};
+  rpc UnFollowUser(UnFollowUserRequest) returns (UnFollowUserResponse) {};
 }
 
 message Image {
@@ -111,4 +116,44 @@ message GetMultipleUserRequest {
 
 message GetMultipleUserResponse {
   repeated User users =1;
+}
+
+message GetFollowersRequest {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetFollowersResponse {
+  repeated User users =1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetSuggestedPeopleRequest {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetSuggestedPeopleResponse {
+  repeated User users =1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message FollowUserRequest {
+  string userId=1;
+  string targetId=2;
+}
+
+message FollowUserResponse {
+  User user =1;
+}
+
+message UnFollowUserRequest {
+ string userId=1;
+  string targetId=2;
+}
+
+message UnFollowUserResponse {
+  User user =1;
 }

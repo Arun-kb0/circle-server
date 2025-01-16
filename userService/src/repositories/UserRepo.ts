@@ -1,9 +1,10 @@
-import { Types, } from "mongoose";
+import { ClientSession, Types, } from "mongoose";
 import { IUser, User } from "../model/UserModel";
 import IUserRepo from "../interfaces/IUserRepo";
 
 
 export class UserRepo implements IUserRepo {
+
 
   async getMultipleUsers(userIds: string[]): Promise<IUser[]> {
     const users = await User.find({ _id: { $in: userIds } })
@@ -74,6 +75,15 @@ export class UserRepo implements IUserRepo {
     const user = await User.findOne({ name: name })
       .select('-password')
     return user
-  }
+  } 
 
+  async updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null> {
+    const count = isInc ? 1 : -1
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $inc: { [field]: count } },
+      { new: true }
+    )
+    return user ? user.toObject() : null
+  }
 }

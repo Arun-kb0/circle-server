@@ -1,12 +1,6 @@
 import { IUser } from '../model/UserModel'
+import { FuncReturnType, PaginationUsers } from '../constants/svcTypes'
 
-export type FuncReturnType<T> = Promise<{
-  err: null;
-  data: T;
-} | {
-  err: number;
-  data: null;
-}>
 
 interface IUserService {
   getAllUsers(page: number, startDate?: string, endDate?: string, searchText?: string): FuncReturnType<{ users: IUser[], numberOfPages: number, currentPage: number }>

@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader'
 import { getGrpcServer, startGrpcServer } from '../config/grpc'
 import { ProtoGrpcType } from '../proto/user'
 import path from 'path'
-import { userController } from '../DI'
+import { followController, userController } from '../DI'
 import logInterceptor from '../util/logInterceptor'
 
 
@@ -33,8 +33,12 @@ const grpcConnect = () => {
       updateUser: logInterceptor(userController.updateUser),
       blockUser: logInterceptor(userController.blockUser),
       unblockUser: logInterceptor(userController.unblockUser),
+      getMultipleUser: logInterceptor(userController.getMultipleUsers),
 
-      getMultipleUser: logInterceptor(userController.getMultipleUsers)
+      getFollowers: logInterceptor(followController.getFollowers),
+      getSuggestedPeople: logInterceptor(followController.getSuggestedPeople),
+      followUser: logInterceptor(followController.followUser),
+      unFollowUser: logInterceptor(followController.unFollowUser)
     }
   )
 

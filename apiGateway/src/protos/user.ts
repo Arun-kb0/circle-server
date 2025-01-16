@@ -13,15 +13,23 @@ export interface ProtoGrpcType {
     BlockUserResponse: MessageTypeDefinition
     DeleteUserRequest: MessageTypeDefinition
     DeleteUserResponse: MessageTypeDefinition
+    FollowUserRequest: MessageTypeDefinition
+    FollowUserResponse: MessageTypeDefinition
     GetAllUsersRequest: MessageTypeDefinition
     GetAllUsersResponse: MessageTypeDefinition
+    GetFollowersRequest: MessageTypeDefinition
+    GetFollowersResponse: MessageTypeDefinition
     GetMultipleUserRequest: MessageTypeDefinition
     GetMultipleUserResponse: MessageTypeDefinition
+    GetSuggestedPeopleRequest: MessageTypeDefinition
+    GetSuggestedPeopleResponse: MessageTypeDefinition
     GetUserRequest: MessageTypeDefinition
     GetUserResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
     Role: EnumTypeDefinition
     Status: EnumTypeDefinition
+    UnFollowUserRequest: MessageTypeDefinition
+    UnFollowUserResponse: MessageTypeDefinition
     UnblockUserRequest: MessageTypeDefinition
     UnblockUserResponse: MessageTypeDefinition
     UpdateUserRequest: MessageTypeDefinition

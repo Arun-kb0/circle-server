@@ -3,21 +3,10 @@ import * as grpc from '@grpc/grpc-js'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
 import UserGrpcClient from '../config/UserGrpcClient'
+import { AuthRequest } from "../constants/types";
 
-// const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
-// const HOST = process.env.USER_SERVICE_HOST || 'localhost'
-// const PORT = process.env.USER_SERVICE_PORT || 50052
-// const IP_ADDRESS = `${HOST}:${PORT}`
-
-// const packageDef = getPackageDef(PROTO_PATH)
-// const userProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-// const client = new userProto.user.UserService(
-//   IP_ADDRESS,
-//   grpc.credentials.createInsecure()
-// )
 
 const client = UserGrpcClient.getClient()
-
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -88,6 +77,75 @@ export const unblockUser = async (req: Request, res: Response, next: NextFunctio
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
       if (!msg || !msg.userId) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
       res.status(httpStatus.OK).json({ message: "block user success", userId: msg.userId })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// * follow
+export const followUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { targetId } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || typeof targetId !== 'string') {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and targetId is required.')
+    }
+    client.followUser({ userId, targetId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg || !msg.user) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      res.status(httpStatus.OK).json({ message: "follow user success", user: msg.user })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const {  targetId } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || typeof targetId !== 'string') {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and targetId is required.')
+    }
+    client.unFollowUser({ userId, targetId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg || !msg.user) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      res.status(httpStatus.OK).json({ message: "unfollow user success", user: msg.user })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || !page) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and page is required.')
+    }
+    client.getFollowers({ userId, page }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getSuggestedPeople = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || !isNaN(Number(page))) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and page is required.')
+    }
+    client.getSuggestedPeople({ userId, page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get suggested people success", ...msg })
     })
   } catch (error) {
     next(error)
