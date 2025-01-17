@@ -15,8 +15,14 @@ import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
 import likeRouter from './router/likeRouter'
 import feedRouter from './router/feedRouter'
+import UseExpress from './config/UseExpress'
+import UseSocketIo from './config/UseSocketIo'
+import UseHttpServer from './config/UseHttpServer'
+import chatSocketRouter from './router/chatSocketRouter'
 
-const app = express()
+const app = UseExpress.getInstance()
+const server = UseHttpServer.getInstance()
+const io = UseSocketIo.getInstance()
 const PORT = 5001
 
 
@@ -33,6 +39,22 @@ app.use('/comment', authorize, commentRouter)
 app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
 
+// * socket io
+io.on("connection", (socket) => {
+  console.log(`user connected ${socket.id}`)
+
+  chatSocketRouter(socket)
+  
+  socket.on('test-event', (data) => {
+    console.log('Received test-event:', data);
+    socket.emit('test-response', { message: 'Hello from server' });
+  });
+
+  socket.on("disconnect", () => {
+    console.log('user disconnected - ', socket.id)
+  })
+})
+
 
 app.use('/test', (req, res) => {
   console.log('home req')
@@ -46,7 +68,7 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(errorHandler)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`api gateway is running at ${PORT}`)
 })
 

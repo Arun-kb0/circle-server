@@ -18,3 +18,14 @@ export interface MulterRequest extends Request {
   username?: string;
   userId?: string
 }
+
+
+export type MessageType = {
+  roomId: string
+  authorId: string
+  authorName: string
+  authorImage?: string
+  message: string
+  time: Date
+  status: 'sent' | 'received' | 'seen'
+}
