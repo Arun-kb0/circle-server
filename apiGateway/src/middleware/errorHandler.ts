@@ -50,7 +50,6 @@ const errorHandler = (error: any, req: Request, res: Response, next: NextFunctio
       message: error.message
     }
   } else if (error instanceof Error) {
-    console.log('3')
     resJson = {
       status: 'error',
       name: error.name,

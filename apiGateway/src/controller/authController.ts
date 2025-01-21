@@ -153,12 +153,9 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     const refreshToken = cookies.jwt
 
     client.refresh({ refreshToken }, (err, msg) => {
-      if (err?.code === grpc.status.UNAUTHENTICATED) {
-        throw new HttpError(httpStatus.UNAUTHORIZED, err.message)
-      } else if (err) {
-        throw new HttpError(httpStatus.UNAUTHORIZED, err.message)
-      }
-      if (!msg) throw new Error('grpc response is empty')
+      if (err?.code === grpc.status.UNAUTHENTICATED) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
+      else if (err) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
+      if (!msg) return new Error('grpc response is empty')
       res.status(httpStatus.OK)
         .json({
           accessToken: msg.accessToken,

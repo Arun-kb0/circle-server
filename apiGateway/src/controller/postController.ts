@@ -20,16 +20,6 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
   try {
     const { post } = req.body
     const { userId } = req
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    if (post.mediaType !== 'text' && !files) {
-      throw new HttpError(httpStatus.BAD_REQUEST, 'file is required.')
-    }
-
-    // const urls = await uploadFile(files as unknown as Express.Multer.File[])
-    // console.log('gcp bucket response')
-    // console.log(urls)
-    // post.media = urls
-
     post.authorId = userId
     client.createPost({ post }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))

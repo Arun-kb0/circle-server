@@ -5,7 +5,7 @@ import IFollowService from '../interfaces/IFollowService'
 import { IUser } from '../model/UserModel';
 import handleError from '../util/handeError';
 
-const LIMIT = 5
+const LIMIT = 10
 
 class FollowService implements IFollowService {
 

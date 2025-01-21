@@ -19,17 +19,19 @@ export class UserRepo implements IUserRepo {
   async findAll(limit: number, startIndex: number, startDate: Date, endDate: Date, searchText: string): Promise<IUser[]> {
     let res: IUser[]
     const query: {
+      role: { $eq: 'user' | 'admin' },
       createdAt: { $gte: Date; $lte: Date };
       $or?: { [key: string]: { $regex: string; $options: string } }[];
     } = {
+      role: { $eq: 'user' },
       createdAt: {
         $gte: new Date(startDate),
         $lte: new Date(endDate),
       },
     };
     if (!startDate && !endDate) {
-      res = await User.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-    }else if (searchText && searchText.length > 0) {
+      res = await User.find({ role: 'user' }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    } else if (searchText && searchText.length > 0) {
       query.$or = [
         { name: { $regex: searchText, $options: "i" } },
         { email: { $regex: searchText, $options: "i" } },
@@ -77,7 +79,7 @@ export class UserRepo implements IUserRepo {
     const user = await User.findOne({ name: name })
       .select('-password')
     return user
-  } 
+  }
 
   async updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null> {
     const count = isInc ? 1 : -1
