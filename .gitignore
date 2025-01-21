@@ -25,3 +25,8 @@ postService/logs
 feedService/node_modules
 feedService/.env
 feedService/logs
+
+# feed service
+chatService/node_modules
+chatService/.env
+chatService/logs

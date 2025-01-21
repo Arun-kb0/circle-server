@@ -1,0 +1,95 @@
+syntax = "proto3";
+package chat;
+
+service ChatService {
+  
+  rpc CreateMessage(CreateMessageRequest) returns (CreateMessageResponse){};
+  rpc UpdateMessage(UpdateMessageRequest) returns (UpdateMessageResponse){};
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse){};
+  rpc FindMessageByUser(FindMessageByUserRequest) returns (FindMessageByUserResponse) {};
+  rpc FindMessageById(FindMessageByIdRequest) returns (FindMessageByIdResponse){};
+
+} 
+
+message ChatEnums {
+  enum MediaType {
+    text=0;
+    audio=1;
+    photo=2;
+  }
+
+  enum Status {
+    sent=0;
+    received=1;
+    seen=2;
+  }
+}
+
+message Chat {
+  string _id=1;
+  string id=2;
+  string roomId = 3;
+  string authorId = 4;
+  string authorName = 5;
+  string authorImage = 6;
+  string receiverId = 7;
+  ChatEnums.MediaType mediaType=8;
+  string message = 9;
+  string createdAt =10;
+  string updatedAt =11;
+  ChatEnums.Status status = 12;
+}
+
+
+message ChatRoom {
+  string _id = 1;
+  string roomId = 2;
+  string userId = 3;
+  string targetId = 4;
+  string createdAt=5;
+  string updatedAt=6;
+}
+
+
+
+message CreateMessageRequest {
+  Chat chat =1;
+}
+
+message CreateMessageResponse {
+  Chat chat =1;
+}
+
+
+message UpdateMessageRequest {
+  Chat chat =1;
+}
+
+message UpdateMessageResponse {
+  Chat chat =1;
+}
+
+
+message DeleteMessageRequest {
+  string roomId =1;
+}
+
+message DeleteMessageResponse {
+  Chat chat =1;
+}
+
+message FindMessageByUserRequest {
+  string userId=1;
+}
+
+message FindMessageByUserResponse {
+  repeated Chat Chat=1;
+}
+
+message FindMessageByIdRequest {
+  string userId =1;
+}
+
+message FindMessageByIdResponse {
+  Chat chat =1;
+}
