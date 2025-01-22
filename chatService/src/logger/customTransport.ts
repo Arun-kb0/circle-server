@@ -33,7 +33,7 @@ export class CustomTransport extends Transport {
       transports: [
         new winston.transports.File({
           dirname: './logs',
-          filename: filename ? filename : 'post-service.json.log'
+          filename: filename ? filename : 'chat-service.json.log'
        })
      ]
 

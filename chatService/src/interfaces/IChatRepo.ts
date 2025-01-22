@@ -1,12 +1,21 @@
-import IChat from '../interfaces/IChat'
+import { PaginationMessages } from '../constants/SvcReturnType'
+import IChatRoom from './IChatRoom'
+import IMessage from './IMessage'
 
 
-interface IChatBaseRepo {
-  creteMessage(chat: Partial<IChat>): Promise<IChat>
-  updateMessage(chat: Partial<IChat>): Promise<IChat>
-  deleteMessage(chatId: string): Promise<IChat>
-  findMessageByUser(userId: string): Promise<IChat[]>
-  findMessageById(id: string): Promise<IChat>
+interface IChatRepo {
+  createMessage(message: Partial<IMessage>): Promise<IMessage>
+  updateMessage(message: Partial<IMessage>): Promise<IMessage | null>
+  deleteMessage(messageId: string): Promise<IMessage | null>
+  findMessageByUser(userId: string): Promise<IMessage[]>
+  findMessageById(messageId: string): Promise<IMessage | null>
+  getMessages(roomId: string, page: number): Promise<PaginationMessages>
+  
+  // * chat room
+  createChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null>
+  updateChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null>
+  deleteChatRoom(chatRoomId: string): Promise<IChatRoom | null>
+  findByIdChatRoom(chatRoomId: string): Promise<IChatRoom[] | null>
 }
 
-export default IChatBaseRepo
+export default IChatRepo

@@ -9,9 +9,14 @@ service ChatService {
   rpc FindMessageByUser(FindMessageByUserRequest) returns (FindMessageByUserResponse) {};
   rpc FindMessageById(FindMessageByIdRequest) returns (FindMessageByIdResponse){};
 
+  // * chat room
+  rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse){};
+  rpc UpdateRoom(UpdateRoomRequest) returns (UpdateRoomResponse){};
+  rpc DeleteRoom(DeleteRoomRequest) returns (DeleteRoomResponse){};
+  rpc findRoomByRoomId(findRoomByRoomIdRequest) returns (findRoomByRoomIdResponse){};
 } 
 
-message ChatEnums {
+message MessageEnums {
   enum MediaType {
     text=0;
     audio=1;
@@ -25,7 +30,7 @@ message ChatEnums {
   }
 }
 
-message Chat {
+message Message {
   string _id=1;
   string id=2;
   string roomId = 3;
@@ -33,15 +38,15 @@ message Chat {
   string authorName = 5;
   string authorImage = 6;
   string receiverId = 7;
-  ChatEnums.MediaType mediaType=8;
+  MessageEnums.MediaType mediaType=8;
   string message = 9;
   string createdAt =10;
   string updatedAt =11;
-  ChatEnums.Status status = 12;
+  MessageEnums.Status status = 12;
 }
 
 
-message ChatRoom {
+message MessageRoom {
   string _id = 1;
   string roomId = 2;
   string userId = 3;
@@ -50,23 +55,32 @@ message ChatRoom {
   string updatedAt=6;
 }
 
+message ChatRoom {
+  string  _id=1;
+  string roomId=2;
+  string userId=3;
+  string targetId=4;
+  string createdAt=5;
+  string updatedAt=6;
+}
+
 
 
 message CreateMessageRequest {
-  Chat chat =1;
+  Message message =1;
 }
 
 message CreateMessageResponse {
-  Chat chat =1;
+  Message message =1;
 }
 
 
 message UpdateMessageRequest {
-  Chat chat =1;
+  Message message =1;
 }
 
 message UpdateMessageResponse {
-  Chat chat =1;
+  Message message =1;
 }
 
 
@@ -75,7 +89,7 @@ message DeleteMessageRequest {
 }
 
 message DeleteMessageResponse {
-  Chat chat =1;
+  Message message =1;
 }
 
 message FindMessageByUserRequest {
@@ -83,13 +97,49 @@ message FindMessageByUserRequest {
 }
 
 message FindMessageByUserResponse {
-  repeated Chat Chat=1;
+  repeated Message messages=1;
 }
 
 message FindMessageByIdRequest {
-  string userId =1;
+  string messageId =1;
 }
 
 message FindMessageByIdResponse {
-  Chat chat =1;
+  Message message =1;
 }
+
+// * chat room
+
+message CreateRoomRequest {
+  ChatRoom chatRoom=1;
+}
+
+message CreateRoomResponse {
+  ChatRoom chatRoom=1;
+}
+
+message UpdateRoomRequest {
+  ChatRoom chatRoom=1;
+}
+
+message UpdateRoomResponse {
+  ChatRoom chatRoom=1;
+}
+
+message DeleteRoomRequest {
+  string chatRoomId=1;
+}
+
+message DeleteRoomResponse {
+  ChatRoom chatRoom=1;
+}
+
+
+message findRoomByRoomIdRequest {
+  string chatRoomId=1;
+}
+
+message findRoomByRoomIdResponse {
+  repeated ChatRoom chatRooms=1;
+}
+

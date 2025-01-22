@@ -10,6 +10,16 @@ import { FindMessageByIdResponse } from '../proto/chat/FindMessageByIdResponse'
 import { FindMessageByUserRequest__Output } from '../proto/chat/FindMessageByUserRequest'
 import { FindMessageByUserResponse } from '../proto/chat/FindMessageByUserResponse'
 
+import { CreateRoomRequest__Output } from '../proto/chat/CreateRoomRequest'
+import { CreateRoomResponse } from '../proto/chat/CreateRoomResponse'
+import { UpdateRoomRequest__Output } from '../proto/chat/UpdateRoomRequest'
+import { UpdateRoomResponse } from '../proto/chat/UpdateRoomResponse'
+import { DeleteRoomRequest__Output } from '../proto/chat/DeleteRoomRequest'
+import { DeleteRoomResponse } from '../proto/chat/DeleteRoomResponse'
+import { findRoomByRoomIdRequest__Output } from '../proto/chat/findRoomByRoomIdRequest'
+import { findRoomByRoomIdResponse } from '../proto/chat/findRoomByRoomIdResponse'
+
+
 
 export type CreateMessageHandler = grpc.handleUnaryCall<CreateMessageRequest__Output, CreateMessageResponse>
 export type UpdateMessageHandler = grpc.handleUnaryCall<UpdateMessageRequest__Output, UpdateMessageResponse>
@@ -17,12 +27,24 @@ export type DeleteMessageHandler = grpc.handleUnaryCall<DeleteMessageRequest__Ou
 export type FindMessageByUerHandler = grpc.handleUnaryCall<FindMessageByUserRequest__Output, FindMessageByUserResponse>
 export type FindMessageMessageHandler = grpc.handleUnaryCall<FindMessageByIdRequest__Output, FindMessageByIdResponse>
 
+export type CreateRoomHandler = grpc.handleUnaryCall<CreateRoomRequest__Output, CreateRoomResponse>
+export type UpdateRoomHandler = grpc.handleUnaryCall<UpdateRoomRequest__Output, UpdateRoomResponse>
+export type DeleteRoomHandler = grpc.handleUnaryCall<DeleteRoomRequest__Output, DeleteRoomResponse>
+export type FindRoomByRoomIdHandler = grpc.handleUnaryCall<findRoomByRoomIdRequest__Output, findRoomByRoomIdResponse>
+
+
+
 interface IChatController {
   createMessage: CreateMessageHandler
   updateMessage: UpdateMessageHandler
   deleteMessage: DeleteMessageHandler
   findMessageByUser: FindMessageByUerHandler
   findMessageById: FindMessageMessageHandler
+
+  createRoom: CreateRoomHandler,
+  updateRoom: UpdateRoomHandler,
+  deleteRoom: DeleteRoomHandler,
+  findRoomByRoomId: FindRoomByRoomIdHandler
 }
 
 export default IChatController

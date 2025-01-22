@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Date } from "mongoose";
 
 interface IChatRoom extends Document {
   _id: string,

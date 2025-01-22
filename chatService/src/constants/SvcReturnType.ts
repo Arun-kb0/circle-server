@@ -1,7 +1,13 @@
-type SvcFuncReturnType<T> = Promise<{
+import IMessage from "../interfaces/IMessage";
+
+export type SvcReturnType<T> = Promise<{
   err: number | null;
   errMsg?: string
   data: T | null;
 }>
 
-export default SvcFuncReturnType
+export type PaginationMessages = {
+  messages: IMessage[];
+  numberOfPages: number;
+  currentPage: number;
+}

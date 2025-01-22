@@ -2,9 +2,9 @@
 
 
 export interface FindMessageByIdRequest {
-  'userId'?: (string);
+  'messageId'?: (string);
 }
 
 export interface FindMessageByIdRequest__Output {
-  'userId'?: (string);
+  'messageId'?: (string);
 }

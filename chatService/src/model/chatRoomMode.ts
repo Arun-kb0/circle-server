@@ -10,4 +10,4 @@ const ChatSchema = new Schema<IChatRoom>(
   { timestamps: true }
 )
 
-export const Chat = mongoose.model('chat', ChatSchema)
+export const ChatRoom = mongoose.model('chat', ChatSchema)

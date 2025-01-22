@@ -1,6 +1,6 @@
 import { Document, Date } from 'mongoose'
 
-interface IChat extends Document {
+interface IMessage extends Document {
   _id: string,
   id: string
   roomId: string
@@ -15,4 +15,4 @@ interface IChat extends Document {
   status: 'sent' | 'received' | 'seen'
 }
 
-export default IChat
+export default IMessage

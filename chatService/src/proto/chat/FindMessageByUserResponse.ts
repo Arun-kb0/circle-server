@@ -1,11 +1,11 @@
 // Original file: src/proto/chat.proto
 
-import type { Chat as _chat_Chat, Chat__Output as _chat_Chat__Output } from '../chat/Chat';
+import type { Message as _chat_Message, Message__Output as _chat_Message__Output } from '../chat/Message';
 
 export interface FindMessageByUserResponse {
-  'Chat'?: (_chat_Chat)[];
+  'messages'?: (_chat_Message)[];
 }
 
 export interface FindMessageByUserResponse__Output {
-  'Chat'?: (_chat_Chat__Output)[];
+  'messages'?: (_chat_Message__Output)[];
 }

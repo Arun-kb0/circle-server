@@ -1,12 +1,19 @@
-import SvcReturnType from '../constants/SvcReturnType'
-import IChat from './IChat'
+import { SvcReturnType } from '../constants/SvcReturnType'
+import IChatRoom from './IChatRoom'
+import IChat from './IMessage'
 
-interface IChatService  {
-  createMessage(chat: Partial<IChat>): SvcReturnType<IChat>
-  updateMessage(chat: Partial<IChat>): SvcReturnType<IChat>
+interface IChatService {
+  createMessage(message: Partial<IChat>): SvcReturnType<IChat>
+  updateMessage(message: Partial<IChat>): SvcReturnType<IChat>
   deleteMessage(roomId: string): SvcReturnType<IChat>
   findMessageByUser(userId: string): SvcReturnType<IChat[]>
-  findMessageById(id: string): SvcReturnType<IChat | null>
+  findMessageById(messageId: string): SvcReturnType<IChat | null>
+
+  // * chat room
+  createChatRoom(chatRoom: Partial<IChatRoom>): SvcReturnType<IChatRoom | null>
+  updateChatRoom(chatRoom: Partial<IChatRoom>): SvcReturnType<IChatRoom | null>
+  deleteChatRoom(chatRoomId: string): SvcReturnType<IChatRoom | null>
+  findByIdChatRoom(chatRoomId: string): SvcReturnType<IChatRoom[] | null>
 }
 
 export default IChatService
