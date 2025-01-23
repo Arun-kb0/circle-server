@@ -9,7 +9,6 @@ import {
 
 const router = express.Router()
 
-console.warn('user route')
 
 router.get('/all', getAllUsers)
 router.get('/', getUser)

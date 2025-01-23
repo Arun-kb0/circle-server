@@ -2,9 +2,9 @@
 
 
 export interface DeleteMessageRequest {
-  'roomId'?: (string);
+  'messageId'?: (string);
 }
 
 export interface DeleteMessageRequest__Output {
-  'roomId'?: (string);
+  'messageId'?: (string);
 }

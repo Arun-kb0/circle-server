@@ -52,9 +52,9 @@ class ChatService implements IChatService {
     }
   }
 
-  async deleteMessage(roomId: string): SvcReturnType<IMessage> {
+  async deleteMessage(messageId: string): SvcReturnType<IMessage> {
     try {
-      const message = await this.chatRepo.deleteMessage(roomId)
+      const message = await this.chatRepo.deleteMessage(messageId)
       return { err: null, data: message }
     } catch (error) {
       const { code, message } = handleError(error)

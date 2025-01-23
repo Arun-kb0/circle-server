@@ -5,7 +5,7 @@ import IChat from './IMessage'
 interface IChatService {
   createMessage(message: Partial<IChat>): SvcReturnType<IChat>
   updateMessage(message: Partial<IChat>): SvcReturnType<IChat>
-  deleteMessage(roomId: string): SvcReturnType<IChat>
+  deleteMessage(messageId: string): SvcReturnType<IChat>
   findMessageByUser(userId: string): SvcReturnType<IChat[]>
   findMessageById(messageId: string): SvcReturnType<IChat | null>
   getMessages(roomId: string, page: number): SvcReturnType<PaginationMessages>

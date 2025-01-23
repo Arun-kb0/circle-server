@@ -88,9 +88,9 @@ class ChatController implements IChatController {
 
   deleteMessage: DeleteMessageHandler = async (call, cb) => {
     try {
-      const { roomId } = call.request
-      validateRequest('roomId is required.', roomId)
-      const res = await this.chatService.deleteMessage(roomId as string)
+      const { messageId } = call.request
+      validateRequest('messageId is required.', messageId)
+      const res = await this.chatService.deleteMessage(messageId as string)
       validateResponse(res)
       const msgGrpc = convertMessageForGrpc(res.data as IMessage)
       cb(null, { message: msgGrpc })

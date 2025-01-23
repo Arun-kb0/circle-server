@@ -87,7 +87,7 @@ message UpdateMessageResponse {
 
 
 message DeleteMessageRequest {
-  string roomId =1;
+  string messageId =1;
 }
 
 message DeleteMessageResponse {

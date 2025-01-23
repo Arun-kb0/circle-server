@@ -20,7 +20,7 @@ class MessageBaseRepo implements IChatBaseRepo {
 
   async getMessages(roomId: string, limit: number, startIndex: number): Promise<IMessage[]> {
     try {
-      const messageCount = await Message.find({ roomId: roomId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+      const messageCount = await Message.find({ roomId: roomId }).sort({ createdAt: 1 }).limit(limit).skip(startIndex)
       return messageCount
     } catch (error) {
       const err = handleError(error)

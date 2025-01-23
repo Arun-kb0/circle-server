@@ -320,7 +320,7 @@ export class UserService implements IUserService {
         const accessToken = jwt.sign(
           { username: decoded.username, userId: user._id },
           ACCESS_TOKEN_SECRET,
-          { expiresIn: REFRESH_EXPIRES_IN }
+          { expiresIn: ACCESS_EXPIRES_IN }
         )
         res.data = { user, accessToken }
       }
