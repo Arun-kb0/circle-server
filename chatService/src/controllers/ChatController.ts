@@ -1,8 +1,11 @@
+import { PaginationMessages } from "../constants/SvcReturnType";
 import IChatController, {
   CreateMessageHandler, CreateRoomHandler, DeleteMessageHandler,
   DeleteRoomHandler,
+  DeleteRoomMessagesHandler,
   FindMessageByUerHandler, FindMessageMessageHandler,
   FindRoomByRoomIdHandler,
+  GetMessageHandler,
   UpdateMessageHandler,
   UpdateRoomHandler
 } from "../interfaces/IChatController";
@@ -11,7 +14,10 @@ import IChatService from "../interfaces/IChatService";
 import IMessage from "../interfaces/IMessage";
 import { ChatRoom } from "../proto/chat/ChatRoom";
 import { Message } from "../proto/chat/Message";
-import { convertChatRoomForDb, convertChatRoomForGrpc, convertMessageForDb, convertMessageForGrpc } from "../util/converter"
+import {
+  convertChatRoomForDb, convertChatRoomForGrpc,
+  convertMessageForDb, convertMessageForGrpc
+} from "../util/converter"
 import handleError from "../util/handleError";
 import { validateRequest, validateResponse } from "../util/validations"
 
@@ -21,6 +27,34 @@ class ChatController implements IChatController {
   constructor(
     private chatService: IChatService
   ) { }
+
+  getMessages: GetMessageHandler = async (call, cb) => {
+    try {
+      const { roomId, page } = call.request
+      validateRequest('roomId and page are required.', roomId, page)
+      const res = await this.chatService.getMessages(roomId as string, page as number)
+      validateResponse(res)
+      const { messages, ...rest } = res.data as PaginationMessages
+      const msgGrpcArray = messages.map(msg => convertMessageForGrpc(msg))
+      cb(null, { messages: msgGrpcArray, ...rest })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  deleteRoomMessages: DeleteRoomMessagesHandler = async (call, cb) => {
+    try {
+      const { roomId } = call.request
+      validateRequest('roomId is required.', roomId)
+      const res = await this.chatService.deleteRoomMessages(roomId as string)
+      validateResponse(res)
+      cb(null, { isDeleted: res.data as boolean })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   createMessage: CreateMessageHandler = async (call, cb) => {
     try {

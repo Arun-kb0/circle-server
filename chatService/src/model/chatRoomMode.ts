@@ -5,7 +5,7 @@ const ChatSchema = new Schema<IChatRoom>(
   {
     roomId: { type: String, required: true },
     userId: { type: String, required: true },
-    targetId : { type: String }
+    targetId: { type: String }
   },
   { timestamps: true }
 )

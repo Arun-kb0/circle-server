@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { joinRoom, sendMessage } from '../controller/chatController'
+import { joinRoom, sendMessage } from '../controller/chatSocketController'
 import { MessageType } from "../constants/types";
 
 

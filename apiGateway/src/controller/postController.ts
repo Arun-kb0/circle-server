@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "../constants/httpStatus";
-import { AuthRequest, MulterRequest } from "../constants/types";
+import { AuthRequest } from "../constants/types";
 import HttpError from "../util/HttpError";
 import PostGrpcClient from '../config/PostGrpcClient'
-import { uploadFile } from '../util/gcpBucket'
 
 const client = PostGrpcClient.getClient()
 

@@ -6,6 +6,7 @@ import handleError from '../../util/handleError'
 
 class MessageBaseRepo implements IChatBaseRepo {
 
+
   async getMessagesCount(roomId: string): Promise<number> {
     try {
       const messageCount = await Message.countDocuments({ roomId: roomId })
@@ -29,7 +30,11 @@ class MessageBaseRepo implements IChatBaseRepo {
 
   async create(message: Partial<IMessage>): Promise<IMessage> {
     try {
+      console.log('base message repo')
+      console.log(message)
       const newMessage = await Message.create(message)
+      console.log('base message repo')
+      console.log(newMessage)
       return newMessage
     } catch (error) {
       const err = handleError(error)
@@ -81,7 +86,15 @@ class MessageBaseRepo implements IChatBaseRepo {
     }
   }
 
-
+  async deleteByRoomId(roomId: string): Promise<boolean> {
+    try {
+      const res = await Message.deleteMany({ roomId })
+      return res.deletedCount > 1
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
 }
 

@@ -24,6 +24,8 @@ services:
       # - POST_SERVICE_PORT=${POST_SERVICE_PORT}
       - FEED_SERVICE_HOST=${GT_FEED_SERVICE_HOST}
       - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
+      - CHAT_SERVICE_HOST=host.docker.internal
+      - CHAT_SERVICE_PORT=50055
 
   auth-service:
     build: ./auth

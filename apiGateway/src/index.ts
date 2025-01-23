@@ -19,6 +19,7 @@ import UseExpress from './config/UseExpress'
 import UseSocketIo from './config/UseSocketIo'
 import UseHttpServer from './config/UseHttpServer'
 import chatSocketRouter from './router/chatSocketRouter'
+import chatRouter from './router/chatRouter'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -38,13 +39,14 @@ app.use('/post', authorize, postRouter)
 app.use('/comment', authorize, commentRouter)
 app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
+app.use('/chat', authorize, chatRouter)
 
 // * socket io
 io.on("connection", (socket) => {
   console.log(`user connected ${socket.id}`)
 
   chatSocketRouter(socket)
-  
+
   socket.on('test-event', (data) => {
     console.log('Received test-event:', data);
     socket.emit('test-response', { message: 'Hello from server' });

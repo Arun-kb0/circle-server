@@ -2,7 +2,7 @@ import * as grpc from '@grpc/grpc-js'
 
 const server = new grpc.Server()
 const PORT = process.env.CHAT_SERVICE_PORT || 50055
-const HOST = process.env.CHAT_SERVICE_HOST || 'localhost'
+const HOST = process.env.CHAT_SERVICE_HOST || '0.0.0.0'
 const IP_ADDRESS = `${HOST}:${PORT}`
 
 export const startGrpcServer = () => {
@@ -14,7 +14,7 @@ export const startGrpcServer = () => {
         console.log(error)
         return
       }
-      console.log(`feed service is running on ${IP_ADDRESS}`)
+      console.log(`chat service is running on ${IP_ADDRESS}`)
     }
   )
 }

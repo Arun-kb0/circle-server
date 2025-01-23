@@ -1,9 +1,9 @@
 // Original file: src/proto/chat.proto
 
-import type { _chat_ChatEnums_MediaType, _chat_ChatEnums_MediaType__Output } from '../chat/ChatEnums';
-import type { _chat_ChatEnums_Status, _chat_ChatEnums_Status__Output } from '../chat/ChatEnums';
+import type { _chat_MessageEnums_MediaType, _chat_MessageEnums_MediaType__Output } from '../chat/MessageEnums';
+import type { _chat_MessageEnums_Status, _chat_MessageEnums_Status__Output } from '../chat/MessageEnums';
 
-export interface Chat {
+export interface Message {
   '_id'?: (string);
   'id'?: (string);
   'roomId'?: (string);
@@ -11,14 +11,14 @@ export interface Chat {
   'authorName'?: (string);
   'authorImage'?: (string);
   'receiverId'?: (string);
-  'mediaType'?: (_chat_ChatEnums_MediaType);
+  'mediaType'?: (_chat_MessageEnums_MediaType);
   'message'?: (string);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'status'?: (_chat_ChatEnums_Status);
+  'status'?: (_chat_MessageEnums_Status);
 }
 
-export interface Chat__Output {
+export interface Message__Output {
   '_id'?: (string);
   'id'?: (string);
   'roomId'?: (string);
@@ -26,9 +26,9 @@ export interface Chat__Output {
   'authorName'?: (string);
   'authorImage'?: (string);
   'receiverId'?: (string);
-  'mediaType'?: (_chat_ChatEnums_MediaType__Output);
+  'mediaType'?: (_chat_MessageEnums_MediaType__Output);
   'message'?: (string);
   'createdAt'?: (string);
   'updatedAt'?: (string);
-  'status'?: (_chat_ChatEnums_Status__Output);
+  'status'?: (_chat_MessageEnums_Status__Output);
 }

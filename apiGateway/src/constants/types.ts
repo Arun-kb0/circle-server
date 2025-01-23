@@ -13,19 +13,27 @@ export interface JwtWithUsername extends JwtPayload {
   userId: string
 }
 
-export interface MulterRequest extends Request {
-  files: Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] } | undefined;
-  username?: string;
-  userId?: string
-}
-
 
 export type MessageType = {
+  id: string
   roomId: string
   authorId: string
   authorName: string
   authorImage?: string
+  receiverId: string
+  mediaType: 'text' | 'audio' | 'photo'
   message: string
-  time: Date
+  createdAt: Date
+  updatedAt: Date
   status: 'sent' | 'received' | 'seen'
+}
+
+
+export type ChatRoomType = {
+  _id: string,
+  roomId: string
+  userId: string
+  targetId: string
+  createdAt: Date
+  updatedAt: Date
 }

@@ -1,5 +1,5 @@
-import { SvcReturnType } from "../constants/SvcReturnType";
-import IChat from "../interfaces/IMessage";
+import { PaginationMessages, SvcReturnType } from "../constants/SvcReturnType";
+import IMessage from "../interfaces/IMessage";
 import IChatService from "../interfaces/IChatService";
 import IChatRepo from "../interfaces/IChatRepo";
 import handleError from "../util/handleError";
@@ -11,7 +11,28 @@ class ChatService implements IChatService {
     private chatRepo: IChatRepo
   ) { }
 
-  async createMessage(message: Partial<IChat>): SvcReturnType<IChat> {
+
+  async deleteRoomMessages(roomId: string): SvcReturnType<boolean> {
+    try {
+      const res = await this.chatRepo.deleteRoomMessages(roomId)
+      return { err: null, data: res }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
+
+  async getMessages(roomId: string, page: number): SvcReturnType<PaginationMessages> {
+    try {
+      const res = await this.chatRepo.getMessages(roomId, page)
+      return { err: null, data: res }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
+
+  async createMessage(message: Partial<IMessage>): SvcReturnType<IMessage> {
     try {
       const newMessage = await this.chatRepo.createMessage(message)
       return { err: null, data: newMessage }
@@ -21,7 +42,7 @@ class ChatService implements IChatService {
     }
   }
 
-  async updateMessage(message: Partial<IChat>): SvcReturnType<IChat> {
+  async updateMessage(message: Partial<IMessage>): SvcReturnType<IMessage> {
     try {
       const updatedMessage = await this.chatRepo.updateMessage(message)
       return { err: null, data: updatedMessage }
@@ -31,7 +52,7 @@ class ChatService implements IChatService {
     }
   }
 
-  async deleteMessage(roomId: string): SvcReturnType<IChat> {
+  async deleteMessage(roomId: string): SvcReturnType<IMessage> {
     try {
       const message = await this.chatRepo.deleteMessage(roomId)
       return { err: null, data: message }
@@ -41,7 +62,7 @@ class ChatService implements IChatService {
     }
   }
 
-  async findMessageByUser(userId: string): SvcReturnType<IChat[]> {
+  async findMessageByUser(userId: string): SvcReturnType<IMessage[]> {
     try {
       const message = await this.chatRepo.findMessageByUser(userId)
       return { err: null, data: message }
@@ -51,7 +72,7 @@ class ChatService implements IChatService {
     }
   }
 
-  async findMessageById(messageId: string): SvcReturnType<IChat | null> {
+  async findMessageById(messageId: string): SvcReturnType<IMessage | null> {
     try {
       const message = await this.chatRepo.findMessageById(messageId)
       return { err: null, data: message }
@@ -60,7 +81,6 @@ class ChatService implements IChatService {
       return { err: code as number, errMsg: message, data: null }
     }
   }
-
 
   // * chat room
 
@@ -81,7 +101,7 @@ class ChatService implements IChatService {
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, errMsg: message, data: null }
-    } 
+    }
   }
 
   async deleteChatRoom(chatRoomId: string): SvcReturnType<IChatRoom | null> {
@@ -103,7 +123,7 @@ class ChatService implements IChatService {
       return { err: code as number, errMsg: message, data: null }
     }
   }
-  
+
 }
 
 export default ChatService

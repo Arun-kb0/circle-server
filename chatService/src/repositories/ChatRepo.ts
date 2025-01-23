@@ -14,7 +14,8 @@ class ChatRepo implements IChatRepo {
     private messageBaseRepo: IMessageBaseRepo,
     private chatRoomBaseRepo: IChatRoomBaseRepo
   ) { }
-  
+
+  // *  base message calls
   async getMessages(roomId: string, page: number): Promise<PaginationMessages> {
     try {
       const startIndex = (page - 1) * LIMIT
@@ -33,7 +34,6 @@ class ChatRepo implements IChatRepo {
     }
   }
 
-  // *  base message calls
   async createMessage(message: Partial<IMessage>): Promise<IMessage> {
     try {
       const newMessage = await this.messageBaseRepo.create(message)
@@ -64,6 +64,16 @@ class ChatRepo implements IChatRepo {
     }
   }
 
+  async deleteRoomMessages(roomId: string): Promise<boolean> {
+    try {
+      const isDeleted = await this.messageBaseRepo.deleteByRoomId(roomId)
+      return isDeleted
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async findMessageByUser(userId: string): Promise<IMessage[]> {
     try {
       const foundUser = await this.messageBaseRepo.findByUser(userId)
@@ -86,8 +96,8 @@ class ChatRepo implements IChatRepo {
 
   // * base chatRoom calls
   async createChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
-   try {
-     const newRoom = await this.chatRoomBaseRepo.create(chatRoom)
+    try {
+      const newRoom = await this.chatRoomBaseRepo.create(chatRoom)
       return newRoom
     } catch (error) {
       const err = handleError(error)
@@ -95,8 +105,8 @@ class ChatRepo implements IChatRepo {
     }
   }
 
- async updateChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
-   try {
+  async updateChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
+    try {
       const updatedRoom = await this.chatRoomBaseRepo.update(chatRoom)
       return updatedRoom
     } catch (error) {
@@ -106,7 +116,7 @@ class ChatRepo implements IChatRepo {
   }
 
   async deleteChatRoom(chatRoomId: string): Promise<IChatRoom | null> {
-   try {
+    try {
       const deletedRoom = await this.chatRoomBaseRepo.delete(chatRoomId)
       return deletedRoom
     } catch (error) {
@@ -116,7 +126,7 @@ class ChatRepo implements IChatRepo {
   }
 
   async findByIdChatRoom(chatRoomId: string): Promise<IChatRoom[] | null> {
-   try {
+    try {
       const foundRoom = await this.chatRoomBaseRepo.findById(chatRoomId)
       return foundRoom
     } catch (error) {

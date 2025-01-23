@@ -15,8 +15,8 @@ class PostGrpcClient {
   static getClient(): PostServiceClient {
     if (!PostGrpcClient.instance) {
       const packageDef = getPackageDef(PROTO_PATH)
-      const authProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-      PostGrpcClient.instance = new authProto.post.PostService(
+      const postProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
+      PostGrpcClient.instance = new postProto.post.PostService(
         IP_ADDRESS,
         grpc.credentials.createInsecure()
       )

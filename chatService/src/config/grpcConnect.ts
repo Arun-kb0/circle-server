@@ -33,6 +33,14 @@ const grpcConnect = () => {
       deleteMessage: logInterceptor(chatController.deleteMessage),
       findMessageByUser: logInterceptor(chatController.findMessageByUser),
       findMessageById: logInterceptor(chatController.findMessageById),
+      getMessages: logInterceptor(chatController.getMessages),
+      deleteRoomMessages: logInterceptor(chatController.deleteRoomMessages),
+
+      // * chat room methods
+      createRoom: logInterceptor(chatController.createRoom),
+      updateRoom: logInterceptor(chatController.updateRoom),
+      deleteRoom: logInterceptor(chatController.deleteRoom),
+      findRoomByRoomId: logInterceptor(chatController.findRoomByRoomId),
     }
   )
 

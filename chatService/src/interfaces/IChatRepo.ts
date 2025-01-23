@@ -10,6 +10,7 @@ interface IChatRepo {
   findMessageByUser(userId: string): Promise<IMessage[]>
   findMessageById(messageId: string): Promise<IMessage | null>
   getMessages(roomId: string, page: number): Promise<PaginationMessages>
+  deleteRoomMessages(roomId:string) : Promise<boolean>
   
   // * chat room
   createChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null>

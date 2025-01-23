@@ -27,11 +27,11 @@ export const convertMessageForGrpc = (messageData: IMessage): Message => {
 }
 
 export const convertMessageForDb = (messageData: Message): Partial<IMessage> => {
-  const { _id, id, roomId, authorId, authorName,
+  const { id, roomId, authorId, authorName,
     authorImage, receiverId, mediaType,
     message, createdAt, updatedAt, status } = messageData
   const convertedMessage: Partial<IMessage> = {
-    _id, id, roomId, authorId, authorName,
+    id, roomId, authorId, authorName,
     authorImage, receiverId, message,
     mediaType: mediaType as IMessage['mediaType'],
     status: status as IMessage['status'],
@@ -52,9 +52,9 @@ export const convertChatRoomForGrpc = (roomData: IChatRoom): ChatRoom => {
 }
 
 export const convertChatRoomForDb = (roomData: ChatRoom): Partial<IChatRoom> => {
-  const { _id, roomId, userId, targetId, createdAt, updatedAt } = roomData
+  const { roomId, userId, targetId, createdAt, updatedAt } = roomData
   const convertedMessage: Partial<IChatRoom> = {
-    _id, roomId, userId, targetId,
+    roomId, userId, targetId,
     ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
     ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }

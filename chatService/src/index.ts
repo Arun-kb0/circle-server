@@ -6,7 +6,7 @@ import { healthCheck } from './util/healthCheck'
 
 
 const MONGODB_URI = process.env.CHAT_DB_URI || ''
-const HTTP_PORT = process.env.CHAT_HEALTH_CHECK_PORT || 8083
+const HTTP_PORT = process.env.CHAT_HEALTH_CHECK_PORT || 8085
 
 dbConnect(MONGODB_URI)
   .then(() => {

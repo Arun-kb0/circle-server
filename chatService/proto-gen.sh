@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf ./src/proto/feed 
+rm -rf ./src/proto/chat 
 
 npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=./src/proto/ ./src/proto/*.proto
 
