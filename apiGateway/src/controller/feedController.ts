@@ -2,8 +2,24 @@ import { NextFunction, Request, Response } from "express";
 import FeedGrpcClient from '../config/FeedGrpcClient'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
+import { AuthRequest } from "../constants/types";
 
 const client = FeedGrpcClient.getClient()
+
+export const getUseCreatedPosts = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page } = req.query
+    const { userId } = req
+    if (!page || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required')
+    client.getUserCreatedPosts({ userId, page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user created posts failed'))
+      res.status(httpStatus.OK).json({ message: 'get user created posts success', ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const getGlobalFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {

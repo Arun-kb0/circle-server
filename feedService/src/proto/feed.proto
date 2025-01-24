@@ -7,6 +7,7 @@ service FeedService {
   rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
   rpc GetPost(GetPostRequest) returns (GetPostResponse) {};
   rpc SearchPost(SearchPostRequest) returns (SearchPostResponse) {};
+  rpc GetUserCreatedPosts(GetUserCreatedPostsRequest) returns (GetUserCreatedPostsResponse) {};
   
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
 };
@@ -140,6 +141,18 @@ message SearchPostRequest {
 }
 
 message SearchPostResponse {
+  repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+}
+
+message GetUserCreatedPostsRequest {
+  string userId =1;
+  int32 page=2;
+}
+
+message GetUserCreatedPostsResponse {
   repeated Post posts=1;
   int32 currentPage =2;
   int32 numberOfPages=3;

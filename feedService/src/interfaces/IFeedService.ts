@@ -7,7 +7,8 @@ interface IFeedService {
 
   getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>>
   getUserFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>>
-
+  getUserCreatedPosts(userId: string, page: number): SvcReturnType<PaginationPost<IPostExt[]>>
+  
   getPost(postId: string): SvcReturnType<{ post: IPostExt, like: ILike | null } | null>
   searchPost(searchText: string, page: number): SvcReturnType<PaginationPost<IPostExt[] | null>>
 

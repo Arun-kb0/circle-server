@@ -1,7 +1,7 @@
 import express from 'express'
 import {
   getComments,
-  getGlobalFeed, getPost, getUserFeed,
+  getGlobalFeed, getPost, getUseCreatedPosts, getUserFeed,
   searchPosts
 } from '../controller/feedController'
 
@@ -13,6 +13,7 @@ router.get('/posts', getUserFeed)
 
 router.get('/post', getPost)
 router.get('/search-post', searchPosts)
+router.get('/user-created-posts', getUseCreatedPosts)
 
 router.get('/comment', getComments)
 

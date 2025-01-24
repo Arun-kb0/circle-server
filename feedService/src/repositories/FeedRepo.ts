@@ -10,6 +10,17 @@ import ILike from '../interfaces/ILike';
 
 class FeedRepo implements IFeedRepo {
 
+  async getUserCreatedPostCount(userId: string): Promise<number> {
+    const count = await Post.countDocuments({ authorId: userId })
+    return count
+  }
+
+  async getUserCreatedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[] | null> {
+    const posts = await Post.find({ authorId: userId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const updatedPosts = await addUserToPosts(posts)
+    return updatedPosts as IPostExt[]
+  }
+
 
   async getSearchPostsCount(searchText: string): Promise<number> {
     const query = {

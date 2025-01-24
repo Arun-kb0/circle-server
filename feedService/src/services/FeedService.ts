@@ -15,6 +15,35 @@ class FeedService implements IFeedService {
     private feedRepo: IFeedRepo
   ) { }
 
+  async getUserCreatedPosts(userId: string, page: number): SvcReturnType<PaginationPost<IPostExt[]>> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.feedRepo.getUserCreatedPostCount(userId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const emptyResponseData = {
+        posts: [],
+        numberOfPages: 0,
+        currentPage: 0,
+        likes: []
+      }
+      if (total === 0) return { err: null, data: emptyResponseData }
+      const posts = await this.feedRepo.getUserCreatedPosts(userId, LIMIT, startIndex)
+      if (!posts || posts?.length === 0) return { err: null, data: emptyResponseData }
+      const postIds = posts.map(post => post._id)
+      const likes = await this.feedRepo.getLikes(postIds, 'post')
+      const data = {
+        posts,
+        numberOfPages,
+        currentPage: page,
+        likes
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
   async getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>> {
     try {
       const startIndex = (page - 1) * LIMIT

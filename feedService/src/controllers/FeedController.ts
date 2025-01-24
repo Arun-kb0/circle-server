@@ -2,7 +2,7 @@ import { PaginationComment, PaginationPost } from "../constants/SvcTypes";
 import IComment, { ICommentExt } from "../interfaces/IComment";
 import IFeedController, {
   GetCommentsHandler, GetGlobalFeedHandler,
-  GetPostHandler, GetUserFeedHandler, SearchPostHandler
+  GetPostHandler, GetUserCreatedPostsHandler, GetUserFeedHandler, SearchPostHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -17,6 +17,23 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getUserCreatedPosts: GetUserCreatedPostsHandler = async (call, cb) => {
+    try {
+      const { userId , page } = call.request
+      validateRequest('page is required.', page)
+      const res = await this.feedService.getUserCreatedPosts(userId as string, page as number)
+      validateResponse(res)
+      const { posts: rawPosts, likes: rawLikes, ...rest } = res.data as PaginationPost<IPostExt[]>
+      const posts = rawPosts.map(post => convertPostForGrpc(post))
+      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const response = { posts, likes, ...rest }
+      cb(null, response)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getGlobalFeed: GetGlobalFeedHandler = async (call, cb) => {
     try {

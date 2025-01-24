@@ -18,6 +18,8 @@ export interface ProtoGrpcType {
     GetGlobalFeedResponse: MessageTypeDefinition
     GetPostRequest: MessageTypeDefinition
     GetPostResponse: MessageTypeDefinition
+    GetUserCreatedPostsRequest: MessageTypeDefinition
+    GetUserCreatedPostsResponse: MessageTypeDefinition
     GetUserFeedRequest: MessageTypeDefinition
     GetUserFeedResponse: MessageTypeDefinition
     Image: MessageTypeDefinition

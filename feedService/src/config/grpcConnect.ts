@@ -32,7 +32,10 @@ const grpcConnect = () => {
       getUserFeed: logInterceptor(feedController.getUserFeed),
       getPost: logInterceptor(feedController.getPost),
       searchPost: logInterceptor(feedController.searchPost),
+      getUserCreatedPosts : logInterceptor(feedController.getUserCreatedPosts),
+
       getComment: logInterceptor(feedController.getComments)
+
     }
   )
 
