@@ -41,3 +41,23 @@ export const convertUserForDb = (user: User): Partial<IUser> => {
   }
   return convertedUser
 }
+
+export const convertGrpcUserForUpdate = (user: User): Partial<IUser> => {
+  const { createdAt, updatedAt, image, role, status, _id,...rest} = user
+  const convertedUser: Partial<IUser> = {
+    ...rest,
+    role: role as "user" | "admin" | undefined,
+    status: status as "active" | "blocked" | "deleted" | undefined,
+    image: {
+      url: image?.url,
+      name: image?.name,
+    },
+    createdAt: stringToDate(createdAt as string),
+    updatedAt: stringToDate(updatedAt as string)
+  }
+
+  const sanitizedUser = Object.fromEntries(
+    Object.entries(convertedUser).filter(([_, value]) => value)
+  )
+  return sanitizedUser
+}

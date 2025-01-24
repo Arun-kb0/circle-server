@@ -41,9 +41,10 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { userId, user } = req.body
+    const { user } = req.body
+    const { userId } = req
     if (!userId || !user) throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
     client.updateUser({ userId, user }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))

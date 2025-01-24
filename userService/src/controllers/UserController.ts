@@ -12,7 +12,7 @@ import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
 import { CustomError } from "../util/CustomError";
 import handleError from "../util/handeError";
 import { User, User__Output } from '../proto/user/User'
-import { convertUserForDb, convertUserForGrpc } from '../util/converter'
+import { convertGrpcUserForUpdate, convertUserForDb, convertUserForGrpc } from '../util/converter'
 import { validateRequest, validateResponse } from '../util/validations'
 import { IUser } from "../model/UserModel";
 import IUserController from '../interfaces/IUserController'
@@ -99,7 +99,9 @@ export class UserController implements IUserController {
     try {
       const { userId, user } = call.request
       validateRequest('userId and password is required', userId, user)
-      const protoUser = convertUserForDb(user as User__Output)
+      console.log(user)
+      // const protoUser = convertUserForDb(user as User)
+      const protoUser = convertGrpcUserForUpdate(user as User)
       const res = await this.userService.updateUser(userId as string, protoUser)
       validateResponse(res)
       const updatedUser = convertUserForGrpc(res.data as IUser)
@@ -108,7 +110,6 @@ export class UserController implements IUserController {
       const err = handleError(error)
       cb(err, null)
     }
-
   }
 
 

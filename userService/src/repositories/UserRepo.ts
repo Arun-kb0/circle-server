@@ -55,6 +55,8 @@ export class UserRepo implements IUserRepo {
     if (!userId || !Types.ObjectId.isValid(userId)) {
       throw new Error('Invalid or empty userId');
     }
+    console.log(user)
+    
     const objId = Types.ObjectId.createFromHexString(userId)
     const updatedUser = await User.findOneAndUpdate(
       { _id: objId },
