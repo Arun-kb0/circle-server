@@ -1,4 +1,4 @@
-import IMessage from "../interfaces/IMessage";
+import IMessage, { IMessageExt } from "../interfaces/IMessage";
 
 export type SvcReturnType<T> = Promise<{
   err: number | null;
@@ -7,7 +7,7 @@ export type SvcReturnType<T> = Promise<{
 }>
 
 export type PaginationMessages = {
-  messages: IMessage[];
+  messages: IMessageExt[];
   numberOfPages: number;
   currentPage: number;
 }

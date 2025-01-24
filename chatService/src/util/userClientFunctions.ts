@@ -1,7 +1,6 @@
 import UserGrpcClient from '../config/UserGrpcClient'
-import IComment, { ICommentExt } from '../interfaces/IComment'
-import IPost, { IPostExt } from '../interfaces/IPost'
 import { User } from '../proto/userProto/user/User'
+import IMessage, { IMessageExt } from '../interfaces/IMessage'
 
 const client = UserGrpcClient.getClient()
 
@@ -41,53 +40,37 @@ const getUser = async (userId: string) => {
 }
 
 
-export const addUserToPosts = async (posts: IPost[]) => {
+export const addUserToMessage = async (message: IMessage): Promise<IMessageExt> => {
   try {
-    const userIds = posts.map(post => post.authorId)
+    const user = await getUser(message.authorId)
+    return {
+      ...message,
+      authorName: user?.name || undefined,
+      authorImage: user?.image?.url || undefined,
+    }
+  } catch (error) {
+    console.log('users and posts merging failed')
+    console.log(error)
+    return message
+  }
+}
+
+export const addUsersToMessages = async (messages: IMessage[]): Promise<IMessageExt[]> => {
+  try {
+    const userIds = messages.map(msg => msg.authorId)
     const users = await getMultipleUsers(userIds)
-    const postsWithUsers = posts.map((post) => {
-      const user = users.find((user) => user._id === post.authorId);
-      const postsObj = post?.toObject ? post.toObject() : post
+    const msgWithUsers = messages.map((msg): IMessageExt => {
+      const user = users.find((user) => user._id === msg.authorId);
       return {
-        ...postsObj,
+        ...msg,
         authorName: user?.name || undefined,
         authorImage: user?.image?.url || undefined,
       }
     })
-    return postsWithUsers
+    return msgWithUsers
   } catch (error) {
     console.log('users and posts merging failed')
     console.log(error)
     return []
-  }
-}
-
-export const addUserToPost = async (post: IPost): Promise<IPostExt | null> => {
-  try {
-    const user = await getUser(post.authorId)
-    return {
-      ...post,
-      authorName: user?.name,
-      authorImage: user?.image?.url
-    } as IPostExt
-  } catch (error) {
-    console.log('get single user and post merging failed')
-    console.log(error)
-    return null
-  }
-}
-
-export const addUserToComment = async (comment: IComment) => {
-  try {
-    const user = await getUser(comment.authorId)
-    return {
-      ...comment,
-      authorName: user?.name,
-      authorImage: user?.image?.url
-    } as ICommentExt
-  } catch (error) {
-    console.log('comment and user merging failed')
-    console.log(error)
-    return null
   }
 }

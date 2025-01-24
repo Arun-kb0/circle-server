@@ -1,12 +1,10 @@
-import { Document, Date } from "mongoose";
-
-interface IChatRoom extends Document {
+interface IChatRoom {
   _id: string,
   roomId: string
   userId: string
   targetId: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export default IChatRoom

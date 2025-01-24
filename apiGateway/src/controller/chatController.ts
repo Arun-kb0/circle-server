@@ -25,6 +25,7 @@ export const getRoomMessages = async (req: Request, res: Response, next: NextFun
 export const updateMessage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { message } = req.body
+    const { messageId } = req.params
     if (typeof message !== 'object') throw new HttpError(httpStatus.BAD_REQUEST, 'message is required.')
     chatClient.updateMessage({ message }, (err, msg) => {
       if (err) return next(err)
@@ -38,7 +39,7 @@ export const updateMessage = async (req: Request, res: Response, next: NextFunct
 
 export const deleteMessage = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {messageId} = req.params
+    const { messageId } = req.params
 
     if (typeof messageId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'messageId is required.')
     chatClient.deleteMessage({ messageId }, (err, msg) => {

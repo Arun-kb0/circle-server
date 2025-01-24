@@ -14,6 +14,7 @@ export const getUseCreatedPosts = async (req: AuthRequest, res: Response, next: 
     client.getUserCreatedPosts({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user created posts failed'))
+      msg?.posts?.map(item=> console.log(item.authorId))
       res.status(httpStatus.OK).json({ message: 'get user created posts success', ...msg })
     })
   } catch (error) {

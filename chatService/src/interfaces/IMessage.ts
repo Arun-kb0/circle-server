@@ -1,17 +1,28 @@
-import { Document, Date } from 'mongoose'
-
-interface IMessage extends Document {
+interface IMessage {
   _id: string,
   id: string
   roomId: string
   authorId: string
-  authorName: string
+  receiverId: string
+  mediaType: 'text' | 'audio' | 'photo'
+  message: string
+  createdAt: string
+  updatedAt: string
+  status: 'sent' | 'received' | 'seen'
+}
+
+export interface IMessageExt {
+  _id: string,
+  id: string
+  roomId: string
+  authorId: string
+  authorName?: string
   authorImage?: string
   receiverId: string
   mediaType: 'text' | 'audio' | 'photo'
   message: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   status: 'sent' | 'received' | 'seen'
 }
 

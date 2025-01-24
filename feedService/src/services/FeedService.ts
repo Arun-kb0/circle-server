@@ -7,7 +7,7 @@ import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
 import ILike from '../interfaces/ILike';
 
-const LIMIT = Number(process.env.PAGINATION_LIMIT) || 5
+const LIMIT = Number(process.env.PAGINATION_LIMIT) || 10
 
 class FeedService implements IFeedService {
 

@@ -11,16 +11,11 @@ import IChatController, {
 } from "../interfaces/IChatController";
 import IChatRoom from "../interfaces/IChatRoom";
 import IChatService from "../interfaces/IChatService";
-import IMessage from "../interfaces/IMessage";
 import { ChatRoom } from "../proto/chat/ChatRoom";
 import { Message } from "../proto/chat/Message";
-import {
-  convertChatRoomForDb, convertChatRoomForGrpc,
-  convertMessageForDb, convertMessageForGrpc
-} from "../util/converter"
+import { convertMessageToIMessage, } from "../util/converter"
 import handleError from "../util/handleError";
 import { validateRequest, validateResponse } from "../util/validations"
-
 
 class ChatController implements IChatController {
 
@@ -35,8 +30,7 @@ class ChatController implements IChatController {
       const res = await this.chatService.getMessages(roomId as string, page as number)
       validateResponse(res)
       const { messages, ...rest } = res.data as PaginationMessages
-      const msgGrpcArray = messages.map(msg => convertMessageForGrpc(msg))
-      cb(null, { messages: msgGrpcArray, ...rest })
+      cb(null, { messages, ...rest })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -48,7 +42,7 @@ class ChatController implements IChatController {
       const { roomId } = call.request
       validateRequest('roomId is required.', roomId)
       const res = await this.chatService.deleteRoomMessages(roomId as string)
-      validateResponse(res)
+      if (!res) validateResponse(res)
       cb(null, { isDeleted: res.data as boolean })
     } catch (error) {
       const err = handleError(error)
@@ -60,11 +54,10 @@ class ChatController implements IChatController {
     try {
       const { message } = call.request
       validateRequest('message is required.', message)
-      const msgDb = convertMessageForDb(message as Message)
-      const res = await this.chatService.createMessage(msgDb)
+      const convertedMsg = convertMessageToIMessage(message as Message)
+      const res = await this.chatService.createMessage(convertedMsg)
       validateResponse(res)
-      const msgGrpc = convertMessageForGrpc(res.data as IMessage)
-      cb(null, { message: msgGrpc })
+      cb(null, { message: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -73,13 +66,12 @@ class ChatController implements IChatController {
 
   updateMessage: UpdateMessageHandler = async (call, cb) => {
     try {
-      const { message } = call.request
-      validateRequest('message is required.', message)
-      const msgDb = convertMessageForDb(message as Message)
-      const res = await this.chatService.updateMessage(msgDb)
+      const { messageId, message } = call.request
+      validateRequest('message and messageId are required.', messageId, message)
+      const msgCommon = convertMessageToIMessage(message as Message)
+      const res = await this.chatService.updateMessage(messageId as string, msgCommon)
       validateResponse(res)
-      const msgGrpc = convertMessageForGrpc(res.data as IMessage)
-      cb(null, { message: msgGrpc })
+      cb(null, { message: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -92,8 +84,7 @@ class ChatController implements IChatController {
       validateRequest('messageId is required.', messageId)
       const res = await this.chatService.deleteMessage(messageId as string)
       validateResponse(res)
-      const msgGrpc = convertMessageForGrpc(res.data as IMessage)
-      cb(null, { message: msgGrpc })
+      cb(null, { message: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -107,9 +98,7 @@ class ChatController implements IChatController {
       validateRequest('userId is required.', userId)
       const res = await this.chatService.findMessageByUser(userId as string)
       validateResponse(res)
-      if (!res.data) return cb(null, { messages: [] })
-      const msgGrpcArray = res.data?.map(msg => convertMessageForGrpc(msg))
-      cb(null, { messages: msgGrpcArray })
+      cb(null, { messages: res.data ? res.data : [] })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -122,9 +111,7 @@ class ChatController implements IChatController {
       validateRequest('messageId is required.', messageId)
       const res = await this.chatService.findMessageById(messageId as string)
       validateResponse(res)
-      if (!res.data) return cb(null, null)
-      const msgGrpc = convertMessageForGrpc(res.data)
-      cb(null, { message: msgGrpc })
+      cb(null, { message: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -136,11 +123,9 @@ class ChatController implements IChatController {
     try {
       const { chatRoom } = call.request
       validateRequest('chatRoom is required.', chatRoom)
-      const roomDb = convertChatRoomForDb(chatRoom as ChatRoom)
-      const res = await this.chatService.createChatRoom(roomDb)
+      const res = await this.chatService.createChatRoom(chatRoom as Partial<IChatRoom>)
       validateResponse(res)
-      const roomGrpc = convertChatRoomForGrpc(res.data as IChatRoom)
-      cb(null, { chatRoom: roomGrpc })
+      cb(null, { chatRoom: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -149,13 +134,11 @@ class ChatController implements IChatController {
 
   updateRoom: UpdateRoomHandler = async (call, cb) => {
     try {
-      const { chatRoom } = call.request
+      const { roomId, chatRoom } = call.request
       validateRequest('chatRoom is required.', chatRoom)
-      const roomDb = convertChatRoomForDb(chatRoom as ChatRoom)
-      const res = await this.chatService.updateChatRoom(roomDb)
+      const res = await this.chatService.updateChatRoom(roomId as string, chatRoom as Partial<ChatRoom>)
       validateResponse(res)
-      const roomGrpc = convertChatRoomForGrpc(res.data as IChatRoom)
-      cb(null, { chatRoom: roomGrpc })
+      cb(null, { chatRoom: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -168,8 +151,7 @@ class ChatController implements IChatController {
       validateRequest('chatRoomId is required.', chatRoomId)
       const res = await this.chatService.deleteChatRoom(chatRoomId as string)
       validateResponse(res)
-      const roomGrpc = convertChatRoomForGrpc(res.data as IChatRoom)
-      cb(null, { chatRoom: roomGrpc })
+      cb(null, { chatRoom: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -182,9 +164,7 @@ class ChatController implements IChatController {
       validateRequest('chatRoomId is required.', chatRoomId)
       const res = await this.chatService.findByIdChatRoom(chatRoomId as string)
       validateResponse(res)
-      if (!res.data) return cb(null, { chatRooms: [] })
-      const roomGrpcArray = res.data.map(room => convertChatRoomForGrpc(room))
-      cb(null, { chatRooms: roomGrpcArray })
+      cb(null, { chatRoom: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
