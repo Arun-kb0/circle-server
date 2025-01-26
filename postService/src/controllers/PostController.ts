@@ -4,8 +4,7 @@ CreatePostHandler, DeletePostHandler,UpdatePostHandler
 import IPostService from '../interfaces/IPostService';
 import handleError from '../util/handleError';
 import { validateRequest, validateResponse } from '../util/validations'
-import { convertPostForDb, convertPostForGrpc } from '../util/converter'
-import IPost, { IPostExt } from '../interfaces/IPost';
+import { convertPostForDb } from '../util/converter'
 import { Post__Output } from '../proto/post/Post';
 
 class PostController implements IPostController {
@@ -21,8 +20,7 @@ class PostController implements IPostController {
       const convertedPost = convertPostForDb(post as Post__Output)
       const res = await this.postService.createPost(convertedPost)
       validateResponse(res)
-      const newPost = convertPostForGrpc(res.data as IPostExt)
-      cb(null, { post: newPost })
+      cb(null, { post: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -36,8 +34,7 @@ class PostController implements IPostController {
       const convertedPost = convertPostForDb(post as Post__Output)
       const res = await this.postService.updatePost(postId as string, convertedPost)
       validateResponse(res)
-      const updatedPost = convertPostForGrpc(res.data as IPostExt)
-      cb(null, { post: updatedPost })
+      cb(null, { post: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)

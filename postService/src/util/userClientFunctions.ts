@@ -47,9 +47,8 @@ export const addUserToPosts = async (posts: IPost[]) => {
     const users = await getMultipleUsers(userIds)
     const postsWithUsers = posts.map((post) => {
       const user = users.find((user) => user._id === post.authorId);
-      const postsObj = post?.toObject ? post.toObject() : post
       return {
-        ...postsObj,
+        ...post,
         authorName: user?.name || undefined,
         authorImage: user?.image?.url || undefined,
       }

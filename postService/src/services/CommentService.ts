@@ -1,5 +1,5 @@
 import SvcFuncReturnType from "../constants/SvcReturnType";
-import IComment from "../interfaces/IComment";
+import IComment, { ICommentExt } from "../interfaces/IComment";
 import ICommentRepo from "../interfaces/ICommentRepo";
 import ICommentService from "../interfaces/ICommentService";
 import handleError from '../util/handleError'
@@ -12,7 +12,7 @@ class CommentService implements ICommentService {
   ) { }
 
 
-  async createComment(contentType: IComment["contentType"], contentId: string, comment: Partial<IComment>): SvcFuncReturnType<IComment> {
+  async createComment(contentType: IComment["contentType"], contentId: string, comment: Partial<IComment>): SvcFuncReturnType<ICommentExt> {
     try {
       const commentDetails = {
         ...comment,
@@ -27,7 +27,7 @@ class CommentService implements ICommentService {
     }
   }
 
-  async updateComment(commentId: string, comment: Partial<IComment>): SvcFuncReturnType<IComment | null> {
+  async updateComment(commentId: string, comment: Partial<IComment>): SvcFuncReturnType<ICommentExt | null> {
     try {
       const updatedComment = await this.commentRepo.update(commentId, comment)
       if (!updatedComment) return { err: httpStatus.BAD_REQUEST, errMsg: 'comment not found', data: null }

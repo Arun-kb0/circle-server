@@ -3,36 +3,37 @@ import ICommentRepo from "../interfaces/ICommentRepo";
 import ILike from "../interfaces/ILike";
 import { Comment } from '../model/commentModel'
 import { Post } from "../model/postModel";
+import { convertIPostDbToIPost } from "../util/converter";
 import { updatePostInCache } from "../util/redisCache";
 import { addUserToComment } from "../util/userClientFunctions";
+import ICommentBaseRepo from '../interfaces/ICommentBaseRepo'
 
 class CommentRepo implements ICommentRepo {
 
+  constructor(
+    private commentBaseRepo: ICommentBaseRepo
+  ) { }
+
   async create(comment: Partial<IComment>): Promise<ICommentExt | null> {
-    const newComment = await Comment.create(comment)
-    const commentObj = newComment.toObject()
-    const updatedComment = await addUserToComment(commentObj)
-    this.handleCount(commentObj.contentType, commentObj.contentId, true)
+    const newComment = await this.commentBaseRepo.createComment(comment)
+    if (!newComment) return null
+    const updatedComment = await addUserToComment(newComment)
+    this.handleCount(newComment.contentType, newComment.contentId, true)
     return updatedComment
   }
 
   async update(commentId: string, comment: Partial<IComment>): Promise<ICommentExt | null> {
-    const updatedComment = await Comment.findOneAndUpdate(
-      { _id: commentId },
-      { $set: comment },
-      { new: true }
-    )
+    const updatedComment = await this.commentBaseRepo.updateComment(commentId, comment)
     if (!updatedComment) return null
-    const mergedComment = await addUserToComment(updatedComment.toObject() as IComment)
+    const mergedComment = await addUserToComment(updatedComment)
     return mergedComment
   }
 
   async delete(commentId: string): Promise<{ commentId: string; } | null> {
-    const deletedComment = await Comment.findOneAndDelete({ _id: commentId })
-    const deletedObj = deletedComment?.toObject()
-    if (!deletedObj) return null
-    this.handleCount(deletedObj.contentType, deletedObj.contentId, false)
-    return { commentId: deletedObj._id }
+   const deleteComment = await this.commentBaseRepo.deleteComment(commentId)
+    if (!deleteComment) return null
+    this.handleCount(deleteComment.contentType, deleteComment.contentId, false)
+    return { commentId: deleteComment._id }
   }
 
 
@@ -48,7 +49,8 @@ class CommentRepo implements ICommentRepo {
             { $inc: { commentCount: count } }
           )
           if (!updatedPost) throw new Error('update post comment count failed')
-          await updatePostInCache(updatedPost?.toObject())
+          const convertedPost = convertIPostDbToIPost(updatedPost)
+          await updatePostInCache(convertedPost)
           return true
         }
         case 'comment': {

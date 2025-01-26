@@ -1,11 +1,12 @@
-import { Date, Schema } from "mongoose"
-import IPost, { IPostExt } from "../interfaces/IPost"
+import { Date as DbDate, Schema, Types } from "mongoose"
+import IPost from "../interfaces/IPost"
 import { Post } from "../proto/post/Post"
-import { Comment } from "../proto/post/Comment"
-import IComment, { ICommentExt } from "../interfaces/IComment"
+import IComment from "../interfaces/IComment"
 import { Like } from "../proto/post/Like"
 import ILike from '../interfaces/ILike'
-
+import { IPostDb } from "../model/postModel"
+import { ILikeDb } from "../model/likeModel"
+import { ICommentDb } from "../model/commentModel"
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {
   return date ? date.toString() : ''
@@ -16,90 +17,147 @@ export const stringToDate = (str: string) => {
 }
 
 
-export const convertPostForGrpc = (post: Partial<IPostExt>) => {
-  const {
-    _id, desc, tags, mediaType, media,
-    authorId, status, likesCount, reportsCount,
-    authorImage, authorName,
-    commentCount, shareCount, updatedAt, createdAt
-  } = post
-  const convertedPost: Post = {
-    _id, desc, tags, mediaType, media,
-    authorId, status, likesCount, reportsCount,
-    commentCount, shareCount, authorImage, authorName,
-    createdAt: dateToString(createdAt),
-    updatedAt: dateToString(updatedAt),
-  }
-  return convertedPost
+export const convertToObjectId = (id: string): Types.ObjectId | null => {
+  return Types.ObjectId.isValid(id) ? new Types.ObjectId(id) : null
 }
 
+const convertDbDateToIsoString = (dbDate: DbDate): string => {
+  return new Date(dbDate.toString()).toISOString()
+}
+
+
+// * post
 export const convertPostForDb = (post: Post): Partial<IPost> => {
   const { createdAt, updatedAt, mediaType, status, _id, ...rest } = post
   const convertedPost: Partial<IPost> = {
     ...rest,
     mediaType: mediaType as 'image' | 'video' | 'text',
     status: status as 'active' | 'deleted' | 'blocked',
-    ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
-    ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }
   return convertedPost
 }
 
-
-export const convertCommentForGrpc = (comment: ICommentExt): Comment => {
-  const {
-    _id, contentId, contentType, status,
-    media, mediaType, authorId, parentId,
-    likesCount, replayCount, authorImage, authorName,
-    createdAt, updatedAt
-  } = comment
-  const convertedComment: Comment = {
-    _id, contentId, contentType, status,
-    media, mediaType, authorId,
-    parentId, likesCount, replayCount,
-    authorImage, authorName,
-    createdAt: dateToString(createdAt),
-    updatedAt: dateToString(updatedAt),
+export const convertIPostDbToIPost = (post: IPostDb): IPost => {
+  return {
+    _id: post._id.toString(),
+    desc: post.desc,
+    tags: post.tags,
+    mediaType: post.mediaType,
+    media: post.media,
+    authorId: post.authorId.toString(),
+    status: post.status,
+    likesCount: post.likesCount,
+    reportsCount: post.reportsCount,
+    commentCount: post.commentCount,
+    shareCount: post.shareCount,
+    updatedAt: convertDbDateToIsoString(post.createdAt),
+    createdAt: convertDbDateToIsoString(post.updatedAt),
   }
-  return convertedComment
 }
 
-export const convertCommentForDb = (comment: Comment): Partial<IComment> => {
-  const {
-    _id,
-    createdAt, updatedAt, mediaType,
-    status, contentType, ...rest
-  } = comment
-
-  const convertedComment: Partial<IComment> = {
-    ...rest,
-    mediaType: mediaType as IComment["mediaType"],
-    contentType: mediaType as IComment["contentType"],
-    status: status as IComment["status"],
-    ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
-    ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
+export const convertIPostToIPostDb = (post: Partial<IPost>): Partial<IPostDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    authorId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
   }
-  return convertedComment
+  const postDb: Partial<IPostDb> = {}
+  Object.keys(post).forEach((key) => {
+    const typedKey = key as keyof IPost;
+    if (post[typedKey] && conversionMap[typedKey]) {
+      postDb[typedKey] = conversionMap[typedKey](post[typedKey])
+    } else if (post[typedKey]) {
+      if (!post.desc) postDb.desc = post.desc;
+      if (!post.tags) postDb.tags = post.tags;
+      if (!post.mediaType) postDb.mediaType = post.mediaType;
+      if (!post.media) postDb.media = post.media;
+      if (!post.status) postDb.status = post.status;
+      if (!post.likesCount) postDb.likesCount = post.likesCount;
+      if (!post.reportsCount) postDb.reportsCount = post.reportsCount;
+      if (!post.commentCount) postDb.commentCount = post.commentCount;
+      if (!post.shareCount) postDb.shareCount = post.shareCount;
+    }
+  })
+  return postDb
 }
 
-export const convertLikeForGrpc = (like: ILike): Like => {
-  const { contentType, updatedAt, createdAt, _id, contentId, authorId } = like
-  const convertedLike: Like = {
-    _id, contentId, authorId,
-    contentType: contentType as ILike["contentType"],
-    createdAt: dateToString(createdAt),
-    updatedAt: dateToString(updatedAt),
+// * comment
+export const convertICommentToICommentDb = (comment: Partial<IComment>): Partial<ICommentDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    authorId: convertToObjectId,
+    parentId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
   }
-  return convertedLike
+  const commentDb: Partial<ICommentDb> = {}
+  Object.keys(comment).forEach((key) => {
+    const typedKey = key as keyof IComment;
+    if (comment[typedKey] && conversionMap[typedKey]) {
+      commentDb[typedKey] = conversionMap[typedKey](comment[typedKey])
+    } else if (comment[typedKey]) {
+      commentDb[typedKey as keyof ICommentDb] = comment[typedKey] as any;
+    }
+  })
+  return commentDb
 }
 
+export const convertICommentDbToIComment = (comment: ICommentDb): IComment => {
+  return {
+    _id: comment._id.toString(),
+    media: comment.media,
+    mediaType: comment.mediaType,
+    status: comment.status,
+    authorId: comment.authorId.toString(),
+    parentId: comment?.parentId?.toString(),
+    likesCount: comment.likesCount,
+    replayCount: comment.replayCount,
+    contentId: comment.contentId.toString(),
+    contentType: comment.contentType,
+    updatedAt: convertDbDateToIsoString(comment.updatedAt),
+    createdAt: convertDbDateToIsoString(comment.createdAt),
+  }
+}
+
+
+// * like
 export const convertLikeForDb = (like: Like): ILike => {
-  const { contentType, updatedAt, createdAt, _id, contentId, authorId } = like
+  const { contentType, ...rest } = like
   const convertedLike: Partial<ILike> = {
-    _id, contentId, authorId,
+    ...rest,
     contentType: contentType as ILike["contentType"],
-    ...(createdAt ? { createdAt: stringToDate(createdAt as string) } : {}),
-    ...(updatedAt ? { updatedAt: stringToDate(updatedAt as string) } : {}),
   }
   return convertedLike as ILike
+}
+
+export const convertILikeToILikeDb = (like: Partial<ILike>): Partial<ILikeDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    authorId: convertToObjectId,
+    contentId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
+  }
+  const likeDb: Partial<ILikeDb> = {}
+  Object.keys(like).forEach((key) => {
+    const typedKey = key as keyof ILike;
+    if (like[typedKey] && conversionMap[typedKey]) {
+      likeDb[typedKey] = conversionMap[typedKey](like[typedKey])
+    } else if (like[typedKey]) {
+      likeDb[typedKey as keyof ILikeDb] = like[typedKey] as any;
+    }
+  })
+  return likeDb
+}
+
+export const convertILIkeDbToILIke = (like: ILikeDb): ILike => {
+  return {
+    _id: like._id.toString(),
+    authorId: like.authorId.toString(),
+    contentId: like.contentId.toString(),
+    contentType: like.contentType,
+    updatedAt: convertDbDateToIsoString(like.updatedAt),
+    createdAt: convertDbDateToIsoString(like.createdAt)
+  }
 }

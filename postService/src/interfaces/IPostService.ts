@@ -1,4 +1,4 @@
-import IComment, { ICommentExt } from "./IComment";
+import { ICommentExt } from "./IComment";
 import IPost, { IPostExt } from "./IPost";
 import SvcFuncReturnType from '../constants/SvcReturnType'
 

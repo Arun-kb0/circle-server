@@ -4,9 +4,7 @@ import ICommentController, {
 } from "../interfaces/ICommentController";
 import ICommentService from "../interfaces/ICommentService";
 import { validateRequest, validateResponse } from '../util/validations'
-import { convertCommentForDb, convertCommentForGrpc } from '../util/converter'
 import handleError from '../util/handleError'
-import { Comment } from "../proto/post/Comment"
 
 
 class CommentController implements ICommentController {
@@ -19,14 +17,9 @@ class CommentController implements ICommentController {
     try {
       const { comment, contentId, contentType } = call.request
       validateRequest('comment , contentType, contentId are required', comment, contentType, contentId)
-      const convertedComment = convertCommentForDb(comment as Comment)
-      const res = await this.commentService.createComment(contentType as IComment["contentType"], contentId as string, convertedComment)
+      const res = await this.commentService.createComment(contentType as IComment["contentType"], contentId as string, comment as Partial<IComment>)
       validateResponse(res)
-      const response = convertCommentForGrpc(res.data as ICommentExt)
-      console.log(res.data)
-      console.log("----------")
-      console.log(response)
-      cb(null, { comment: response })
+      cb(null, { comment: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
@@ -39,8 +32,7 @@ class CommentController implements ICommentController {
       validateRequest('comment , commentId are required', comment, commentId)
       const res = await this.commentService.updateComment(commentId as string, comment as Partial<IComment>)
       validateResponse(res)
-      const response = convertCommentForGrpc(res.data as ICommentExt)
-      cb(null, { comment: response })
+      cb(null, { comment: res.data })
     } catch (error) {
       const err = handleError(error)
       cb(err, null)
