@@ -14,7 +14,7 @@ import googleOauthClient from '../config/googleOauthClient'
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || ''
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
-const ACCESS_EXPIRES_IN = '60s'
+const ACCESS_EXPIRES_IN = '1h'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string || 'secret'
 const REFRESH_EXPIRES_IN = '1d'
 const ROOT_USER = 'arunkb@gmail.com'
