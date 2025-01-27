@@ -1,14 +1,21 @@
-import mongoose, { Schema } from "mongoose";
-import ILike from "../interfaces/ILike";
+import mongoose, { Schema, Document, Date, Types } from "mongoose";
 
+export interface ILikeDb extends Document {
+  _id: Types.ObjectId,
+  authorId: Types.ObjectId
+  contentId: Types.ObjectId
+  contentType: 'post' | 'story' | 'comment'
+  updatedAt: Date
+  createdAt: Date
+}
 
-const LikeSchema = new Schema<ILike>(
+const LikeSchema = new Schema<ILikeDb>(
   {
-    authorId: { type: String, required: true },
-    contentId: { type: String, required: true },
+    authorId: { type: Schema.Types.ObjectId, required: true },
+    contentId: { type: Schema.Types.ObjectId, required: true },
     contentType: { type: String, required: true },
   },
   { timestamps: true }
 )
 
-export const Like = mongoose.model<ILike>('likes', LikeSchema)
+export const Like = mongoose.model<ILikeDb>('likes', LikeSchema)

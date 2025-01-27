@@ -1,13 +1,12 @@
 import { PaginationComment, PaginationPost } from "../constants/SvcTypes";
-import IComment, { ICommentExt } from "../interfaces/IComment";
+import { ICommentExt } from "../interfaces/IComment";
 import IFeedController, {
   GetCommentsHandler, GetGlobalFeedHandler,
   GetPostHandler, GetUserCreatedPostsHandler, GetUserFeedHandler, SearchPostHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
-import IPost, { IPostExt } from "../interfaces/IPost";
-import { convertCommentForGrpc, convertLikeForGrpc, convertPostForGrpc } from '../util/converter'
+import { IPostExt } from "../interfaces/IPost";
 import handleError from "../util/handleError";
 import { validateRequest, validateResponse } from '../util/validations'
 
@@ -20,13 +19,11 @@ class FeedController implements IFeedController {
 
   getUserCreatedPosts: GetUserCreatedPostsHandler = async (call, cb) => {
     try {
-      const { userId , page } = call.request
+      const { userId, page } = call.request
       validateRequest('page is required.', page)
       const res = await this.feedService.getUserCreatedPosts(userId as string, page as number)
       validateResponse(res)
-      const { posts: rawPosts, likes: rawLikes, ...rest } = res.data as PaginationPost<IPostExt[]>
-      const posts = rawPosts.map(post => convertPostForGrpc(post))
-      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const { posts, likes, ...rest } = res.data as PaginationPost<IPostExt[]>
       const response = { posts, likes, ...rest }
       cb(null, response)
     } catch (error) {
@@ -41,9 +38,7 @@ class FeedController implements IFeedController {
       validateRequest('page is required.', page)
       const res = await this.feedService.getGlobalFeed(page as number)
       validateResponse(res)
-      const { posts: rawPosts, likes: rawLikes, ...rest } = res.data as PaginationPost<IPostExt[]>
-      const posts = rawPosts.map(post => convertPostForGrpc(post))
-      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const { posts, likes, ...rest } = res.data as PaginationPost<IPostExt[]>
       const response = { posts, likes, ...rest }
       cb(null, response)
     } catch (error) {
@@ -58,9 +53,7 @@ class FeedController implements IFeedController {
       validateRequest('page is required.', page)
       const res = await this.feedService.getUserFeed(page as number)
       validateResponse(res)
-      const { posts: rawPosts, likes: rawLikes, ...rest } = res.data as PaginationPost<IPostExt[]>
-      const posts = rawPosts.map(post => convertPostForGrpc(post))
-      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const { posts, likes, ...rest } = res.data as PaginationPost<IPostExt[]>
       const response = { posts, likes, ...rest }
       cb(null, response)
     } catch (error) {
@@ -75,9 +68,7 @@ class FeedController implements IFeedController {
       validateRequest('postId is required.', postId)
       const res = await this.feedService.getPost(postId as string)
       validateResponse(res)
-      const { post: rawPost, like: rawLike } = res.data as { like: ILike, post: IPostExt }
-      const post = convertPostForGrpc(rawPost)
-      const like = rawLike ? convertLikeForGrpc(rawLike) : null
+      const { post, like } = res.data as { like: ILike, post: IPostExt }
       cb(null, { post, like })
     } catch (error) {
       const { message, code } = handleError(error)
@@ -91,9 +82,7 @@ class FeedController implements IFeedController {
       validateRequest('page and searchText are required.', page, searchText)
       const res = await this.feedService.searchPost(searchText as string, page as number)
       validateResponse(res)
-      const { posts: rawPosts, likes: rawLikes, ...rest } = res.data as PaginationPost<IPostExt[]>
-      const posts = rawPosts.map(post => convertPostForGrpc(post))
-      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const { posts, likes, ...rest } = res.data as PaginationPost<IPostExt[]>
       const response = { posts, likes, ...rest }
       cb(null, response)
     } catch (error) {
@@ -108,9 +97,7 @@ class FeedController implements IFeedController {
       validateRequest('contentId and page are required.', contentId, page)
       const res = await this.feedService.getComments(contentId as string, page as number)
       validateResponse(res)
-      const { comments: rawComments, likes: rawLikes, ...rest } = res.data as PaginationComment<ICommentExt[]>
-      const comments = rawComments.map(comment => convertCommentForGrpc(comment))
-      const likes = rawLikes.map(like => convertLikeForGrpc(like))
+      const { comments, likes, ...rest } = res.data as PaginationComment<ICommentExt[]>
       const response = { comments, likes, ...rest }
       cb(null, response)
     } catch (error) {

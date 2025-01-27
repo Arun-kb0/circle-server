@@ -32,7 +32,8 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
 
 export const updatePost = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { post, postId } = req.body
+    const { postId } = req.params
+    const { post } = req.body
     const { userId } = req
     if (!post || typeof postId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'post and postId required')
     if (post.authorId !== userId) throw new HttpError(httpStatus.UNAUTHORIZED, 'only author can update post')

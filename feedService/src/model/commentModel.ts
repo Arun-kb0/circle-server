@@ -1,19 +1,33 @@
-import mongoose, { Schema } from 'mongoose'
-import IComment from '../interfaces/IComment'
+import mongoose, { Schema, Document, Date, Types } from 'mongoose'
 
-const CommentSchema = new Schema<IComment>(
+export interface ICommentDb extends Document {
+  _id: Types.ObjectId,
+  media: string
+  mediaType: 'gif' | 'text'
+  status: 'active' | 'deleted' | 'blocked'
+  authorId: Types.ObjectId,
+  parentId?: Types.ObjectId,
+  likesCount: number
+  replayCount: number
+  contentId: Types.ObjectId
+  contentType: 'post' | 'story' | 'comment'
+  updatedAt: Date
+  createdAt: Date
+}
+
+const CommentSchema = new Schema<ICommentDb>(
   {
     media: { type: String },
     mediaType: { type: String },
     status: { type: String },
-    authorId: { type: String },
-    parentId: { type: String },
+    authorId: { type: Schema.Types.ObjectId, required: true },
+    parentId: { type: Schema.Types.ObjectId, default: null },
     likesCount: { type: Number },
     replayCount: { type: Number },
-    contentId: { type: String },
-    contentType: { type: String },
+    contentId: { type: Schema.Types.ObjectId, required: true },
+    contentType: { type: String, required: true },
   },
   { timestamps: true }
 )
 
-export const Comment = mongoose.model<IComment>('comments', CommentSchema) 
+export const Comment = mongoose.model<ICommentDb>('comments', CommentSchema) 

@@ -5,10 +5,10 @@ const router = express.Router()
 
 
 router.get('/all', getAllPosts)
-router.route('/')
-  .post(createPost)
+router.post('/', createPost)
+router.route('/:postId')
   .patch(updatePost)
-router.delete('/:postId', deletePost)
+  .delete(deletePost)
 
 export default router
 

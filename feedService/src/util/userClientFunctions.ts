@@ -5,7 +5,6 @@ import { User } from '../proto/userProto/user/User'
 
 const client = UserGrpcClient.getClient()
 
-
 const getMultipleUsers = async (userIds: string[]) => {
   try {
     const users: User[] = await new Promise((resolve, reject) => {
@@ -45,15 +44,16 @@ export const addUserToPosts = async (posts: IPost[]) => {
   try {
     const userIds = posts.map(post => post.authorId)
     const users = await getMultipleUsers(userIds)
+    console.log(users)
     const postsWithUsers = posts.map((post) => {
       const user = users.find((user) => user._id === post.authorId);
-      const postsObj = post?.toObject ? post.toObject() : post
       return {
-        ...postsObj,
+        ...post,
         authorName: user?.name || undefined,
         authorImage: user?.image?.url || undefined,
       }
     })
+    // console.log(postsWithUsers)
     return postsWithUsers
   } catch (error) {
     console.log('users and posts merging failed')
@@ -83,9 +83,8 @@ export const addUserToComments = async (comments: IComment[]) => {
     const users = await getMultipleUsers(userIds)
     const commentsWithUsers = comments.map((comment) => {
       const user = users.find((user) => user._id === comment.authorId);
-      const commentObj = comment?.toObject ? comment.toObject() : comment
       return {
-        ...commentObj,
+        ...comment,
         authorName: user?.name || undefined,
         authorImage: user?.image?.url || undefined,
       }

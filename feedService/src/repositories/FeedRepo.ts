@@ -7,29 +7,34 @@ import { getCachedPostCount, getPopularPostsFromCache } from '../util/redisCache
 import { addUserToPosts, addUserToPost, addUserToComments } from '../util/userClientFunctions'
 import { Like } from '../model/likeModel'
 import ILike from '../interfaces/ILike';
+import IPostBaseRepo from '../interfaces/IPostBaseRepo'
+import ICommentBaseRepo from '../interfaces/ICommentBaseRepo'
+import ILikeBaseRepo from '../interfaces/ILikeBaseRepo'
+
 
 class FeedRepo implements IFeedRepo {
 
+  constructor(
+    private postBaseRepo: IPostBaseRepo,
+    private commentBaseRepo: ICommentBaseRepo,
+    private likeBaseRepo: ILikeBaseRepo,
+  ) { }
+
   async getUserCreatedPostCount(userId: string): Promise<number> {
-    const count = await Post.countDocuments({ authorId: userId })
+    const count = await this.postBaseRepo.findPostCountByAuthorId(userId)
     return count
   }
 
   async getUserCreatedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[] | null> {
-    const posts = await Post.find({ authorId: userId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const posts = await this.postBaseRepo.findPostsByAuthorId(userId, limit, startIndex)
+    if (!posts) return null
     const updatedPosts = await addUserToPosts(posts)
     return updatedPosts as IPostExt[]
   }
 
 
   async getSearchPostsCount(searchText: string): Promise<number> {
-    const query = {
-      $or: [
-        { tags: { $elemMatch: { $regex: searchText, $options: "i" } } },
-        { desc: { $regex: searchText, $options: "i" } }
-      ]
-    };
-    const count = await Post.countDocuments(query)
+    const count = await this.postBaseRepo.findPostCountBySearchText(searchText)
     return count
   }
 
@@ -40,10 +45,10 @@ class FeedRepo implements IFeedRepo {
 
   async getPostCount(followeeIds?: string[]): Promise<number> {
     if (followeeIds) {
-      const count = await Post.countDocuments({ authorId: { $in: followeeIds } })
+      const count = await this.postBaseRepo.findPostCountByFolloweeIds(followeeIds)
       return count
     }
-    const count = await Post.countDocuments()
+    const count = await this.postBaseRepo.findPostCount()
     // const count = await getCachedPostCount()
     return count
   }
@@ -52,51 +57,47 @@ class FeedRepo implements IFeedRepo {
     const endIndex = startIndex + limit
     // ! cache code
     // const { posts, isCacheExhausted } = await getPopularPostsFromCache(startIndex, endIndex)
-    const posts = await Post.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const posts = await this.postBaseRepo.findPosts(limit, startIndex)
     const updatedPosts = await addUserToPosts(posts)
     return updatedPosts as IPostExt[]
   }
 
   // ! need to implement way to get following userIds
   async getUserPosts(limit: number, startIndex: number): Promise<IPostExt[]> {
-    const posts = await Post.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const posts = await this.postBaseRepo.findPosts(limit, startIndex)
     const updatedPosts = await addUserToPosts(posts)
     return updatedPosts as IPostExt[]
   }
 
   async getPost(postId: string): Promise<IPostExt | null> {
-    const post = await Post.findOne({ _id: postId })
+    const post = await this.postBaseRepo.findPostByPostId(postId)
     if (!post) return null
-    const updatedPost = await addUserToPost(post.toObject())
+    const updatedPost = await addUserToPost(post)
     return updatedPost
   }
 
   async searchPost(searchText: string, limit: number, startIndex: number): Promise<IPostExt[] | null> {
-    const query = {
-      $or: [
-        { tags: { $elemMatch: { $regex: searchText, $options: "i" } } },
-        { desc: { $regex: searchText, $options: "i" } }
-      ]
-    };
-    const posts = await Post.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+    const posts = await this.postBaseRepo.findPostsBySearchText(searchText, limit, startIndex)
+    if (!posts) return null
     const updatedPosts = await addUserToPosts(posts)
     return updatedPosts
   }
 
   async getComments(contentId: string, limit: number, startIndex: number): Promise<ICommentExt[]> {
-    const comments = await Comment.find({ contentId }).sort({ likesCount: -1, replayCount: -1 }).limit(limit).skip(startIndex)
+    const comments = await this.commentBaseRepo.findCommentsByContentId(contentId, limit, startIndex)
     if (!comments) return []
     const updatedComments = await addUserToComments(comments)
     return updatedComments
   }
 
   async getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILike[]> {
-    const likes = await Like.find({ contentType, contentId: { $in: contentIds } })
+    const likes = await this.likeBaseRepo.findLIkesByContentIdsAndType(contentIds, contentType)
     return likes
   }
+
   async getLike(contentId: string, contentType: ILike['contentType']): Promise<ILike | null> {
-    const like = await Like.findOne({ contentType, contentId })
-    return like ? like.toObject() : null
+    const like = await this.likeBaseRepo.findLIkeByContentIdAndType(contentId, contentType)
+    return like ? like : null
   }
 
 }
