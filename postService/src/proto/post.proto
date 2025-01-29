@@ -54,6 +54,8 @@ message Like {
   CommentEnums.ContentType contentType=4;
   string updatedAt=5;
   string createdAt=6;
+  string authorName=7;
+  string authorImage=8;
 }
 
 message Comment {

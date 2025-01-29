@@ -4,7 +4,7 @@ import { IPostExt } from '../interfaces/IPost';
 import { Post } from '../model/postModel'
 import { Comment } from '../model/commentModel'
 import { getCachedPostCount, getPopularPostsFromCache } from '../util/redisCache'
-import { addUserToPosts, addUserToPost, addUserToComments } from '../util/userClientFunctions'
+import { addUserToPosts, addUserToPost, addUserToComments, addUserToLikes, addUserToLike } from '../util/userClientFunctions'
 import { Like } from '../model/likeModel'
 import ILike from '../interfaces/ILike';
 import IPostBaseRepo from '../interfaces/IPostBaseRepo'
@@ -92,12 +92,15 @@ class FeedRepo implements IFeedRepo {
 
   async getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILike[]> {
     const likes = await this.likeBaseRepo.findLIkesByContentIdsAndType(contentIds, contentType)
-    return likes
+    const updatedLikes = await addUserToLikes(likes)
+    return updatedLikes
   }
 
   async getLike(contentId: string, contentType: ILike['contentType']): Promise<ILike | null> {
     const like = await this.likeBaseRepo.findLIkeByContentIdAndType(contentId, contentType)
-    return like ? like : null
+    if(!like) return null
+    const updatedLikes = await addUserToLike(like)
+    return updatedLikes
   }
 
 }

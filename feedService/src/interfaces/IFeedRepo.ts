@@ -1,6 +1,6 @@
 import IPost, { IPostExt } from '../interfaces/IPost'
 import IComment, { ICommentExt } from '../interfaces/IComment'
-import ILike from './ILike'
+import ILike, { ILikeExt } from './ILike'
 
 interface IFeedRepo {
 
@@ -17,8 +17,8 @@ interface IFeedRepo {
 
   getComments(contentId: string, limit: number, startIndex: number): Promise<ICommentExt[]>
 
-  getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILike[]>
-  getLike(contentId: string, contentType: ILike['contentType']): Promise<ILike | null>
+  getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILikeExt[]>
+  getLike(contentId: string, contentType: ILike['contentType']): Promise<ILikeExt | null>
 }
 
 export default IFeedRepo

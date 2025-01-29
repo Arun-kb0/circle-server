@@ -1,4 +1,4 @@
-import ILike from '../interfaces/ILike';
+import ILike, { ILikeExt } from '../interfaces/ILike';
 import ILikeRepo from '../interfaces/ILikeRepo'
 import { Comment } from '../model/commentModel';
 import { Like } from '../model/likeModel'
@@ -6,6 +6,7 @@ import { Post } from '../model/postModel';
 import { convertIPostDbToIPost } from '../util/converter';
 import { updatePostInCache } from '../util/redisCache';
 import ILikeBaseRepo from '../interfaces/ILIkeBaseRepo'
+import { addUserToLike } from '../util/userClientFunctions';
 
 class LikeRepo implements ILikeRepo {
 
@@ -18,11 +19,12 @@ class LikeRepo implements ILikeRepo {
     return isLiked ? true : false
   }
 
-  async like(like: Partial<ILike>): Promise<ILike> {
+  async like(like: Partial<ILike>): Promise<ILikeExt | null> {
     const newLike = await this.likeBaseRepo.like(like)
     await this.handleCount(newLike?.contentType, newLike?.contentId, true)
-    return newLike
-  }
+    const updatedLike = await addUserToLike(newLike)
+    return updatedLike
+}
 
   async unlike(authorId: string, contentId: string): Promise<ILike | null> {
     const deletedLike = await this.likeBaseRepo.unlike(authorId, contentId)

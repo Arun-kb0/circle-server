@@ -9,6 +9,8 @@ export interface Like {
   'contentType'?: (_feed_CommentEnums_ContentType);
   'updatedAt'?: (string);
   'createdAt'?: (string);
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }
 
 export interface Like__Output {
@@ -18,4 +20,6 @@ export interface Like__Output {
   'contentType'?: (_feed_CommentEnums_ContentType__Output);
   'updatedAt'?: (string);
   'createdAt'?: (string);
+  'authorName'?: (string);
+  'authorImage'?: (string);
 }

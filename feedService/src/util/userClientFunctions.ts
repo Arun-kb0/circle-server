@@ -1,5 +1,6 @@
 import UserGrpcClient from '../config/UserGrpcClient'
 import IComment, { ICommentExt } from '../interfaces/IComment'
+import ILike, { ILikeExt } from '../interfaces/ILike'
 import IPost, { IPostExt } from '../interfaces/IPost'
 import { User } from '../proto/userProto/user/User'
 
@@ -96,3 +97,40 @@ export const addUserToComments = async (comments: IComment[]) => {
     return []
   }
 }
+
+export const addUserToLikes = async (likes: ILike[]): Promise<ILikeExt[]> => {
+  try {
+    const userIds = likes.map(like => like.authorId)
+    const users = await getMultipleUsers(userIds)
+    const likeWithUsers = likes.map((like) => {
+      const user = users.find((user) => user._id === like.authorId);
+      return {
+        ...like,
+        authorName: user?.name || undefined,
+        authorImage: user?.image?.url || undefined,
+      }
+    })
+    return likeWithUsers
+  } catch (error) {
+    console.log('like and user merging failed')
+    console.log(error)
+    return []
+  }
+}
+
+
+export const addUserToLike = async (like: ILike): Promise<ILikeExt | null> => {
+  try {
+    const user = await getUser(like.authorId)
+    return {
+      ...like,
+      authorName: user?.name || undefined,
+      authorImage: user?.image?.url || undefined,
+    }
+  } catch (error) {
+    console.log('like and user merging failed')
+    console.log(error)
+    return null
+  }
+}
+

@@ -8,4 +8,9 @@ interface ILike {
   createdAt: string
 }
 
+export interface ILikeExt extends ILike {
+  authorName?: string
+  authorImage?: string
+}
+
 export default ILike

@@ -1,5 +1,5 @@
 import SvcFuncReturnType from '../constants/SvcReturnType';
-import ILike from '../interfaces/ILike';
+import ILike, { ILikeExt } from '../interfaces/ILike';
 import ILikeService from '../interfaces/ILikeService'
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
@@ -11,7 +11,7 @@ class LikeService implements ILikeService {
     private likeRepo: ILikeRepo
   ) { }
 
-  async like(contentId: string, contentType: ILike['contentType'], authorId: string): SvcFuncReturnType<ILike> {
+  async like(contentId: string, contentType: ILike['contentType'], authorId: string): SvcFuncReturnType<ILikeExt> {
     try {
       const isLiked = await this.likeRepo.checkIsLiked(authorId, contentId)
       if (isLiked) return { err: httpStatus.CONFLICT, errMsg: 'already liked', data: null }

@@ -6,6 +6,21 @@ import { AuthRequest } from "../constants/types";
 
 const client = FeedGrpcClient.getClient()
 
+export const getPostLikedUsers = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page, postId } = req.query
+    if (!page || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required')
+    // client.getUserCreatedPosts({ userId, page: Number(page) }, (err, msg) => {
+    //   if (err) return next(err)
+    //   if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user created posts failed'))
+    //   msg?.posts?.map(item => console.log(item.authorId))
+    //   res.status(httpStatus.OK).json({ message: 'get user created posts success', ...msg })
+    // })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const getUseCreatedPosts = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { page } = req.query
@@ -14,7 +29,7 @@ export const getUseCreatedPosts = async (req: AuthRequest, res: Response, next: 
     client.getUserCreatedPosts({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user created posts failed'))
-      msg?.posts?.map(item=> console.log(item.authorId))
+      msg?.posts?.map(item => console.log(item.authorId))
       res.status(httpStatus.OK).json({ message: 'get user created posts success', ...msg })
     })
   } catch (error) {
