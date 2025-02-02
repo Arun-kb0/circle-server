@@ -41,7 +41,6 @@ const grpcConnect = () => {
       unFollowUser: logInterceptor(followController.unFollowUser)
     }
   )
-
 }
 
 

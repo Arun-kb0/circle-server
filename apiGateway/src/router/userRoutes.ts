@@ -11,7 +11,6 @@ const router = express.Router()
 
 
 router.get('/all', getAllUsers)
-router.get('/', getUser)
 router.patch('/', updateUser)
 
 // * accessible only to admins
@@ -24,5 +23,7 @@ router.post('/unfollow', unFollowUser)
 router.get('/followers', getFollowers)
 router.get('/suggested-people', getSuggestedPeople)
 
+// * route with params
+router.get('/:userId', getUser)
 
 export default router

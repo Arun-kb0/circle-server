@@ -5,7 +5,7 @@ import IFollowController, {
   GetSuggestedPeopleHandler, UnFollowUserHandler
 } from '../interfaces/IFollowController'
 import IFollowService from '../interfaces/IFollowService';
-import { IUser } from '../model/UserModel';
+import IUser  from '../interfaces/IUser';
 import { convertUserForGrpc } from '../util/converter';
 import { CustomError } from '../util/CustomError';
 import handleError from '../util/handeError';
@@ -21,6 +21,7 @@ class FollowController implements IFollowController {
   getFollowers: GetFollowersHandler = async (call, cb) => {
     try {
       const { userId, page } = call.request
+      console.log(' user id', userId , page)
       validateRequest('page and userId is required.', page, userId)
       const res = await this.followService.getFollowers(userId as string, page as number)
       validateResponse(res)
@@ -36,8 +37,11 @@ class FollowController implements IFollowController {
   getSuggestedPeople: GetSuggestedPeopleHandler = async (call, cb) => {
     try {
       const { userId, page } = call.request
+      console.log('suggested users controller ********* ')
+      console.log('page and userId is required.', page, userId)
       validateRequest('page and userId is required.', page, userId)
       const res = await this.followService.getSuggestedPeople(userId as string, page as number)
+      console.log(res)
       validateResponse(res)
       const { users: rawUsers, ...rest } = res.data as PaginationUsers
       const users = rawUsers.map(user => convertUserForGrpc(user))

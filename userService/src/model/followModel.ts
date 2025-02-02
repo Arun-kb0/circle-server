@@ -1,14 +1,22 @@
-import mongoose, { Schema } from "mongoose";
-import IFollow from '../interfaces/IFollow'
+import mongoose, { Schema, Document, Date, Types } from "mongoose";
 
-const FollowSchema = new Schema<IFollow>(
+export interface IFollowDb extends Document {
+  _id: Types.ObjectId,
+  userId: Types.ObjectId
+  targetUserId: Types.ObjectId,
+  relationType: "follower" | "followee"
+  createdAt: Date
+  updatedAt: Date
+}
+
+const FollowSchema = new Schema<IFollowDb>(
   {
-    userId: { type: String, required: true },
-    targetUserId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, required: true },
+    targetUserId: { type: Schema.Types.ObjectId, required: true },
     relationType: { type: String, required: true },
   },
   { timestamps: true }
 )
 
 
-export const Follow = mongoose.model<IFollow>('follow', FollowSchema) 
+export const Follow = mongoose.model<IFollowDb>('follow', FollowSchema) 

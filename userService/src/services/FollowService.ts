@@ -2,7 +2,7 @@ import httpStatus from '../constants/httpStatus';
 import { FuncReturnType, PaginationUsers } from '../constants/svcTypes';
 import IFollowRepo from '../interfaces/IFollowRepo';
 import IFollowService from '../interfaces/IFollowService'
-import { IUser } from '../model/UserModel';
+import IUser  from '../interfaces/IUser';
 import handleError from '../util/handeError';
 
 const LIMIT = 10
@@ -33,6 +33,9 @@ class FollowService implements IFollowService {
       const total = await this.followRepo.GetSuggestedPeopleCount(userId)
       const numberOfPages = Math.ceil(total / LIMIT)
       const users = await this.followRepo.GetSuggestedPeople(userId, LIMIT, startIndex)
+      console.log("getSuggestedPeople users")
+      console.log(users)
+      console.log(total)
       return { err: null, data: { users, numberOfPages, currentPage: page } }
     } catch (error) {
       const { code, message } = handleError(error)

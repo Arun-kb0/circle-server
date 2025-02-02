@@ -19,7 +19,11 @@ class PostBaseRepo implements IPostBaseRepo {
   async updatePost(postId: string, post: Partial<IPost>): Promise<IPost | null> {
     try {
       const postIdObj = convertToObjectId(postId)
+      console.log(post)
       const convertedPost = convertIPostToIPostDb(post)
+      console.log("convertedPost = ")
+      console.log(convertedPost)
+
       const updatedPost = await Post.findOneAndUpdate(
         { _id: postIdObj },
         { $set: convertedPost },

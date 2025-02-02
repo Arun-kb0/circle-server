@@ -121,11 +121,11 @@ export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction
 
 export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page } = req.query
-    const { userId } = req
-    console.warn('get followers ', userId)
-    if (isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required.')
-    client.getFollowers({ userId, page: Number(page) }, (err, msg) => {
+    const { page, userId } = req.query
+    console.log('get followers ', userId)
+    console.log(req.query, '\n')
+    if (typeof userId !== 'string' && isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required.')
+    client.getFollowers({ userId: String(userId), page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
       res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
@@ -139,6 +139,7 @@ export const getSuggestedPeople = (req: AuthRequest, res: Response, next: NextFu
   try {
     const { page } = req.query
     const { userId } = req
+    console.log('suggested people call ', userId, page)
     if (isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required.')
     client.getSuggestedPeople({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)

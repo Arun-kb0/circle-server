@@ -1,5 +1,5 @@
 import { FuncReturnType, PaginationUsers } from '../constants/svcTypes'
-import { IUser } from '../model/UserModel'
+import IUser  from '../interfaces/IUser'
 
 interface IFollowService {
   getFollowers(userId: string, page: number): FuncReturnType<PaginationUsers>

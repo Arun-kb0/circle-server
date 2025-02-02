@@ -1,5 +1,5 @@
-import { IUser } from '../model/UserModel'
-import { FuncReturnType, PaginationUsers } from '../constants/svcTypes'
+import IUser from './IUser'
+import { FuncReturnType } from '../constants/svcTypes'
 
 
 interface IUserService {
@@ -11,6 +11,7 @@ interface IUserService {
   unBlockUser(userId: string): FuncReturnType<IUser>
 
   getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
+
 }
 
 

@@ -68,15 +68,15 @@ export const convertIPostToIPostDb = (post: Partial<IPost>): Partial<IPostDb> =>
     if (post[typedKey] && conversionMap[typedKey]) {
       postDb[typedKey] = conversionMap[typedKey](post[typedKey])
     } else if (post[typedKey]) {
-      if (!post.desc) postDb.desc = post.desc;
-      if (!post.tags) postDb.tags = post.tags;
-      if (!post.mediaType) postDb.mediaType = post.mediaType;
-      if (!post.media) postDb.media = post.media;
-      if (!post.status) postDb.status = post.status;
-      if (!post.likesCount) postDb.likesCount = post.likesCount;
-      if (!post.reportsCount) postDb.reportsCount = post.reportsCount;
-      if (!post.commentCount) postDb.commentCount = post.commentCount;
-      if (!post.shareCount) postDb.shareCount = post.shareCount;
+      if (post.desc !== undefined) postDb.desc = post.desc;
+      if (post.tags !== undefined) postDb.tags = post.tags;
+      if (post.mediaType !== undefined) postDb.mediaType = post.mediaType;
+      if (post.media !== undefined) postDb.media = post.media;
+      if (post.status !== undefined) postDb.status = post.status;
+      if (post.likesCount !== undefined) postDb.likesCount = post.likesCount;
+      if (post.reportsCount !== undefined) postDb.reportsCount = post.reportsCount;
+      if (post.commentCount !== undefined) postDb.commentCount = post.commentCount;
+      if (post.shareCount !== undefined) postDb.shareCount = post.shareCount;
     }
   })
   return postDb

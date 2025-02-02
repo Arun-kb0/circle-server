@@ -1,6 +1,6 @@
-import IUser from '../interfaces/IUser'
+import IUser from './IUser'
 
-interface IUserRepo {
+interface IUserBaseRepo {
   countDocs(): Promise<number>
   findAll(limit: number, startIndex: number, startDate?: string, endDate?: string, searchText?: string): Promise<IUser[]>
   findById(userId: string): Promise<IUser | null>
@@ -13,4 +13,4 @@ interface IUserRepo {
   updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null>
 }
 
-export default IUserRepo
+export default IUserBaseRepo

@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document, Model, Date } from 'mongoose'
+import mongoose, { Schema, Document, Model, Date, Types } from 'mongoose'
 
 
-export interface IUser extends Document {
-  _id: string
+export interface IUserDb extends Document {
+  _id: Types.ObjectId,
   name: string
   email: string
   password: string
@@ -24,7 +24,7 @@ export interface IUser extends Document {
   updatedAt: Date
 }
 
-const UserSchema: Schema = new Schema<IUser>(
+const UserSchema: Schema = new Schema<IUserDb>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -33,7 +33,7 @@ const UserSchema: Schema = new Schema<IUser>(
     location: { type: String },
     state: { type: String },
     gender: { type: String },
-    role: { type: String ,default:'user'},
+    role: { type: String, default: 'user' },
     followeeCount: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },
     refreshToken: { type: String },
@@ -47,4 +47,4 @@ const UserSchema: Schema = new Schema<IUser>(
   { timestamps: true }
 )
 
-export const User: Model<IUser> = mongoose.model<IUser>('users', UserSchema)
+export const User = mongoose.model<IUserDb>('users', UserSchema)

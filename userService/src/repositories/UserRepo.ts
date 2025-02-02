@@ -1,95 +1,103 @@
-import { ClientSession, Types, } from "mongoose";
-import { IUser, User } from "../model/UserModel";
+import IUser from '../interfaces/IUser'
 import IUserRepo from "../interfaces/IUserRepo";
-
+import IUserBaseRepo from '../interfaces/IUserBaseRepo'
+import handleError from '../util/handeError';
 
 export class UserRepo implements IUserRepo {
 
+  constructor(
+    private userBaseRepo: IUserBaseRepo
+  ) { }
 
   async getMultipleUsers(userIds: string[]): Promise<IUser[]> {
-    const users = await User.find({ _id: { $in: userIds } })
-    return users
+    try {
+      const users = await this.userBaseRepo.getMultipleUsers(userIds)
+      return users
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async countDocs(): Promise<number> {
-    const count = await User.countDocuments()
-    return count
+    try {
+      const count = await this.userBaseRepo.countDocs()
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
-  async findAll(limit: number, startIndex: number, startDate: Date, endDate: Date, searchText: string): Promise<IUser[]> {
-    let res: IUser[]
-    const query: {
-      role: { $eq: 'user' | 'admin' },
-      createdAt: { $gte: Date; $lte: Date };
-      $or?: { [key: string]: { $regex: string; $options: string } }[];
-    } = {
-      role: { $eq: 'user' },
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
-    };
-    if (!startDate && !endDate) {
-      res = await User.find({ role: 'user' }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-    } else if (searchText && searchText.length > 0) {
-      query.$or = [
-        { name: { $regex: searchText, $options: "i" } },
-        { email: { $regex: searchText, $options: "i" } },
-      ];
-      res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-    } else {
-      res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+  async findAll(limit: number, startIndex: number, startDate: string, endDate: string, searchText: string): Promise<IUser[]> {
+    try {
+      const users = await this.userBaseRepo.findAll(limit, startIndex, startDate, endDate, searchText)
+      return users
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
     }
-
-    const users = res.map(user => user.toObject())
-    return users
   }
 
 
   async findById(userId: string): Promise<IUser | null> {
-    const user = await User.findById(userId)
-    return user ? user.toObject() : null
+    try {
+      const user = await this.userBaseRepo.findById(userId)
+      return user
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async update(userId: string, user: Partial<IUser>): Promise<IUser | null> {
-    if (!userId || !Types.ObjectId.isValid(userId)) {
-      throw new Error('Invalid or empty userId');
+    try {
+      const updatedUser = await this.userBaseRepo.update(userId, user)
+      return updatedUser
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
     }
-    console.log(user)
-    
-    const objId = Types.ObjectId.createFromHexString(userId)
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: objId },
-      { $set: { ...user } },
-      { new: true }
-    ).select('-password -refreshToken')
-    return updatedUser ? updatedUser.toObject() : null
   }
 
   async delete(userId: string): Promise<string> {
-    await User.deleteOne({ _id: userId })
-    return userId
+    try {
+      const deletedUserId = await this.userBaseRepo.delete(userId)
+      return deletedUserId
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
-    const user = await User.findOne({ email: email })
-      .select('-password')
-    return user
+    try {
+      const user = await this.userBaseRepo.findByEmail(email)
+      return user
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
-  async findByName(name: string): Promise<IUser | null> {
-    const user = await User.findOne({ name: name })
-      .select('-password')
-    return user
+  async findByName(name: string): Promise<IUser[] | null> {
+    try {
+      const users = await this.userBaseRepo.findByName(name)
+      return users
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null> {
-    const count = isInc ? 1 : -1
-    const user = await User.findOneAndUpdate(
-      { _id: userId },
-      { $inc: { [field]: count } },
-      { new: true }
-    )
-    return user ? user.toObject() : null
+    try {
+      const user = await this.userBaseRepo.updateFollowCount(userId, isInc, field)
+      return user
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
+
 }

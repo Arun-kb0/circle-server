@@ -11,10 +11,10 @@ import { UpdateUserRequest__Output } from "../proto/user/UpdateUserRequest";
 import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
 import { CustomError } from "../util/CustomError";
 import handleError from "../util/handeError";
-import { User, User__Output } from '../proto/user/User'
-import { convertGrpcUserForUpdate, convertUserForDb, convertUserForGrpc } from '../util/converter'
+import { User } from '../proto/user/User'
+import { convertGrpcUserForUpdate, convertUserForGrpc } from '../util/converter'
 import { validateRequest, validateResponse } from '../util/validations'
-import { IUser } from "../model/UserModel";
+import IUser from "../interfaces/IUser";
 import IUserController from '../interfaces/IUserController'
 import IUserService from "../interfaces/IUserService";
 import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
@@ -28,7 +28,6 @@ type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, Unblo
 type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
 type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
 
-
 export class UserController implements IUserController {
 
   constructor(
@@ -40,6 +39,8 @@ export class UserController implements IUserController {
       const { userIds } = call.request
       validateRequest('userId is required', userIds)
       const res = await this.userService.getMultipleUsers(userIds as string[])
+      console.log('get multiple controller')
+      console.log(res)
       validateResponse(res)
       const convertedUsers = res.data?.map((user) => convertUserForGrpc(user))
       cb(null, { users: convertedUsers });
@@ -83,7 +84,7 @@ export class UserController implements IUserController {
   getUser: GetUserHandler = async (call, cb) => {
     try {
       const { userId } = call.request
-      console.warn("user controller getUser = ",userId)
+      console.warn("user controller getUser = ", call.request)
       validateRequest('userId is required', userId)
       const res = await this.userService.getUser(userId as string)
       validateResponse(res)
@@ -99,10 +100,8 @@ export class UserController implements IUserController {
     try {
       const { userId, user } = call.request
       validateRequest('userId and password is required', userId, user)
-      console.log(user)
-      // const protoUser = convertUserForDb(user as User)
-      const protoUser = convertGrpcUserForUpdate(user as User)
-      const res = await this.userService.updateUser(userId as string, protoUser)
+      // const protoUser = convertGrpcUserForUpdate(user as User)
+      const res = await this.userService.updateUser(userId as string, user as Partial<IUser>)
       validateResponse(res)
       const updatedUser = convertUserForGrpc(res.data as IUser)
       cb(null, { user: updatedUser })

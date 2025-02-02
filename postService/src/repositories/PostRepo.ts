@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import IPost, { IPostExt } from '../interfaces/IPost';
 import IPostRepo from '../interfaces/IPostRepo'
 import { publishMessage } from '../util/rabbitmq'

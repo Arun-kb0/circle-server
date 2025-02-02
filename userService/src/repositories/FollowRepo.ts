@@ -1,85 +1,101 @@
 import IFollowRepo from "../interfaces/IFollowRepo";
-import { IUser, User } from "../model/UserModel";
-import { Follow } from '../model/followModel'
+import IUser from "../interfaces/IUser";
 import IUserRepo from '../interfaces/IUserRepo'
 import IFollow from "../interfaces/IFollow";
-
+import IFollowBaseRepo from '../interfaces/IFollowBaseRepo'
+import handleError from "../util/handeError";
 
 
 class FollowRepo implements IFollowRepo {
 
   constructor(
+    private followBaseRepo: IFollowBaseRepo,
     private userRepo: IUserRepo
   ) { }
 
   async isFollowing(userId: string, targetId: string, relationType: IFollow["relationType"]): Promise<boolean> {
-    const data = await Follow.exists({ userId, targetUserId: targetId, relationType })
-    return data ? true : false
+    try {
+      const data = await this.followBaseRepo.isFollowing(userId, targetId, relationType)
+      return data ? true : false
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async followUser(userId: string, targetId: string): Promise<IUser | null> {
     try {
-      await Follow.create([
-        {
-          userId: userId,
-          targetUserId: targetId,
-          relationType: "follower",
-        },
-        {
-          userId: targetId,
-          targetUserId: userId,
-          relationType: "followee",
-        }
-      ])
+      await this.followBaseRepo.followUser(userId, targetId)
       await this.userRepo.updateFollowCount(userId, true, 'followerCount')
       const user = await this.userRepo.updateFollowCount(targetId, true, 'followeeCount')
       return user
     } catch (error) {
-      throw new Error(`Failed to follow user`)
+      const err = handleError(error)
+      throw new Error(err.message)
     }
   }
 
   async unFollowUser(userId: string, targetId: string): Promise<IUser | null> {
     try {
-      await Follow.deleteMany({
-        $or: [
-          { userId, targetUserId: targetId, relationType: "follower" },
-          { userId: targetId, targetUserId: userId, relationType: "followee" },
-        ]
-      })
+      // await Follow.deleteMany({
+      //   $or: [
+      //     { userId, targetUserId: targetId, relationType: "follower" },
+      //     { userId: targetId, targetUserId: userId, relationType: "followee" },
+      //   ]
+      // })
+      await this.followBaseRepo.unFollowUser(userId, targetId)
       await this.userRepo.updateFollowCount(userId, false, 'followerCount')
       const user = await this.userRepo.updateFollowCount(targetId, false, 'followeeCount')
       return user
     } catch (error) {
-      throw new Error(`Failed to unfollow user`)
+      const err = handleError(error)
+      throw new Error(err.message)
     }
   }
 
   async getFollowers(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
-    console.warn("getFollowers Repo", userId)
+    try {
+      const followers = await this.followBaseRepo.getFollowers(userId, limit, startIndex)
+      console.log(followers)
+      if (!followers) return []
+      const userIds = followers.map(user => user.targetUserId)
+      console.log(userIds)
+      const users = await this.userRepo.getMultipleUsers(userIds)
+      return users ? users : []
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
-    const followers = await Follow.find({ userId: userId }).limit(limit).skip(startIndex)
-    console.log(followers)
-    if (!followers) return []
-    const userIds = followers.map(user => user.targetUserId)
-    console.log(userIds)
-    const users = await this.userRepo.getMultipleUsers(userIds)
-    return users ? users : []
+  async GetSuggestedPeopleCount(userId: string): Promise<number> {
+    try {
+      const userCount = await this.userRepo.countDocs()
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async GetSuggestedPeople(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
-    const users = await this.userRepo.findAll(limit, startIndex)
-    return users
+    try {
+      const users = await this.userRepo.findAll(limit, startIndex)
+      return users
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
   async getFollowersCount(userId: string): Promise<number> {
-    console.warn("getFollowersCount repo" ,userId)
-    const userCount = await Follow.countDocuments({ userId })
-    return userCount
-  }
-  async GetSuggestedPeopleCount(userId: string): Promise<number> {
-    const userCount = await Follow.countDocuments()
-    return userCount
+    try {
+      const userCount = await this.followBaseRepo.getFollowersCount(userId)
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
   }
 
 }

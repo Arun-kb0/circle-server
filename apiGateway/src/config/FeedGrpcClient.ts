@@ -8,7 +8,7 @@ const PROTO_PATH = path.join(__dirname, '..', 'protos', 'feedProto', 'feed.proto
 const HOST = process.env.FEED_SERVICE_HOST || 'host.docker.internal'
 const PORT = process.env.FEED_SERVICE_PORT || 50054
 const IP_ADDRESS = `${HOST}:${PORT}`
-console.log("feed-service ip = ",IP_ADDRESS)
+console.log("feed service ip = ",IP_ADDRESS)
 
 class FeedGrpcClient {
   private static instance: FeedServiceClient | null = null

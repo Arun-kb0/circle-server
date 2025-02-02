@@ -1,13 +1,14 @@
 import path from "path";
 import getPackageDef from "../util/getPackageDef";
 import * as grpc from '@grpc/grpc-js'
-import { ProtoGrpcType } from '../protos/user'
-import { UserServiceClient } from '../protos/user/UserService'
+import { ProtoGrpcType } from '../protos/userProto/user'
+import { UserServiceClient } from '../protos/userProto/user/UserService'
 
-const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
+const PROTO_PATH = path.join(__dirname, '..', 'protos', 'userProto', 'user.proto')
 const HOST = process.env.USER_SERVICE_HOST || 'localhost'
 const PORT = process.env.USER_SERVICE_PORT || 50052
 const IP_ADDRESS = `${HOST}:${PORT}`
+console.log('user service ip  = ', IP_ADDRESS)
 
 class UserGrpcClient {
   private static instance: UserServiceClient | null = null

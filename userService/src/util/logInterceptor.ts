@@ -18,6 +18,11 @@ function logInterceptor<T, R>(handler: handleUnaryCall<T, R>): handleUnaryCall<T
     // * request
     const path = call.getPath()
     const requestData = call.request
+
+    console.log('call and request data *** \n')
+    console.log(path )
+    console.log(requestData)
+    console.log('call and request data end ---- \n')
     // * response
     const wrappedCallback: sendUnaryData<R> = (err, response) => {
       if (err) {
