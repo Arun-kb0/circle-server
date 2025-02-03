@@ -12,6 +12,8 @@ import type { GetAllUsersRequest as _user_GetAllUsersRequest, GetAllUsersRequest
 import type { GetAllUsersResponse as _user_GetAllUsersResponse, GetAllUsersResponse__Output as _user_GetAllUsersResponse__Output } from '../user/GetAllUsersResponse';
 import type { GetFollowersRequest as _user_GetFollowersRequest, GetFollowersRequest__Output as _user_GetFollowersRequest__Output } from '../user/GetFollowersRequest';
 import type { GetFollowersResponse as _user_GetFollowersResponse, GetFollowersResponse__Output as _user_GetFollowersResponse__Output } from '../user/GetFollowersResponse';
+import type { GetFollowingRequest as _user_GetFollowingRequest, GetFollowingRequest__Output as _user_GetFollowingRequest__Output } from '../user/GetFollowingRequest';
+import type { GetFollowingResponse as _user_GetFollowingResponse, GetFollowingResponse__Output as _user_GetFollowingResponse__Output } from '../user/GetFollowingResponse';
 import type { GetMultipleUserRequest as _user_GetMultipleUserRequest, GetMultipleUserRequest__Output as _user_GetMultipleUserRequest__Output } from '../user/GetMultipleUserRequest';
 import type { GetMultipleUserResponse as _user_GetMultipleUserResponse, GetMultipleUserResponse__Output as _user_GetMultipleUserResponse__Output } from '../user/GetMultipleUserResponse';
 import type { GetSuggestedPeopleRequest as _user_GetSuggestedPeopleRequest, GetSuggestedPeopleRequest__Output as _user_GetSuggestedPeopleRequest__Output } from '../user/GetSuggestedPeopleRequest';
@@ -70,6 +72,15 @@ export interface UserServiceClient extends grpc.Client {
   getFollowers(argument: _user_GetFollowersRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetFollowersResponse__Output>): grpc.ClientUnaryCall;
   getFollowers(argument: _user_GetFollowersRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowersResponse__Output>): grpc.ClientUnaryCall;
   getFollowers(argument: _user_GetFollowersRequest, callback: grpc.requestCallback<_user_GetFollowersResponse__Output>): grpc.ClientUnaryCall;
+  
+  GetFollowing(argument: _user_GetFollowingRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  GetFollowing(argument: _user_GetFollowingRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  GetFollowing(argument: _user_GetFollowingRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  GetFollowing(argument: _user_GetFollowingRequest, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  getFollowing(argument: _user_GetFollowingRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  getFollowing(argument: _user_GetFollowingRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  getFollowing(argument: _user_GetFollowingRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
+  getFollowing(argument: _user_GetFollowingRequest, callback: grpc.requestCallback<_user_GetFollowingResponse__Output>): grpc.ClientUnaryCall;
   
   GetMultipleUser(argument: _user_GetMultipleUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetMultipleUserResponse__Output>): grpc.ClientUnaryCall;
   GetMultipleUser(argument: _user_GetMultipleUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetMultipleUserResponse__Output>): grpc.ClientUnaryCall;
@@ -138,6 +149,8 @@ export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetFollowers: grpc.handleUnaryCall<_user_GetFollowersRequest__Output, _user_GetFollowersResponse>;
   
+  GetFollowing: grpc.handleUnaryCall<_user_GetFollowingRequest__Output, _user_GetFollowingResponse>;
+  
   GetMultipleUser: grpc.handleUnaryCall<_user_GetMultipleUserRequest__Output, _user_GetMultipleUserResponse>;
   
   GetSuggestedPeople: grpc.handleUnaryCall<_user_GetSuggestedPeopleRequest__Output, _user_GetSuggestedPeopleResponse>;
@@ -158,6 +171,7 @@ export interface UserServiceDefinition extends grpc.ServiceDefinition {
   FollowUser: MethodDefinition<_user_FollowUserRequest, _user_FollowUserResponse, _user_FollowUserRequest__Output, _user_FollowUserResponse__Output>
   GetAllUsers: MethodDefinition<_user_GetAllUsersRequest, _user_GetAllUsersResponse, _user_GetAllUsersRequest__Output, _user_GetAllUsersResponse__Output>
   GetFollowers: MethodDefinition<_user_GetFollowersRequest, _user_GetFollowersResponse, _user_GetFollowersRequest__Output, _user_GetFollowersResponse__Output>
+  GetFollowing: MethodDefinition<_user_GetFollowingRequest, _user_GetFollowingResponse, _user_GetFollowingRequest__Output, _user_GetFollowingResponse__Output>
   GetMultipleUser: MethodDefinition<_user_GetMultipleUserRequest, _user_GetMultipleUserResponse, _user_GetMultipleUserRequest__Output, _user_GetMultipleUserResponse__Output>
   GetSuggestedPeople: MethodDefinition<_user_GetSuggestedPeopleRequest, _user_GetSuggestedPeopleResponse, _user_GetSuggestedPeopleRequest__Output, _user_GetSuggestedPeopleResponse__Output>
   GetUser: MethodDefinition<_user_GetUserRequest, _user_GetUserResponse, _user_GetUserRequest__Output, _user_GetUserResponse__Output>

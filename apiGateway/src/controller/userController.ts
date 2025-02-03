@@ -122,10 +122,25 @@ export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction
 export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { page, userId } = req.query
-    console.log('get followers ', userId)
-    console.log(req.query, '\n')
+    const currentUserId = req.userId
+    console.log('get followers')
+    console.log(userId, currentUserId)
     if (typeof userId !== 'string' && isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required.')
     client.getFollowers({ userId: String(userId), page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFollowing = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page, userId } = req.query
+    if (typeof userId !== 'string' && isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required.')
+    client.getFollowing({ userId: String(userId), page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
       res.status(httpStatus.OK).json({ message: "get followers success", ...msg })

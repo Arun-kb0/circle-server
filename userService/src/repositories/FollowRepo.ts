@@ -37,12 +37,6 @@ class FollowRepo implements IFollowRepo {
 
   async unFollowUser(userId: string, targetId: string): Promise<IUser | null> {
     try {
-      // await Follow.deleteMany({
-      //   $or: [
-      //     { userId, targetUserId: targetId, relationType: "follower" },
-      //     { userId: targetId, targetUserId: userId, relationType: "followee" },
-      //   ]
-      // })
       await this.followBaseRepo.unFollowUser(userId, targetId)
       await this.userRepo.updateFollowCount(userId, false, 'followerCount')
       const user = await this.userRepo.updateFollowCount(targetId, false, 'followeeCount')
@@ -56,6 +50,21 @@ class FollowRepo implements IFollowRepo {
   async getFollowers(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
     try {
       const followers = await this.followBaseRepo.getFollowers(userId, limit, startIndex)
+      console.log(followers)
+      if (!followers) return []
+      const userIds = followers.map(user => user.targetUserId)
+      console.log(userIds)
+      const users = await this.userRepo.getMultipleUsers(userIds)
+      return users ? users : []
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getFollowing(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
+    try {
+      const followers = await this.followBaseRepo.getFollowing(userId, limit, startIndex)
       console.log(followers)
       if (!followers) return []
       const userIds = followers.map(user => user.targetUserId)
@@ -91,6 +100,16 @@ class FollowRepo implements IFollowRepo {
   async getFollowersCount(userId: string): Promise<number> {
     try {
       const userCount = await this.followBaseRepo.getFollowersCount(userId)
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getFollowingCount(userId: string): Promise<number> {
+    try {
+      const userCount = await this.followBaseRepo.getFollowingCount(userId)
       return userCount
     } catch (error) {
       const err = handleError(error)

@@ -19,6 +19,8 @@ export interface ProtoGrpcType {
     GetAllUsersResponse: MessageTypeDefinition
     GetFollowersRequest: MessageTypeDefinition
     GetFollowersResponse: MessageTypeDefinition
+    GetFollowingRequest: MessageTypeDefinition
+    GetFollowingResponse: MessageTypeDefinition
     GetMultipleUserRequest: MessageTypeDefinition
     GetMultipleUserResponse: MessageTypeDefinition
     GetSuggestedPeopleRequest: MessageTypeDefinition

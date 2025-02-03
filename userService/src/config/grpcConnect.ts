@@ -35,6 +35,7 @@ const grpcConnect = () => {
       unblockUser: logInterceptor(userController.unblockUser),
       getMultipleUser: logInterceptor(userController.getMultipleUsers),
 
+      getFollowing: logInterceptor(followController.getFollowing),
       getFollowers: logInterceptor(followController.getFollowers),
       getSuggestedPeople: logInterceptor(followController.getSuggestedPeople),
       followUser: logInterceptor(followController.followUser),

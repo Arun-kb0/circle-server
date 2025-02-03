@@ -23,9 +23,8 @@ export const getPostLikedUsers = async (req: AuthRequest, res: Response, next: N
 
 export const getUseCreatedPosts = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page } = req.query
-    const { userId } = req
-    if (!page || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required')
+    const { page, userId } = req.query
+    if (typeof userId !== 'string' || !page || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required')
     client.getUserCreatedPosts({ userId, page: Number(page) }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user created posts failed'))

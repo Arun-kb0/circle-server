@@ -14,9 +14,12 @@ service UserService {
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {};
 
   rpc GetFollowers(GetFollowersRequest) returns (GetFollowersResponse) {};
+  rpc GetFollowing(GetFollowingRequest) returns (GetFollowingResponse) {};
   rpc GetSuggestedPeople(GetSuggestedPeopleRequest) returns (GetSuggestedPeopleResponse) {};
+
   rpc FollowUser(FollowUserRequest) returns (FollowUserResponse) {};
   rpc UnFollowUser(UnFollowUserRequest) returns (UnFollowUserResponse) {};
+
 }
 
 message Image {
@@ -124,6 +127,17 @@ message GetFollowersRequest {
 }
 
 message GetFollowersResponse {
+  repeated User users =1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetFollowingRequest {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetFollowingResponse {
   repeated User users =1;
   int32 numberOfPages=2;
   int32 currentPage=3;

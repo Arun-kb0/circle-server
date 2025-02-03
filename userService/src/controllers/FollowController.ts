@@ -2,10 +2,11 @@ import httpStatus from '../constants/httpStatus';
 import { PaginationUsers } from '../constants/svcTypes';
 import IFollowController, {
   FollowUserHandler, GetFollowersHandler,
+  GetFollowingHandler,
   GetSuggestedPeopleHandler, UnFollowUserHandler
 } from '../interfaces/IFollowController'
 import IFollowService from '../interfaces/IFollowService';
-import IUser  from '../interfaces/IUser';
+import IUser from '../interfaces/IUser';
 import { convertUserForGrpc } from '../util/converter';
 import { CustomError } from '../util/CustomError';
 import handleError from '../util/handeError';
@@ -18,10 +19,26 @@ class FollowController implements IFollowController {
     private followService: IFollowService
   ) { }
 
+  getFollowing: GetFollowingHandler = async (call, cb) => {
+    try {
+      const { userId, page } = call.request
+      console.log(' user id', userId, page)
+      validateRequest('page and userId is required.', page, userId)
+      const res = await this.followService.getFollowing(userId as string, page as number)
+      validateResponse(res)
+      const { users: rawUsers, ...rest } = res.data as PaginationUsers
+      const users = rawUsers.map(user => convertUserForGrpc(user))
+      cb(null, { users, ...rest })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
   getFollowers: GetFollowersHandler = async (call, cb) => {
     try {
       const { userId, page } = call.request
-      console.log(' user id', userId , page)
+      console.log(' user id', userId, page)
       validateRequest('page and userId is required.', page, userId)
       const res = await this.followService.getFollowers(userId as string, page as number)
       validateResponse(res)

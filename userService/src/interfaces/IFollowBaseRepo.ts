@@ -1,4 +1,3 @@
-import IUser from '../interfaces/IUser'
 import IFollow from './IFollow'
 
 interface IFollowBaseRepo {
@@ -6,9 +5,12 @@ interface IFollowBaseRepo {
   followUser(userId: string, targetId: string): Promise<boolean>
   unFollowUser(userId: string, targetId: string): Promise<boolean>
 
-  getFollowersCount(userId: string): Promise<number>
   GetSuggestedPeopleCount(userId: string): Promise<number>
+  getFollowersCount(userId: string): Promise<number>
   getFollowers(userId: string, limit: number, startIndex: number): Promise<IFollow[]>
+
+  getFollowingCount(userId: string): Promise<number>
+  getFollowing(userId: string, limit: number, startIndex: number): Promise<IFollow[]>
 }
 
 export default IFollowBaseRepo

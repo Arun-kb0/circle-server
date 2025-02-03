@@ -27,6 +27,20 @@ class FollowService implements IFollowService {
     }
   }
 
+  async getFollowing(userId: string, page: number): FuncReturnType<PaginationUsers> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.followRepo.getFollowingCount(userId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const users = await this.followRepo.getFollowing(userId, LIMIT, startIndex)
+      console.log(users)
+      return { err: null, data: { users, numberOfPages, currentPage: page } }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
+
   async getSuggestedPeople(userId: string, page: number): FuncReturnType<PaginationUsers> {
     try {
       const startIndex = (page - 1) * LIMIT
