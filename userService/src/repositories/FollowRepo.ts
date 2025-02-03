@@ -13,9 +13,9 @@ class FollowRepo implements IFollowRepo {
     private userRepo: IUserRepo
   ) { }
 
-  async isFollowing(userId: string, targetId: string, relationType: IFollow["relationType"]): Promise<boolean> {
+  async isFollowing(userId: string, targetId: string): Promise<boolean> {
     try {
-      const data = await this.followBaseRepo.isFollowing(userId, targetId, relationType)
+      const data = await this.followBaseRepo.isFollowing(userId, targetId)
       return data ? true : false
     } catch (error) {
       const err = handleError(error)
@@ -50,10 +50,8 @@ class FollowRepo implements IFollowRepo {
   async getFollowers(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
     try {
       const followers = await this.followBaseRepo.getFollowers(userId, limit, startIndex)
-      console.log(followers)
       if (!followers) return []
-      const userIds = followers.map(user => user.targetUserId)
-      console.log(userIds)
+      const userIds = followers.map(follow => follow.userId)
       const users = await this.userRepo.getMultipleUsers(userIds)
       return users ? users : []
     } catch (error) {
@@ -67,8 +65,7 @@ class FollowRepo implements IFollowRepo {
       const followers = await this.followBaseRepo.getFollowing(userId, limit, startIndex)
       console.log(followers)
       if (!followers) return []
-      const userIds = followers.map(user => user.targetUserId)
-      console.log(userIds)
+      const userIds = followers.map(follow => follow.targetUserId)
       const users = await this.userRepo.getMultipleUsers(userIds)
       return users ? users : []
     } catch (error) {

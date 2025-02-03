@@ -6,9 +6,8 @@ import handleError from "../../util/handeError";
 
 class FollowBaseRepo implements IFollowBaseRepo {
 
-
-  async isFollowing(userId: string, targetId: string, relationType: IFollow["relationType"]): Promise<boolean> {
-    const data = await Follow.exists({ userId, targetUserId: targetId, relationType })
+  async isFollowing(userId: string, targetId: string): Promise<boolean> {
+    const data = await Follow.exists({ userId, targetUserId: targetId })
     return data ? true : false
   }
 
@@ -16,18 +15,10 @@ class FollowBaseRepo implements IFollowBaseRepo {
     try {
       const userObjId = convertToObjectId(userId)
       const targetObjId = convertToObjectId(targetId)
-      const res = await Follow.create([
-        {
-          userId: userObjId,
-          targetUserId: targetObjId,
-          relationType: "followee",
-        },
-        {
-          userId: userObjId,
-          targetUserId: targetObjId,
-          relationType: "follower",
-        }
-      ])
+      const res = await Follow.create({
+        userId: userObjId,
+        targetUserId: targetObjId,
+      })
       return res ? true : false
     } catch (error) {
       throw new Error(`Failed to follow user`)
@@ -38,19 +29,9 @@ class FollowBaseRepo implements IFollowBaseRepo {
     try {
       const userObjId = convertToObjectId(userId)
       const targetObjId = convertToObjectId(targetId)
-      const res = await Follow.deleteMany({
-        $or: [
-          {
-            userId: userObjId,
-            targetUserId: targetObjId,
-            relationType: "followee",
-          },
-          {
-            userId: userObjId,
-            targetUserId: targetObjId,
-            relationType: "follower",
-          }
-        ]
+      const res = await Follow.deleteOne({
+        userId: userObjId,
+        targetUserId: targetObjId,
       })
       return res ? true : false
     } catch (error) {
@@ -62,8 +43,7 @@ class FollowBaseRepo implements IFollowBaseRepo {
   async getFollowers(userId: string, limit: number, startIndex: number): Promise<IFollow[]> {
     try {
       const userObjId = convertToObjectId(userId)
-      const followers = await Follow.find({ userId: userObjId, relationType: 'follower' }).limit(limit).skip(startIndex)
-      console.log(followers)
+      const followers = await Follow.find({ targetUserId: userObjId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
       if (!followers) return []
       const convertedFollowers = followers.map(follow => convertIFollowDbToIFollow(follow))
       return convertedFollowers
@@ -75,7 +55,7 @@ class FollowBaseRepo implements IFollowBaseRepo {
 
   async getFollowersCount(userId: string): Promise<number> {
     try {
-      const userCount = await Follow.countDocuments({ userId, relationType: 'follower' })
+      const userCount = await Follow.countDocuments({ targetUserId: userId })
       return userCount
     } catch (error) {
       const err = handleError(error)
@@ -86,11 +66,10 @@ class FollowBaseRepo implements IFollowBaseRepo {
   async getFollowing(userId: string, limit: number, startIndex: number): Promise<IFollow[]> {
     try {
       const userObjId = convertToObjectId(userId)
-      const followers = await Follow.find({ userId: userObjId, relationType: 'followee' }).limit(limit).skip(startIndex)
-      console.log(followers)
-      if (!followers) return []
-      const convertedFollowers = followers.map(follow => convertIFollowDbToIFollow(follow))
-      return convertedFollowers
+      const following = await Follow.find({ userId: userObjId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+      if (!following) return []
+      const convertedFollowing = following.map(follow => convertIFollowDbToIFollow(follow))
+      return convertedFollowing
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
@@ -99,7 +78,7 @@ class FollowBaseRepo implements IFollowBaseRepo {
 
   async getFollowingCount(userId: string): Promise<number> {
     try {
-      const userCount = await Follow.countDocuments({ userId, relationType: 'followee' })
+      const userCount = await Follow.countDocuments({ userId: userId })
       return userCount
     } catch (error) {
       const err = handleError(error)

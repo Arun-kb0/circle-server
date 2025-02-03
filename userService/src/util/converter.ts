@@ -128,7 +128,6 @@ export const convertIFollowDbToIFollow = (follow: IFollowDb): IFollow => {
     _id: follow._id.toString(),
     userId: follow.userId.toString(),
     targetUserId: follow.targetUserId.toString(),
-    relationType: follow.relationType,
     createdAt: convertDbDateToIsoString(follow.createdAt),
     updatedAt: convertDbDateToIsoString(follow.updatedAt)
   }

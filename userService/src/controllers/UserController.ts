@@ -39,8 +39,6 @@ export class UserController implements IUserController {
       const { userIds } = call.request
       validateRequest('userId is required', userIds)
       const res = await this.userService.getMultipleUsers(userIds as string[])
-      console.log('get multiple controller')
-      console.log(res)
       validateResponse(res)
       const convertedUsers = res.data?.map((user) => convertUserForGrpc(user))
       cb(null, { users: convertedUsers });

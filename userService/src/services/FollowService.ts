@@ -19,7 +19,6 @@ class FollowService implements IFollowService {
       const total = await this.followRepo.getFollowersCount(userId)
       const numberOfPages = Math.ceil(total / LIMIT)
       const users = await this.followRepo.getFollowers(userId, LIMIT, startIndex)
-      console.log(users)
       return { err: null, data: { users, numberOfPages, currentPage: page } }
     } catch (error) {
       const { code, message } = handleError(error)
@@ -33,7 +32,6 @@ class FollowService implements IFollowService {
       const total = await this.followRepo.getFollowingCount(userId)
       const numberOfPages = Math.ceil(total / LIMIT)
       const users = await this.followRepo.getFollowing(userId, LIMIT, startIndex)
-      console.log(users)
       return { err: null, data: { users, numberOfPages, currentPage: page } }
     } catch (error) {
       const { code, message } = handleError(error)
@@ -47,9 +45,6 @@ class FollowService implements IFollowService {
       const total = await this.followRepo.GetSuggestedPeopleCount(userId)
       const numberOfPages = Math.ceil(total / LIMIT)
       const users = await this.followRepo.GetSuggestedPeople(userId, LIMIT, startIndex)
-      console.log("getSuggestedPeople users")
-      console.log(users)
-      console.log(total)
       return { err: null, data: { users, numberOfPages, currentPage: page } }
     } catch (error) {
       const { code, message } = handleError(error)
@@ -59,7 +54,7 @@ class FollowService implements IFollowService {
 
   async followUser(userId: string, targetId: string): FuncReturnType<IUser> {
     try {
-      const isExits = await this.followRepo.isFollowing(userId, targetId, 'follower')
+      const isExits = await this.followRepo.isFollowing(userId, targetId)
       if (isExits) return { err: httpStatus.CONFLICT, errMsg: 'already following.', data: null }
       const user = await this.followRepo.followUser(userId, targetId)
       return { err: null, data: user }
@@ -71,7 +66,7 @@ class FollowService implements IFollowService {
   
   async unFollowUser(userId: string, targetId: string): FuncReturnType<IUser> {
     try {
-      const isExits = await this.followRepo.isFollowing(userId, targetId, 'follower')
+      const isExits = await this.followRepo.isFollowing(userId, targetId)
       if (!isExits) return { err: httpStatus.CONFLICT, errMsg: 'not following.', data: null }
       const user = await this.followRepo.unFollowUser(userId, targetId)
       return { err: null, data: user }

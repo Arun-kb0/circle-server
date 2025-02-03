@@ -1,8 +1,7 @@
 import IUser from '../interfaces/IUser'
-import IFollow from './IFollow'
 
 interface IFollowRepo {
-  isFollowing(userId: string, targetId: string, relationType: IFollow['relationType']): Promise<boolean>
+  isFollowing(userId: string, targetId: string): Promise<boolean>
   followUser(userId: string, targetId: string): Promise<IUser | null>
   unFollowUser(userId: string, targetId: string): Promise<IUser | null>
 

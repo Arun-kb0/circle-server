@@ -54,11 +54,8 @@ class FollowController implements IFollowController {
   getSuggestedPeople: GetSuggestedPeopleHandler = async (call, cb) => {
     try {
       const { userId, page } = call.request
-      console.log('suggested users controller ********* ')
-      console.log('page and userId is required.', page, userId)
       validateRequest('page and userId is required.', page, userId)
       const res = await this.followService.getSuggestedPeople(userId as string, page as number)
-      console.log(res)
       validateResponse(res)
       const { users: rawUsers, ...rest } = res.data as PaginationUsers
       const users = rawUsers.map(user => convertUserForGrpc(user))
