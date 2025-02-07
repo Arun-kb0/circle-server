@@ -5,7 +5,7 @@ import getPackageDef from '../util/getPackageDef'
 import { ProtoGrpcType } from "../protos/auth";
 import httpStatus from "../constants/httpStatus";
 import HttpError from "../util/HttpError";
-
+import connectUserSockets from '../util/connectUserSockets'
 
 const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'auth.proto')
@@ -24,7 +24,7 @@ export const googleOauthLogin = (req: Request, res: Response, next: NextFunction
   try {
     const { token } = req.body
     const TOKEN_LENGTH = 1180
-    
+
     if (typeof token !== 'string') {
       throw new HttpError(httpStatus.BAD_REQUEST, 'token required')
     }
@@ -38,7 +38,7 @@ export const googleOauthLogin = (req: Request, res: Response, next: NextFunction
         secure: true,
         maxAge: REFRESH_TOKEN_MAX_AGE
       })
-      res.status(httpStatus.OK).json({ message: 'Oauth login success', accessToken , ...data })
+      res.status(httpStatus.OK).json({ message: 'Oauth login success', accessToken, ...data })
     })
   } catch (error) {
     next(error)
@@ -48,7 +48,7 @@ export const googleOauthLogin = (req: Request, res: Response, next: NextFunction
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body
-    client.login({ email, password }, (err, msg) => {
+    client.login({ email, password }, async (err, msg) => {
       if (err?.code === grpc.status.UNAVAILABLE) {
         return next(new HttpError(httpStatus.GONE, 'account blocked'))
       }
@@ -64,7 +64,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         secure: true,
         maxAge: REFRESH_TOKEN_MAX_AGE
       })
-      res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data })
+      const friendsRoomId = await connectUserSockets(data.user?._id as string)
+      res.status(httpStatus.OK).json({ message: 'login success', accessToken: token, ...data, friendsRoomId })
     })
   } catch (error) {
     next(error)
@@ -152,14 +153,16 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     }
     const refreshToken = cookies.jwt
 
-    client.refresh({ refreshToken }, (err, msg) => {
+    client.refresh({ refreshToken }, async (err, msg) => {
       if (err?.code === grpc.status.UNAUTHENTICATED) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
       else if (err) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
       if (!msg) return new Error('grpc response is empty')
+      const friendsRoomId = await connectUserSockets(msg.user?._id as string)
       res.status(httpStatus.OK)
         .json({
           accessToken: msg.accessToken,
           user: msg.user,
+          friendsRoomId,
           message: 'refresh success'
         })
     })

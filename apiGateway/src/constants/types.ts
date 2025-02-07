@@ -37,3 +37,24 @@ export type ChatRoomType = {
   createdAt: Date
   updatedAt: Date
 }
+
+export type JoinCallRoomDataType = {
+  roomId?: string,
+  userId?: string
+}
+
+export type SignalDataType = {
+  type: 'end-call'
+  roomId: string
+  caller: string
+  receiverId: string
+  offer?: RTCSessionDescription
+  answer?: RTCSessionDescription
+  candidate?: RTCIceCandidate
+}
+
+export type UserRoomNotificationType = {
+  type: 'incoming-call'
+  roomId: string
+  caller: string
+}

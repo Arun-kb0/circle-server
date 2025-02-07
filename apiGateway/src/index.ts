@@ -20,6 +20,9 @@ import UseSocketIo from './config/UseSocketIo'
 import UseHttpServer from './config/UseHttpServer'
 import chatSocketRouter from './router/chatSocketRouter'
 import chatRouter from './router/chatRouter'
+import PeerServerClient from './config/peerServer'
+import peerSocketRoutes from './router/peerSocketRoutes'
+import { Socket } from 'socket.io'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -41,12 +44,13 @@ app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
 app.use('/chat', authorize, chatRouter)
 
+
 // * socket io
 io.on("connection", (socket) => {
   console.log(`user connected ${socket.id}`)
 
   chatSocketRouter(socket)
-
+  
   socket.on('test-event', (data) => {
     console.log('Received test-event:', data);
     socket.emit('test-response', { message: 'Hello from server' });
@@ -57,11 +61,9 @@ io.on("connection", (socket) => {
   })
 })
 
+PeerServerClient.getInstance()
 
-app.use('/test', (req, res) => {
-  console.log('home req')
-  res.status(200).json({ message: 'test call success' })
-})
+
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError(httpStatus.NOT_FOUND, 'route not found')
@@ -69,7 +71,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 app.use(errorHandler)
-
 server.listen(PORT, () => {
   console.log(`api gateway is running at ${PORT}`)
 })

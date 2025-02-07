@@ -4,6 +4,7 @@ services:
     container_name: api-gateway
     ports:
       - 5001:5001
+      - 9000:9000
     volumes:
       - ./apiGateway:/app
       - ./apiGateway/node_modules:/app/node_modules
