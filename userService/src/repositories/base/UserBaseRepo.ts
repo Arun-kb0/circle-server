@@ -40,34 +40,34 @@ class UserBaseRepo implements IUserBaseRepo {
       } = {
         role: { $eq: 'user' }
       }
-
-      if (startDate && endDate && (!searchText && searchText?.length === 0)) {
+      if (startDate && endDate && (!searchText || searchText.length === 0)) {
         query.createdAt = {
           $gte: stringToDate(startDate),
-          $lte: stringToDate(startDate),
+          $lte: stringToDate(endDate),
         }
-        res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
       } else if (searchText && searchText.length > 0 && (!startDate && !endDate)) {
         query.$or = [
           { name: { $regex: searchText, $options: "i" } },
           { email: { $regex: searchText, $options: "i" } },
-        ];
-        res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-      } else if (startDate && endDate && searchText && searchText?.length === 0) {
+        ]
+      } else if (startDate && endDate && searchText && searchText.length > 0) {
         query.createdAt = {
           $gte: stringToDate(startDate),
-          $lte: stringToDate(startDate),
+          $lte: stringToDate(endDate),
         }
         query.$or = [
           { name: { $regex: searchText, $options: "i" } },
           { email: { $regex: searchText, $options: "i" } },
         ]
-        res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
-      } else {
-        res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
       }
-      const users = res.map(user => convertIUserDbToIUser(user))
-      return users
+
+      res = await User.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex);
+      if (!res || res.length === 0) {
+        console.warn("No users found for query:", query);
+      }
+      const users = res.map((user) => convertIUserDbToIUser(user));
+      return users;
+
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
