@@ -4,7 +4,7 @@ import httpStatus from '../constants/httpStatus'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 
-type VerifyReturnType = { status: httpStatus, msg: string, data?: { username: string, userId: string } }
+type VerifyReturnType = { status: httpStatus, msg: string, data?: { username: string, userId: string, role: 'admin' | 'user' } }
 
 const verifyToken = (token: string): VerifyReturnType => {
   try {
@@ -24,10 +24,10 @@ const verifyToken = (token: string): VerifyReturnType => {
         res.msg = 'user not authorized'
         return
       }
-      const { username, userId } = payload
+      const { username, userId, role } = payload
       res.status = httpStatus.OK
       res.msg = username
-      res.data = { userId, username }
+      res.data = { userId, username, role }
     }
 
     jwt.verify(

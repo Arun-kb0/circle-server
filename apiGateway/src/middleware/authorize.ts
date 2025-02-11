@@ -12,10 +12,11 @@ const authorize = (req: AuthRequest, res: Response, next: NextFunction) => {
     const token = authHeader.split(' ')[1]
     const { status, msg, data } = verifyToken(token)
     if (status !== httpStatus.OK || !data) throw new HttpError(status, msg)
-    const { username, userId } = data
+    const { username, userId, role } = data
     if (typeof userId !== 'string' || typeof username !== 'string') throw new HttpError(status, 'username and userId not found in token.')
     req.username = username
     req.userId = userId
+    req.role = role
     next()
   } catch (error) {
     next(error)

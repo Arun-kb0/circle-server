@@ -57,7 +57,7 @@ export class UserService implements IUserService {
       if (newUser?.provider !== 'google') return { err: httpStatus.CONFLICT, data: null }
 
       const accessToken = jwt.sign(
-        { "username": newUser.email, "userId": newUser._id },
+        { "username": newUser.email, "userId": newUser._id, role: newUser.role },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -185,7 +185,7 @@ export class UserService implements IUserService {
       }
       const newUser = await this.userRepo.create({ ...user, role: 'user' })
       const accessToken = jwt.sign(
-        { "username": newUser.email, "userId": newUser._id },
+        { "username": newUser.email, "userId": newUser._id, role: newUser.role },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -264,7 +264,7 @@ export class UserService implements IUserService {
       if (!isMatch) return { err: httpStatus.UNAUTHORIZED, data: null }
 
       const accessToken = jwt.sign(
-        { "username": foundUser.email, "userId": foundUser._id },
+        { "username": foundUser.email, "userId": foundUser._id, role: foundUser.role },
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       )
@@ -318,7 +318,7 @@ export class UserService implements IUserService {
         }
 
         const accessToken = jwt.sign(
-          { username: decoded.username, userId: user._id },
+          { username: decoded.username, userId: user._id, role: user.role },
           ACCESS_TOKEN_SECRET,
           { expiresIn: ACCESS_EXPIRES_IN }
         )
