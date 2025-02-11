@@ -22,6 +22,9 @@ const getFollowingPromise = async (userId: string, page: number): Promise<GetFol
 const connectUserSockets = async (userId: string): Promise<string | undefined> => {
   try {
     console.log('userid !_@_@- ', userId)
+    console.log('connectUSerSockets users map')
+    console.log('user roomId = ', usersMap.get(userId))
+    // console.log(usersMap)
     if (usersMap.has(userId)) return usersMap.get(userId)
 
     const friendsRoomId = uuid()
@@ -34,11 +37,11 @@ const connectUserSockets = async (userId: string): Promise<string | undefined> =
       const msg = await getFollowingPromise(userId, p)
       msg.users?.forEach(user => usersMap.set(user._id, friendsRoomId))
     }
+    
     console.log('connectUSerSockets users map')
-    console.log(usersMap)
+    console.log('user roomId = ', usersMap.get(userId))
 
     return friendsRoomId
-
   } catch (error) {
     console.error(error)
   }

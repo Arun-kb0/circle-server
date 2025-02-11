@@ -43,6 +43,14 @@ export type JoinCallRoomDataType = {
   userId?: string
 }
 
+
+export type ChatUserType = {
+  userId: string
+  name: string,
+  image?: string
+}
+
+
 export type SignalDataType = {
   type: 'end-call'
   roomId: string
@@ -51,10 +59,12 @@ export type SignalDataType = {
   offer?: RTCSessionDescription
   answer?: RTCSessionDescription
   candidate?: RTCIceCandidate
+  user: ChatUserType
 }
 
 export type UserRoomNotificationType = {
   type: 'incoming-call'
   roomId: string
   caller: string
+  chatUser?: ChatUserType
 }

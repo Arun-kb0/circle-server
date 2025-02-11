@@ -158,6 +158,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       else if (err) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
       if (!msg) return new Error('grpc response is empty')
       const friendsRoomId = await connectUserSockets(msg.user?._id as string)
+      console.log("refresh user name = ",msg.user?.name)
       res.status(httpStatus.OK)
         .json({
           accessToken: msg.accessToken,
@@ -166,7 +167,6 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
           message: 'refresh success'
         })
     })
-
   } catch (error) {
     next(error)
   }

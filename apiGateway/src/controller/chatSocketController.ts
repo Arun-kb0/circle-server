@@ -52,11 +52,14 @@ export const joinCallRoom = (socket: Socket, data: any) => {
     console.log('call room id')
     console.log(roomId)
     console.log(userId)
+    console.log('all rooms')
+    console.log(socket.rooms)
 
     socket.join(roomId)
     console.log('call room joined')
     const resData = { roomId, userId, id: socket.id }
     socket.to(roomId).emit(SocketEvents.callUserConnected, resData)
+    console.log('___ ____ ____ ____ END ___ ___ ___ ___ ___\n')
   } catch (error) {
     socketErrorHandler(error)
   }
@@ -64,28 +67,30 @@ export const joinCallRoom = (socket: Socket, data: any) => {
 
 export const handleSignal = (socket: Socket, data: SignalDataType) => {
   try {
-    const { roomId, caller, type, receiverId } = data
+    const { roomId, caller, type, receiverId, user } = data
     console.log('handleSignal')
     console.log('signal type = ', type)
-    console.log('roomId  = ', roomId)
-
-    if (!roomId) throw new Error('roomId required')
+    console.log(user)
+    if (!roomId || !user) throw new Error('roomId required')
     if (type === 'end-call') {
-      socket.to(roomId).emit(SocketEvents.callEnded, { caller: caller })
+      socket.to(roomId).emit(SocketEvents.callEnded, { caller: caller, user })
       return
     }
-    socket.to(roomId).emit(SocketEvents.callStarted, { roomId: roomId })
+    socket.to(roomId).emit(SocketEvents.callStarted, { roomId: roomId, user })
     socket.to(roomId).emit(SocketEvents.signal, data)
+
     //  * sending notification
     if (type === 'offer') {
       const userRoomData: UserRoomNotificationType = {
         type: "incoming-call",
         roomId,
-        caller
+        caller,
+        chatUser: user
       }
       socket.to(receiverId).emit(SocketEvents.userRoomNotification, userRoomData)
+      console.log(`socket incoming cal signal send to ${receiverId}`)
     }
-    console.log('roomId = ', data.roomId)
+    console.log('___ ____ ____ ____ END ___ ___ ___ ___ ___\n')
   } catch (error) {
     socketErrorHandler(error)
   }
