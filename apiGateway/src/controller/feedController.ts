@@ -81,9 +81,10 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
 
 export const searchPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { searchText, page } = req.query
+    const { searchText, page, startDate, endDate } = req.query
     if (typeof searchText !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'postId and page required')
-    client.searchPost({ searchText, page: Number(page) }, (err, msg) => {
+    if (typeof startDate !== 'string' || typeof endDate !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'startDate and end date are required')
+    client.searchPost({ searchText, page: Number(page), startDate, endDate }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'search post failed'))
       res.status(httpStatus.OK).json({ message: 'search post success', ...msg })

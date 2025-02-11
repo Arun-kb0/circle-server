@@ -103,12 +103,12 @@ class FeedService implements IFeedService {
     }
   }
 
-  async searchPost(searchText: string, page: number): SvcReturnType<PaginationPost<IPostExt[] | null>> {
+  async searchPost(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationPost<IPostExt[] | null>> {
     try {
       const startIndex = (page - 1) * LIMIT
-      const total = await this.feedRepo.getSearchPostsCount(searchText)
+      const total = await this.feedRepo.getSearchPostsCount(searchText, startDate, endDate)
       const numberOfPages = Math.ceil(total / LIMIT)
-      const posts = await this.feedRepo.searchPost(searchText, LIMIT, startIndex)
+      const posts = await this.feedRepo.searchPost(searchText, LIMIT, startIndex, startDate, endDate)
       if (!posts) return { err: httpStatus.NOT_FOUND, errMsg: 'no posts found', data: null }
 
       const postIds = posts.map(post => post._id)

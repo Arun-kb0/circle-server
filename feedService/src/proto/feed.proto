@@ -140,6 +140,8 @@ message GetPostResponse {
 message SearchPostRequest {
   string searchText=1;
   int32 page=2;
+  string startDate=3;
+  string endDate=4;
 }
 
 message SearchPostResponse {

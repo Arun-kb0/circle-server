@@ -1,5 +1,7 @@
 
 export enum SocketEvents {
+  getOnlineUsers = 'get-online-users',
+
   // * user
   joinUserRoom = 'join-user-room',
   userRoomNotification= 'user-room-notification',

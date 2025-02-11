@@ -33,8 +33,8 @@ class FeedRepo implements IFeedRepo {
   }
 
 
-  async getSearchPostsCount(searchText: string): Promise<number> {
-    const count = await this.postBaseRepo.findPostCountBySearchText(searchText)
+  async getSearchPostsCount(searchText: string, startDate?: string, endDate?: string): Promise<number> {
+    const count = await this.postBaseRepo.findPostCountBySearchText(searchText, startDate, endDate)
     return count
   }
 
@@ -76,8 +76,8 @@ class FeedRepo implements IFeedRepo {
     return updatedPost
   }
 
-  async searchPost(searchText: string, limit: number, startIndex: number): Promise<IPostExt[] | null> {
-    const posts = await this.postBaseRepo.findPostsBySearchText(searchText, limit, startIndex)
+  async searchPost(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IPostExt[] | null> {
+    const posts = await this.postBaseRepo.findPostsBySearchText(searchText, limit, startIndex, startDate, endDate)
     if (!posts) return null
     const updatedPosts = await addUserToPosts(posts)
     return updatedPosts

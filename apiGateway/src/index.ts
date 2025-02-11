@@ -19,10 +19,12 @@ import UseExpress from './config/UseExpress'
 import UseSocketIo from './config/UseSocketIo'
 import UseHttpServer from './config/UseHttpServer'
 import chatSocketRouter from './router/chatSocketRouter'
+import adminRouter from './router/admin/AdminRouter'
 import chatRouter from './router/chatRouter'
 import PeerServerClient from './config/peerServer'
-import peerSocketRoutes from './router/peerSocketRoutes'
 import { Socket } from 'socket.io'
+import onlineUsersMap from './util/onlineUsersMap'
+import { SocketEvents } from './constants/enums'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -44,21 +46,28 @@ app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
 app.use('/chat', authorize, chatRouter)
 
+app.use('/admin', authorize, adminRouter)
 
 // * socket io
 io.on("connection", (socket) => {
+  console.log('\n_____ ___ __ __ socket connection ______ ____ ____ ___')
   console.log(`user connected ${socket.id}`)
 
+  const userId = socket.handshake.query.userId
+  console.log("user socket userId = ", userId)
+  if (userId) onlineUsersMap.set(userId, socket.id)
+  socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
+  console.log("users map")
+  console.log(onlineUsersMap)
+
   chatSocketRouter(socket)
-  
-  socket.on('test-event', (data) => {
-    console.log('Received test-event:', data);
-    socket.emit('test-response', { message: 'Hello from server' });
-  });
 
   socket.on("disconnect", () => {
     console.log('user disconnected - ', socket.id)
+    onlineUsersMap.delete(userId)
+    socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
   })
+
 })
 
 PeerServerClient.getInstance()

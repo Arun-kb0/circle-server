@@ -1,10 +1,10 @@
-import IPost, { IPostExt } from '../interfaces/IPost'
-import IComment, { ICommentExt } from '../interfaces/IComment'
+import { IPostExt } from '../interfaces/IPost'
+import { ICommentExt } from '../interfaces/IComment'
 import ILike, { ILikeExt } from './ILike'
 
 interface IFeedRepo {
 
-  getSearchPostsCount(searchText: string): Promise<number>
+  getSearchPostsCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
   getPostCount(followeeIds?: string[]): Promise<number>
   getCommentCount(contentId: string): Promise<number>
   getUserCreatedPostCount(userId: string): Promise<number>
@@ -12,7 +12,7 @@ interface IFeedRepo {
   getGlobalPosts(limit: number, startIndex: number): Promise<IPostExt[]>
   getUserPosts(limit: number, startIndex: number): Promise<IPostExt[]>
   getPost(postId: string): Promise<IPostExt | null>
-  searchPost(searchText: string, limit: number, startIndex: number): Promise<IPostExt[] | null>
+  searchPost(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string,): Promise<IPostExt[] | null>
   getUserCreatedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[] | null>
 
   getComments(contentId: string, limit: number, startIndex: number): Promise<ICommentExt[]>

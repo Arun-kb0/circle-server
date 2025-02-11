@@ -78,9 +78,9 @@ class FeedController implements IFeedController {
 
   searchPost: SearchPostHandler = async (call, cb) => {
     try {
-      const { searchText, page } = call.request
-      validateRequest('page and searchText are required.', page, searchText)
-      const res = await this.feedService.searchPost(searchText as string, page as number)
+      const { searchText, page, startDate, endDate } = call.request
+      validateRequest('page is required.', page)
+      const res = await this.feedService.searchPost(searchText as string, page as number, startDate, endDate)
       validateResponse(res)
       const { posts, likes, ...rest } = res.data as PaginationPost<IPostExt[]>
       const response = { posts, likes, ...rest }

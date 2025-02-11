@@ -1,8 +1,9 @@
 import IPost from "../../interfaces/IPost";
 import IPostBaseRepo from "../../interfaces/IPostBaseRepo";
 import handleError from '../../util/handleError'
-import { Post } from '../../model/postModel'
-import { convertIPostDbToIPost, convertIPostToIPostDb, convertToObjectId } from '../../util/converter'
+import { IPostDb, Post } from '../../model/postModel'
+import { convertIPostDbToIPost, convertIPostToIPostDb, convertToObjectId, stringToDate } from '../../util/converter'
+import { FilterQuery } from "mongoose";
 
 class PostBaseRepo implements IPostBaseRepo {
 
@@ -16,14 +17,24 @@ class PostBaseRepo implements IPostBaseRepo {
     }
   }
 
-  async findPostCountBySearchText(searchText: string): Promise<number> {
+  async findPostCountBySearchText(searchText: string, startDate?: string, endDate?: string): Promise<number> {
     try {
-      const query = {
-        $or: [
-          { tags: { $elemMatch: { $regex: searchText, $options: "i" } } },
-          { desc: { $regex: searchText, $options: "i" } }
+      let query: FilterQuery<IPostDb> = {}
+      if (searchText.trim() !== '') {
+        query.$or = [
+          { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
+          { desc: { $regex: searchText, $options: 'i' } }
         ]
-      };
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = new Date(startDate);
+        }
+        if (endDate) {
+          query.createdAt.$lte = new Date(endDate);
+        }
+      }
       const count = await Post.countDocuments(query)
       return count
     } catch (error) {
@@ -74,15 +85,29 @@ class PostBaseRepo implements IPostBaseRepo {
     }
   }
 
-  async findPostsBySearchText(searchText: string, limit: number, startIndex: number): Promise<IPost[] | null> {
+  async findPostsBySearchText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IPost[] | null> {
     try {
-      const query = {
-        $or: [
-          { tags: { $elemMatch: { $regex: searchText, $options: "i" } } },
-          { desc: { $regex: searchText, $options: "i" } }
+      console.log('\n findPostsBySearchText')
+      console.log(startDate, endDate, searchText)
+      let query: FilterQuery<IPostDb> = {}
+      if (searchText.trim() !== '') {
+        query.$or = [
+          { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
+          { desc: { $regex: searchText, $options: 'i' } }
         ]
-      };
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = startDate
+        }
+        if (endDate) {
+          query.createdAt.$lte = endDate
+        }
+      }
+      console.log(query)
       const posts = await Post.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+      console.log('posts length', posts.length)
       const convertedPosts = posts.map(post => convertIPostDbToIPost(post))
       return convertedPosts
     } catch (error) {
@@ -102,6 +127,8 @@ class PostBaseRepo implements IPostBaseRepo {
       throw new Error(err.message)
     }
   }
+
+  
 
 
 }
