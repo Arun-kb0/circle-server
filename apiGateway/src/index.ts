@@ -55,10 +55,14 @@ io.on("connection", (socket) => {
 
   const userId = socket.handshake.query.userId
   console.log("user socket userId = ", userId)
+  if (typeof userId !== 'string') throw new Error('invalid userId on socket connection')
   if (userId) onlineUsersMap.set(userId, socket.id)
   socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
   console.log("users map")
   console.log(onlineUsersMap)
+  console.log('\n ****** ******** ********** ************ *******')
+
+  socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
 
   chatSocketRouter(socket)
 

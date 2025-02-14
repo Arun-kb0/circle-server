@@ -69,3 +69,20 @@ export type UserRoomNotificationType = {
   caller: string
   chatUser?: ChatUserType
 }
+
+export type CallUserEventDataType = {
+  signal: any
+  from: string
+  name: string
+  userToCall: string
+}
+
+export type AnswerCallEventDataType = {
+  to: string,
+  signal: any
+}
+
+export type IceCandidateDataType = {
+  candidate: RTCIceCandidateInit
+  to: string
+}

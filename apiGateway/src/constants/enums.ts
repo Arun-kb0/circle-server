@@ -4,7 +4,7 @@ export enum SocketEvents {
 
   // * user
   joinUserRoom = 'join-user-room',
-  userRoomNotification= 'user-room-notification',
+  userRoomNotification = 'user-room-notification',
 
   // * chat
   joinRoom = 'join-room',
@@ -16,5 +16,13 @@ export enum SocketEvents {
   callUserConnected = 'call-user-connected',
   signal = 'signal',
   callStarted = 'call-started',
-  callEnded = 'call-ended'
+
+  // * new call events
+  callEnded = 'call-ended',
+  callUser = 'call-user',
+  answerCall = 'answer-call',
+  callAccepted = 'call-accepted',
+  leaveCall = 'leave-call',
+  iceCandidate = 'ice-candidate',
+  me = "me"
 } 
