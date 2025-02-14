@@ -3,7 +3,7 @@ import ChatGrpcClient from '../config/ChatGrpcClient'
 import socketErrorHandler from '../middleware/socketErrorHandler'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
-import { JoinCallRoomDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
+import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
 import { SocketEvents } from "../constants/enums";
 
 const chatClient = ChatGrpcClient.getClient()
@@ -97,3 +97,47 @@ export const handleSignal = (socket: Socket, data: SignalDataType) => {
 }
 
 
+// * new socket events
+
+export const callUser = (socket: Socket, data: CallUserEventDataType) => {
+  try {
+    console.log('\n -- calling user')
+    const { signal, from, name, userToCall } = data
+    socket.to(userToCall).emit(SocketEvents.callUser, {
+      signal: signal,
+      from: from,
+      name: name
+    })
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+
+export const answerCall = (socket: Socket, data: AnswerCallEventDataType) => {
+  try {
+    console.log('\n -- call answered')
+    socket.to(data.to).emit(SocketEvents.callAccepted, data.signal)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const leaveCall = (socket: Socket) => {
+  try {
+    console.log('\n -- call ended')
+    socket.broadcast.emit(SocketEvents.callEnded)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const iceCandidate = (socket: Socket, data: IceCandidateDataType) => {
+  try {
+    console.log("\n -- ICE candidate exchange");
+    console.log(data.to)
+    socket.to(data.to).emit(SocketEvents.iceCandidate, data.candidate);
+  } catch (error) {
+    socketErrorHandler(error);
+  }
+}
