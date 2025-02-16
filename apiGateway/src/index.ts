@@ -19,6 +19,7 @@ import UseExpress from './config/UseExpress'
 import UseSocketIo from './config/UseSocketIo'
 import UseHttpServer from './config/UseHttpServer'
 import chatSocketRouter from './router/chatSocketRouter'
+import liveSocketRouter from './router/liveSocketRouter'
 import adminRouter from './router/admin/AdminRouter'
 import chatRouter from './router/chatRouter'
 import PeerServerClient from './config/peerServer'
@@ -65,6 +66,7 @@ io.on("connection", (socket) => {
   socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
 
   chatSocketRouter(socket)
+  liveSocketRouter(socket)
 
   socket.on("disconnect", () => {
     console.log('user disconnected - ', socket.id)

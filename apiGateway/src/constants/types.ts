@@ -86,3 +86,19 @@ export type IceCandidateDataType = {
   candidate: RTCIceCandidateInit
   to: string
 }
+
+
+export type LiveUserDataType = {
+  signal: any
+  from: string
+  name: string
+}
+
+export type LiveIceCandidateDataType = {
+  candidate: RTCIceCandidateInit
+}
+
+export type AnswerLiveDataType = {
+  signal: any
+  to: string
+}
