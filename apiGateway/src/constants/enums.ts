@@ -37,7 +37,10 @@ export enum SocketEvents {
   joinRoomLive = 'join-room-live',
   joinedRoomLive = 'joined-room-live',
   prepareLiveStream = 'prepare-live-stream',
-  liveUserDisconnect ='live-user-disconnect',
-  liveUserDisconnected ='live-user-disconnected',
+  liveUserDisconnect = 'live-user-disconnect',
+  liveUserDisconnected = 'live-user-disconnected',
+
+  liveSendMessage = 'live-send-message',
+  liveReceiveMessage = 'live-receive-message'
 
 } 

@@ -106,3 +106,16 @@ export type AnswerLiveDataType = {
   to: string
   streamerUserId:string
 }
+
+
+export type LiveMessageType = {
+  id: string
+  streamerId: string
+  authorId: string
+  authorName: string
+  authorImage?: string
+  message: string
+  createdAt: Date
+  updatedAt: Date
+}
+

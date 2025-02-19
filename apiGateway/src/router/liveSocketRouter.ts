@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { SocketEvents } from '../constants/enums'
-import { liveStreamStart, liveStreamEnd, liveIceCandidate, answerLiveStream, joinLiveRoom, prepareLiveStream, liveUserDisconnect } from '../controller/liveSocketController'
+import { liveStreamStart, liveStreamEnd, liveIceCandidate, answerLiveStream, joinLiveRoom, prepareLiveStream, liveUserDisconnect, liveSendMessage } from '../controller/liveSocketController'
 import { AnswerLiveDataType, LiveIceCandidateDataType, LiveUserDataType } from "../constants/types";
 
 const liveSocketRouter = (socket: Socket) => {
@@ -13,6 +13,8 @@ const liveSocketRouter = (socket: Socket) => {
   socket.on(SocketEvents.prepareLiveStream, (data) => prepareLiveStream(socket, data))
   socket.on(SocketEvents.joinRoomLive, (data) => joinLiveRoom(socket, data))
   socket.on(SocketEvents.liveUserDisconnect, (data) => liveUserDisconnect(socket, data))
+
+  socket.on(SocketEvents.liveSendMessage, (data) => liveSendMessage(socket, data))
 }
 
 export default liveSocketRouter

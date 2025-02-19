@@ -26,6 +26,7 @@ import PeerServerClient from './config/peerServer'
 import { Socket } from 'socket.io'
 import onlineUsersMap from './util/onlineUsersMap'
 import { SocketEvents } from './constants/enums'
+import socketLogger from './middleware/socketLogger'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -55,16 +56,15 @@ io.on("connection", (socket) => {
   console.log(`user connected ${socket.id}`)
 
   const userId = socket.handshake.query.userId
-  console.log("user socket userId = ", userId)
   if (typeof userId !== 'string') throw new Error('invalid userId on socket connection')
   if (userId) onlineUsersMap.set(userId, socket.id)
   socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
-  console.log("users map")
-  console.log(onlineUsersMap)
-  console.log('\n ****** ******** ********** ************ *******')
-
   socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
 
+  // * socket logger 
+  socket.use(socketLogger)
+
+  // * socket routes
   chatSocketRouter(socket)
   liveSocketRouter(socket)
 
