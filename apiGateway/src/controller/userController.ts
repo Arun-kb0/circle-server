@@ -4,6 +4,7 @@ import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
 import UserGrpcClient from '../config/UserGrpcClient'
 import { AuthRequest } from "../constants/types";
+import liveUsersMap from "../util/liveUsersMap";
 
 
 const client = UserGrpcClient.getClient()
@@ -166,3 +167,14 @@ export const getSuggestedPeople = (req: AuthRequest, res: Response, next: NextFu
   }
 }
 
+export const getLiveUsers = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    client.getMultipleUser({ userIds: [...liveUsersMap.keys()] }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get live users details success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

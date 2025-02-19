@@ -92,13 +92,17 @@ export type LiveUserDataType = {
   signal: any
   from: string
   name: string
+  userId: string
 }
 
 export type LiveIceCandidateDataType = {
-  candidate: RTCIceCandidateInit
+  candidate: RTCIceCandidateInit,
+  to: string
+  streamerUserId:string
 }
 
 export type AnswerLiveDataType = {
   signal: any
   to: string
+  streamerUserId:string
 }

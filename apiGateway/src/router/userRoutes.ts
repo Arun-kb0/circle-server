@@ -3,6 +3,7 @@ import {
   blockUser, followUser, getAllUsers,
   getFollowers,
   getFollowing,
+  getLiveUsers,
   getSuggestedPeople,
   getUser, unblockUser, unFollowUser, updateUser
 } from "../controller/UserController";
@@ -24,6 +25,7 @@ router.post('/unfollow', unFollowUser)
 router.get('/followers', getFollowers)
 router.get('/following', getFollowing)
 router.get('/suggested-people', getSuggestedPeople)
+router.get('/live-users', getLiveUsers )
 
 // * route with params
 router.get('/:userId', getUser)
