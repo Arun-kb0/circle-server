@@ -1,12 +1,6 @@
-import { IUser } from '../model/UserModel'
+import IUser from './IUser'
+import { FuncReturnType } from '../constants/svcTypes'
 
-type FuncReturnType<T> = Promise<{
-  err: null;
-  data: T;
-} | {
-  err: number;
-  data: null;
-}>
 
 interface IUserService {
   getAllUsers(page: number, startDate?: string, endDate?: string, searchText?: string): FuncReturnType<{ users: IUser[], numberOfPages: number, currentPage: number }>
@@ -15,6 +9,9 @@ interface IUserService {
 
   blockUser(userId: string): FuncReturnType<IUser>
   unBlockUser(userId: string): FuncReturnType<IUser>
+
+  getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
+
 }
 
 

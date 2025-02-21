@@ -1,0 +1,178 @@
+syntax = "proto3";
+package feed;
+
+
+service FeedService {
+  rpc GetGlobalFeed(GetGlobalFeedRequest) returns (GetGlobalFeedResponse) {};
+  rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse) {};
+  rpc GetPost(GetPostRequest) returns (GetPostResponse) {};
+  rpc SearchPost(SearchPostRequest) returns (SearchPostResponse) {};
+  rpc GetUserCreatedPosts(GetUserCreatedPostsRequest) returns (GetUserCreatedPostsResponse) {};
+  
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
+  rpc GetCommentChildren(GetCommentChildrenRequest) returns (GetCommentChildrenResponse) {};
+};
+
+
+
+message Image {
+  string url =1;
+  string name=2;
+};
+
+
+enum Media {
+  image=0;
+  video=1;
+  text=2;
+};
+
+enum Status {
+  active=0;
+  deleted=1;
+  blocked=2;
+};
+
+message CommentEnums {
+  enum Media {
+    text=0;
+    gif=1;
+  }
+  enum ContentType {
+    post=0;
+    story=1;
+    comment=2;
+  }
+};
+
+message Like {
+  string _id=1;
+  string authorId=2;
+  string contentId=3;
+  CommentEnums.ContentType contentType=4;
+  string updatedAt=5;
+  string createdAt=6;
+  string authorName=13;
+  string authorImage=14;
+};
+
+message Comment {
+  string _id =1;
+  string media=2;
+  CommentEnums.Media mediaType=3;
+  int32 likesCount=4;
+  int32 replayCount=5;
+  string parentId =6;
+  Status status=7;
+  string contentId=8;
+  CommentEnums.ContentType contentType=9; 
+  string createdAt=10;
+  string updatedAt=11;
+  string authorId=12;
+  string authorName=13;
+  string authorImage=14;
+  bool isLiked=16;
+};
+
+message Post  {
+  string _id=1;
+  string desc=2;
+  Media mediaType=3;
+  repeated string media=4;
+  repeated string tags=13;
+  string authorId=5;
+  Status status =6;
+  int32 likesCount=7;
+  int32 reportsCount=8;
+  int32 commentCount=9;
+  int32 shareCount=10;
+  string updatedAt=11;
+  string createdAt=12;
+  string authorName=14;
+  string authorImage=15;
+  bool isLiked=16;
+};
+
+
+
+message GetGlobalFeedRequest {
+  int32 page=1;
+};
+
+message GetGlobalFeedResponse {
+  repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+};
+
+message GetUserFeedRequest {
+  int32 page=1;
+};
+
+message GetUserFeedResponse {
+  repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+};
+
+message GetCommentRequest {
+  string contentId=1;
+  int32 page=2;
+};
+
+message GetCommentResponse {
+  repeated Comment comments =1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+};
+
+message GetPostRequest {
+  string postId=1;
+}
+
+message GetPostResponse {
+  Post post=1;
+  Like like=2;
+}
+
+message SearchPostRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message SearchPostResponse {
+  repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+}
+
+message GetUserCreatedPostsRequest {
+  string userId =1;
+  int32 page=2;
+}
+
+message GetUserCreatedPostsResponse {
+  repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+}
+
+message GetCommentChildrenRequest {
+  string parentId=1;
+  string contentId=2;
+  int32 page=3;
+}
+
+message GetCommentChildrenResponse {
+  repeated Comment comments =1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+}

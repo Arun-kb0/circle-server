@@ -35,7 +35,6 @@ const createDir = async () => {
   }
 }
 
-
 createDir()
 let logger: Logger
 if (process.env.NODE_ENV === 'prod') {

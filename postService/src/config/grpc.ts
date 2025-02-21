@@ -2,8 +2,8 @@ import * as grpc from '@grpc/grpc-js'
 
 const server = new grpc.Server()
 const PORT = process.env.POST_SERVICE_PORT || 50053
-const IP = process.env.POST_SERVICE_HOST || 'localhost'
-const IP_ADDRESS = `${IP}:${PORT}`
+const HOST = process.env.POST_SERVICE_HOST || 'localhost'
+const IP_ADDRESS = `${HOST}:${PORT}`
 
 export const startGrpcServer = () => {
   server.bindAsync(
@@ -14,7 +14,7 @@ export const startGrpcServer = () => {
         console.log(error)
         return
       }
-      console.log(`user service is running on ${IP_ADDRESS}`)
+      console.log(`post service is running on ${IP_ADDRESS}`)
     }
   )
 }

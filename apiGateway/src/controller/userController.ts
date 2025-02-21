@@ -1,24 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import * as grpc from '@grpc/grpc-js'
-import path from 'path'
-import getPackageDef from '../util/getPackageDef'
-import { ProtoGrpcType } from '../protos/user'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
+import UserGrpcClient from '../config/UserGrpcClient'
+import { AuthRequest } from "../constants/types";
+import liveUsersMap from "../util/liveUsersMap";
 
 
-const PROTO_PATH = path.join(__dirname, '..', 'protos', 'user.proto')
-const HOST = process.env.USER_SERVICE_HOST || 'localhost'
-const PORT = process.env.USER_SERVICE_PORT || 50052
-const IP_ADDRESS = `${HOST}:${PORT}`
-
-const packageDef = getPackageDef(PROTO_PATH)
-const userProto = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
-const client = new userProto.user.UserService(
-  IP_ADDRESS,
-  grpc.credentials.createInsecure()
-)
-
+const client = UserGrpcClient.getClient()
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -53,9 +42,10 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { userId, user } = req.body
+    const { user } = req.body
+    const { userId } = req
     if (!userId || !user) throw new HttpError(httpStatus.BAD_REQUEST, 'userId and user is required.')
     client.updateUser({ userId, user }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
@@ -95,3 +85,96 @@ export const unblockUser = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
+// * follow
+export const followUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { targetId } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || typeof targetId !== 'string') {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and targetId is required.')
+    }
+    client.followUser({ userId, targetId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg || !msg.user) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      res.status(httpStatus.OK).json({ message: "follow user success", user: msg.user })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const unFollowUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { targetId } = req.body
+    const { userId } = req
+    if (typeof userId !== 'string' || typeof targetId !== 'string') {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userId and targetId is required.')
+    }
+    client.unFollowUser({ userId, targetId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg || !msg.user) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      res.status(httpStatus.OK).json({ message: "unfollow user success", user: msg.user })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFollowers = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page, userId } = req.query
+    const currentUserId = req.userId
+    console.log('get followers')
+    console.log(userId, currentUserId)
+    if (typeof userId !== 'string' && isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required.')
+    client.getFollowers({ userId: String(userId), page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFollowing = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page, userId } = req.query
+    if (typeof userId !== 'string' && isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and userId are required.')
+    client.getFollowing({ userId: String(userId), page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get followers success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getSuggestedPeople = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page } = req.query
+    const { userId } = req
+    console.log('suggested people call ', userId, page)
+    if (isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page is required.')
+    client.getSuggestedPeople({ userId, page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get suggested people success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getLiveUsers = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    client.getMultipleUser({ userIds: [...liveUsersMap.keys()] }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
+      res.status(httpStatus.OK).json({ message: "get live users details success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

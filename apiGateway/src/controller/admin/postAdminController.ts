@@ -1,0 +1,59 @@
+import PostGrpcClient from '../../config/PostGrpcClient'
+import FeedGrpcClient from '../../config/FeedGrpcClient'
+import { NextFunction, Request, Response } from 'express'
+import HttpError from '../../util/HttpError'
+import httpStatus from '../../constants/httpStatus'
+import { AuthRequest } from '../../constants/types'
+
+const postClient = PostGrpcClient.getClient()
+const feedClient = FeedGrpcClient.getClient()
+
+
+export const searchPosts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { searchText, page, startDate, endDate } = req.query
+    if (typeof searchText !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'postId and page required')
+    if (typeof startDate !== 'string' || typeof endDate !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'startDate and end date are required')
+    feedClient.searchPost({ searchText, page: Number(page), startDate, endDate }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'search post failed'))
+      res.status(httpStatus.OK).json({ message: 'search post success', ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const updatePost = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { postId } = req.params
+    const { post } = req.body
+    const { userId } = req
+    console.log('update image controller')
+    console.log(req.params, userId)
+    if (!post || typeof postId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'post and postId required')
+    postClient.updatePost({ post, postId }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'post creation failed.'))
+      res.status(httpStatus.OK).json({ message: 'update post success', post: msg.post })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { postId } = req.params
+    if (!postId) throw new HttpError(httpStatus.BAD_REQUEST, 'postId is required')
+    postClient.deletePost({ postId }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'post deletion failed.'))
+      res.status(httpStatus.OK).json({ message: "delete post success", postId: msg.postId })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

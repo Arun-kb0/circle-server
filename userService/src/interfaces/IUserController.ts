@@ -9,6 +9,8 @@ import { UnblockUserRequest__Output } from "../proto/user/UnblockUserRequest";
 import { UnblockUserResponse } from "../proto/user/UnblockUserResponse";
 import { UpdateUserRequest__Output } from "../proto/user/UpdateUserRequest";
 import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
+import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
+import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
 
 
 interface IUserController {
@@ -17,6 +19,8 @@ interface IUserController {
   blockUser: grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
   unblockUser: grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
   updateUser: grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
+
+  getMultipleUsers: grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
 }
 
 export default IUserController

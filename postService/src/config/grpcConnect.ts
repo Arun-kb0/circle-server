@@ -4,9 +4,10 @@ import { getGrpcServer, startGrpcServer } from '../config/grpc'
 import { ProtoGrpcType } from '../proto/post'
 import path from 'path'
 import logInterceptor from '../util/logInterceptor'
+import { commentController, likeController, postController } from '../DI'
 
 
-const PROTO_FILE = path.resolve(__dirname, '../proto/user.proto')
+const PROTO_FILE = path.resolve(__dirname, '../proto/post.proto')
 const packageDef = protoLoader.loadSync(
   PROTO_FILE,
   {
@@ -27,7 +28,16 @@ const grpcConnect = () => {
   server.addService(
     userProto.post.PostService.service,
     {
-    //  ! add services here
+      createPost: logInterceptor(postController.createPost),
+      updatePost: logInterceptor(postController.updatePost),
+      deletePost: logInterceptor(postController.deletePost),
+
+      createComment: logInterceptor(commentController.createComment),
+      updateComment: logInterceptor(commentController.updateComment),
+      deleteComment: logInterceptor(commentController.deleteComment),
+
+      like: logInterceptor(likeController.like),
+      unLike: logInterceptor(likeController.unlike),
     }
   )
 

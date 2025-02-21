@@ -4,10 +4,11 @@ import httpStatus from '../constants/httpStatus'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string || 'secret'
 
+type VerifyReturnType = { status: httpStatus, msg: string, data?: { username: string, userId: string, role: 'admin' | 'user' } }
 
-const verifyToken = (token: string) => {
+const verifyToken = (token: string): VerifyReturnType => {
   try {
-    let res = { status: httpStatus.UNAUTHORIZED, msg: 'no token found' }
+    let res: VerifyReturnType = { status: httpStatus.UNAUTHORIZED, msg: 'no token found' }
     const verifyCallback: VerifyCallback = (status, decoded) => {
       console.log("api gate way")
       console.log(decoded)
@@ -23,9 +24,10 @@ const verifyToken = (token: string) => {
         res.msg = 'user not authorized'
         return
       }
-      const username = payload.username
+      const { username, userId, role } = payload
       res.status = httpStatus.OK
       res.msg = username
+      res.data = { userId, username, role }
     }
 
     jwt.verify(

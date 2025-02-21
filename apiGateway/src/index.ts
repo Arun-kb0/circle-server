@@ -10,11 +10,28 @@ import errorHandler from './middleware/errorHandler'
 import cookieParser from 'cookie-parser'
 import userRouter from './router/userRoutes'
 import postRouter from './router/postRouter'
+import commentRouter from './router/commentRouter'
 import { corsOptions } from './config/corsOptions'
 import authorize from './middleware/authorize'
+import likeRouter from './router/likeRouter'
+import feedRouter from './router/feedRouter'
+import UseExpress from './config/UseExpress'
+import UseSocketIo from './config/UseSocketIo'
+import UseHttpServer from './config/UseHttpServer'
+import chatSocketRouter from './router/chatSocketRouter'
+import liveSocketRouter from './router/liveSocketRouter'
+import adminRouter from './router/admin/AdminRouter'
+import chatRouter from './router/chatRouter'
+import PeerServerClient from './config/peerServer'
+import { Socket } from 'socket.io'
+import onlineUsersMap from './util/onlineUsersMap'
+import { SocketEvents } from './constants/enums'
+import socketLogger from './middleware/socketLogger'
 
-const app = express()
-const PORT  = 5001
+const app = UseExpress.getInstance()
+const server = UseHttpServer.getInstance()
+const io = UseSocketIo.getInstance()
+const PORT = 5001
 
 
 app.use(express.json())
@@ -26,12 +43,42 @@ app.use(cors(corsOptions))
 app.use('/auth', authRouter)
 app.use('/user', authorize, userRouter)
 app.use('/post', authorize, postRouter)
+app.use('/comment', authorize, commentRouter)
+app.use('/like', authorize, likeRouter)
+app.use('/feed', authorize, feedRouter)
+app.use('/chat', authorize, chatRouter)
 
+app.use('/admin', authorize, adminRouter)
 
-app.use('/test', (req, res) => {
-  console.log('home req')
-  res.status(200).json({ message: 'test call success' })
+// * socket io
+io.on("connection", (socket) => {
+  console.log('\n_____ ___ __ __ socket connection ______ ____ ____ ___')
+  console.log(`user connected ${socket.id}`)
+
+  const userId = socket.handshake.query.userId
+  if (typeof userId !== 'string') throw new Error('invalid userId on socket connection')
+  if (userId) onlineUsersMap.set(userId, socket.id)
+  socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
+  socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
+
+  // * socket logger 
+  socket.use(socketLogger)
+
+  // * socket routes
+  chatSocketRouter(socket)
+  liveSocketRouter(socket)
+
+  socket.on("disconnect", () => {
+    console.log('user disconnected - ', socket.id)
+    onlineUsersMap.delete(userId)
+    socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
+  })
+
 })
+
+PeerServerClient.getInstance()
+
+
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError(httpStatus.NOT_FOUND, 'route not found')
@@ -39,8 +86,7 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 app.use(errorHandler)
-
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`api gateway is running at ${PORT}`)
 })
 

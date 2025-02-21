@@ -3,7 +3,7 @@ import httpStatus from '../constants/httpStatus'
 
 export const grpcCodeToHttpStatus = (code: grpc.status): httpStatus => {
   let statusCode = httpStatus.INTERNAL_SERVER_ERROR
-
+  console.log("grpcCodeToHttpStatus code =", code)
   switch (code) {
     case grpc.status.UNKNOWN:
       statusCode = httpStatus.INTERNAL_SERVER_ERROR

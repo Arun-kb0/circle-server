@@ -1,4 +1,4 @@
-import { IUser } from '../model/UserModel'
+import IUser from '../interfaces/IUser'
 import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
 import IUserService from '../interfaces/IUserService'
@@ -9,30 +9,25 @@ const LIMIT = 5
 export class UserService implements IUserService {
 
   constructor(
-    private userRepo: IUserRepo
+    private userRepo: IUserRepo,
   ) { }
+
+  async getMultipleUsers(userIds: string[]) {
+    try {
+      const user = await this.userRepo.getMultipleUsers(userIds)
+      return { err: null, data: user }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
 
   async getAllUsers(page: number, startDate?: string, endDate?: string, searchText = '') {
     try {
       const startIndex = (page - 1) * LIMIT
       const total = await this.userRepo.countDocs()
       const numberOfPages = Math.ceil(total / LIMIT)
-
-      let start: Date
-      let end: Date = new Date()
-      let users: IUser[]
-      if (startDate) {
-        start = new Date(startDate)
-        if (endDate) {
-          end = new Date(endDate)
-        }
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-          return { err: httpStatus.BAD_REQUEST, errMsg: 'dates are not valid', data: null }
-        }
-        users = await this.userRepo.findAll(LIMIT, startIndex, start, end, searchText)
-      } else {
-        users = await this.userRepo.findAll(LIMIT, startIndex)
-      }
+      const users = await this.userRepo.findAll(LIMIT, startIndex, startDate, endDate, searchText)
       const response = {
         users: users,
         numberOfPages,
