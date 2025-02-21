@@ -107,3 +107,19 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
     next(error)
   }
 }
+
+export const getChildComments = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { contentId, parentId, page } = req.query
+    if ((typeof parentId !== 'string' || typeof parentId === undefined)|| typeof contentId !== 'string' || isNaN(Number(page))) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'ContentId ,parentId and page required')
+    }
+    client.getCommentChildren({ contentId, parentId, page: Number(page) }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Get child comments failed'))
+      res.status(httpStatus.OK).json({ message: 'Get child comments success', ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

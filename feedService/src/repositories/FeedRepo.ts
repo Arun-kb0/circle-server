@@ -43,6 +43,13 @@ class FeedRepo implements IFeedRepo {
     return count
   }
 
+  async getCommentChildrenCount(contentId: string, parentId?: string): Promise<number> {
+    const count = this.commentBaseRepo.findCommentsByParentIdCount(contentId, parentId)
+    return count
+  }
+
+
+
   async getPostCount(followeeIds?: string[]): Promise<number> {
     if (followeeIds) {
       const count = await this.postBaseRepo.findPostCountByFolloweeIds(followeeIds)
@@ -90,6 +97,13 @@ class FeedRepo implements IFeedRepo {
     return updatedComments
   }
 
+  async getCommentChildren(contentId: string, limit: number, startIndex: number, parentId?: string): Promise<ICommentExt[]> {
+    const comments = await this.commentBaseRepo.findCommentsByParentId(contentId, limit, startIndex, parentId)
+    if (!comments) return []
+    const updatedComments = await addUserToComments(comments)
+    return updatedComments
+  }
+
   async getLikes(contentIds: string[], contentType: ILike['contentType']): Promise<ILike[]> {
     const likes = await this.likeBaseRepo.findLIkesByContentIdsAndType(contentIds, contentType)
     const updatedLikes = await addUserToLikes(likes)
@@ -98,7 +112,7 @@ class FeedRepo implements IFeedRepo {
 
   async getLike(contentId: string, contentType: ILike['contentType']): Promise<ILike | null> {
     const like = await this.likeBaseRepo.findLIkeByContentIdAndType(contentId, contentType)
-    if(!like) return null
+    if (!like) return null
     const updatedLikes = await addUserToLike(like)
     return updatedLikes
   }

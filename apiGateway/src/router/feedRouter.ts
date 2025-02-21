@@ -1,5 +1,6 @@
 import express from 'express'
 import {
+  getChildComments,
   getComments,
   getGlobalFeed, getPost, getPostLikedUsers,
   getUseCreatedPosts, getUserFeed,
@@ -16,7 +17,8 @@ router.get('/post', getPost)
 router.get('/search-post', searchPosts)
 router.get('/user-created-posts', getUseCreatedPosts)
 
-router.get('/comment', getComments)
+// router.get('/comment', getComments)
+
 router.get('/liked-users', getPostLikedUsers)
 
 

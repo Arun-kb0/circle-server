@@ -10,6 +10,7 @@ service FeedService {
   rpc GetUserCreatedPosts(GetUserCreatedPostsRequest) returns (GetUserCreatedPostsResponse) {};
   
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
+  rpc GetCommentChildren(GetCommentChildrenRequest) returns (GetCommentChildrenResponse) {};
 };
 
 
@@ -158,6 +159,19 @@ message GetUserCreatedPostsRequest {
 
 message GetUserCreatedPostsResponse {
   repeated Post posts=1;
+  int32 currentPage =2;
+  int32 numberOfPages=3;
+  repeated Like likes=4;
+}
+
+message GetCommentChildrenRequest {
+  string parentId=1;
+  string contentId=2;
+  int32 page=3;
+}
+
+message GetCommentChildrenResponse {
+  repeated Comment comments =1;
   int32 currentPage =2;
   int32 numberOfPages=3;
   repeated Like likes=4;

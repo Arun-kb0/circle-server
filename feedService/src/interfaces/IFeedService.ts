@@ -13,6 +13,7 @@ interface IFeedService {
   searchPost(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationPost<IPostExt[] | null>>
 
   getComments(contentId: string, page: number): SvcReturnType<PaginationComment<ICommentExt[]>>
+  getCommentChildren(contentId: string, page: number, parentId?: string): SvcReturnType<PaginationComment<ICommentExt[]>>
 }
 
 export default IFeedService

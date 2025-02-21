@@ -148,6 +148,28 @@ class FeedService implements IFeedService {
     }
   }
 
+  async getCommentChildren(contentId: string, page: number, parentId?: string): SvcReturnType<PaginationComment<ICommentExt[]>> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.feedRepo.getCommentChildrenCount(contentId, parentId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+
+      const comments = await this.feedRepo.getCommentChildren(contentId,  LIMIT, startIndex,parentId)
+      const commentIds = comments.map(comment => comment._id)
+      const likes = await this.feedRepo.getLikes(commentIds, 'comment')
+      const data = {
+        comments,
+        numberOfPages,
+        currentPage: page,
+        likes
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
 }
 
 export default FeedService

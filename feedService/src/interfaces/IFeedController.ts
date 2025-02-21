@@ -11,12 +11,15 @@ import { SearchPostRequest__Output } from '../proto/feed/SearchPostRequest'
 import { SearchPostResponse } from '../proto/feed/SearchPostResponse'
 import { GetUserCreatedPostsRequest__Output } from '../proto/feed/GetUserCreatedPostsRequest'
 import { GetUserCreatedPostsResponse } from '../proto/feed/GetUserCreatedPostsResponse'
+import { GetCommentChildrenRequest__Output } from '../proto/feed/GetCommentChildrenRequest'
+import { GetCommentChildrenResponse } from '../proto/feed/GetCommentChildrenResponse'
 
 export type GetGlobalFeedHandler = grpc.handleUnaryCall<GetGlobalFeedRequest__Output, GetGlobalFeedResponse>
 export type GetUserFeedHandler = grpc.handleUnaryCall<GetUserFeedRequest__Output, GetUserFeedResponse>
 export type GetPostHandler = grpc.handleUnaryCall<GetPostRequest__Output, GetPostResponse>
 export type SearchPostHandler = grpc.handleUnaryCall<SearchPostRequest__Output, SearchPostResponse>
 export type GetCommentsHandler = grpc.handleUnaryCall<GetCommentRequest__Output, GetCommentResponse>
+export type GetCommentChildrenHandler = grpc.handleUnaryCall<GetCommentChildrenRequest__Output, GetCommentChildrenResponse>
 export type GetUserCreatedPostsHandler = grpc.handleUnaryCall<GetUserCreatedPostsRequest__Output, GetUserCreatedPostsResponse>
 
 
@@ -29,6 +32,7 @@ interface IFeedController {
   getUserCreatedPosts: GetUserCreatedPostsHandler
 
   getComments: GetCommentsHandler
+  getCommentChildren: GetCommentChildrenHandler
 }
 
 export default IFeedController

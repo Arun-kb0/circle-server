@@ -1,6 +1,7 @@
 import { PaginationComment, PaginationPost } from "../constants/SvcTypes";
 import { ICommentExt } from "../interfaces/IComment";
 import IFeedController, {
+  GetCommentChildrenHandler,
   GetCommentsHandler, GetGlobalFeedHandler,
   GetPostHandler, GetUserCreatedPostsHandler, GetUserFeedHandler, SearchPostHandler
 } from "../interfaces/IFeedController";
@@ -96,6 +97,21 @@ class FeedController implements IFeedController {
       const { contentId, page } = call.request
       validateRequest('contentId and page are required.', contentId, page)
       const res = await this.feedService.getComments(contentId as string, page as number)
+      validateResponse(res)
+      const { comments, likes, ...rest } = res.data as PaginationComment<ICommentExt[]>
+      const response = { comments, likes, ...rest }
+      cb(null, response)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getCommentChildren: GetCommentChildrenHandler = async (call, cb) => {
+    try {
+      const { contentId, parentId, page } = call.request
+      validateRequest('contentId, parentId and page are required.', contentId, page)
+      const res = await this.feedService.getCommentChildren(contentId as string, page as number,parentId)
       validateResponse(res)
       const { comments, likes, ...rest } = res.data as PaginationComment<ICommentExt[]>
       const response = { comments, likes, ...rest }

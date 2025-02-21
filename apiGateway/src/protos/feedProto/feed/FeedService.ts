@@ -2,6 +2,8 @@
 
 import type * as grpc from '@grpc/grpc-js'
 import type { MethodDefinition } from '@grpc/proto-loader'
+import type { GetCommentChildrenRequest as _feed_GetCommentChildrenRequest, GetCommentChildrenRequest__Output as _feed_GetCommentChildrenRequest__Output } from '../feed/GetCommentChildrenRequest';
+import type { GetCommentChildrenResponse as _feed_GetCommentChildrenResponse, GetCommentChildrenResponse__Output as _feed_GetCommentChildrenResponse__Output } from '../feed/GetCommentChildrenResponse';
 import type { GetCommentRequest as _feed_GetCommentRequest, GetCommentRequest__Output as _feed_GetCommentRequest__Output } from '../feed/GetCommentRequest';
 import type { GetCommentResponse as _feed_GetCommentResponse, GetCommentResponse__Output as _feed_GetCommentResponse__Output } from '../feed/GetCommentResponse';
 import type { GetGlobalFeedRequest as _feed_GetGlobalFeedRequest, GetGlobalFeedRequest__Output as _feed_GetGlobalFeedRequest__Output } from '../feed/GetGlobalFeedRequest';
@@ -24,6 +26,15 @@ export interface FeedServiceClient extends grpc.Client {
   getComment(argument: _feed_GetCommentRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
   getComment(argument: _feed_GetCommentRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
   getComment(argument: _feed_GetCommentRequest, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
+  
+  GetCommentChildren(argument: _feed_GetCommentChildrenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  GetCommentChildren(argument: _feed_GetCommentChildrenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  GetCommentChildren(argument: _feed_GetCommentChildrenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  GetCommentChildren(argument: _feed_GetCommentChildrenRequest, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  getCommentChildren(argument: _feed_GetCommentChildrenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  getCommentChildren(argument: _feed_GetCommentChildrenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  getCommentChildren(argument: _feed_GetCommentChildrenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
+  getCommentChildren(argument: _feed_GetCommentChildrenRequest, callback: grpc.requestCallback<_feed_GetCommentChildrenResponse__Output>): grpc.ClientUnaryCall;
   
   GetGlobalFeed(argument: _feed_GetGlobalFeedRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
   GetGlobalFeed(argument: _feed_GetGlobalFeedRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetGlobalFeedResponse__Output>): grpc.ClientUnaryCall;
@@ -75,6 +86,8 @@ export interface FeedServiceClient extends grpc.Client {
 export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
   GetComment: grpc.handleUnaryCall<_feed_GetCommentRequest__Output, _feed_GetCommentResponse>;
   
+  GetCommentChildren: grpc.handleUnaryCall<_feed_GetCommentChildrenRequest__Output, _feed_GetCommentChildrenResponse>;
+  
   GetGlobalFeed: grpc.handleUnaryCall<_feed_GetGlobalFeedRequest__Output, _feed_GetGlobalFeedResponse>;
   
   GetPost: grpc.handleUnaryCall<_feed_GetPostRequest__Output, _feed_GetPostResponse>;
@@ -89,6 +102,7 @@ export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
 
 export interface FeedServiceDefinition extends grpc.ServiceDefinition {
   GetComment: MethodDefinition<_feed_GetCommentRequest, _feed_GetCommentResponse, _feed_GetCommentRequest__Output, _feed_GetCommentResponse__Output>
+  GetCommentChildren: MethodDefinition<_feed_GetCommentChildrenRequest, _feed_GetCommentChildrenResponse, _feed_GetCommentChildrenRequest__Output, _feed_GetCommentChildrenResponse__Output>
   GetGlobalFeed: MethodDefinition<_feed_GetGlobalFeedRequest, _feed_GetGlobalFeedResponse, _feed_GetGlobalFeedRequest__Output, _feed_GetGlobalFeedResponse__Output>
   GetPost: MethodDefinition<_feed_GetPostRequest, _feed_GetPostResponse, _feed_GetPostRequest__Output, _feed_GetPostResponse__Output>
   GetUserCreatedPosts: MethodDefinition<_feed_GetUserCreatedPostsRequest, _feed_GetUserCreatedPostsResponse, _feed_GetUserCreatedPostsRequest__Output, _feed_GetUserCreatedPostsResponse__Output>

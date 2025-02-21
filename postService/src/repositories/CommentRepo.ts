@@ -18,7 +18,11 @@ class CommentRepo implements ICommentRepo {
     const newComment = await this.commentBaseRepo.createComment(comment)
     if (!newComment) return null
     const updatedComment = await addUserToComment(newComment)
-    this.handleCount(newComment.contentType, newComment.contentId, true)
+    if (comment.parentId) {
+      this.commentBaseRepo.handleCommentReplayCount(comment.parentId, true)
+    } else {
+      this.handleCount(newComment.contentType, newComment.contentId, true)
+    }
     return updatedComment
   }
 
@@ -30,9 +34,12 @@ class CommentRepo implements ICommentRepo {
   }
 
   async delete(commentId: string): Promise<{ commentId: string; } | null> {
-   const deleteComment = await this.commentBaseRepo.deleteComment(commentId)
+    const deleteComment = await this.commentBaseRepo.deleteComment(commentId)
     if (!deleteComment) return null
-    this.handleCount(deleteComment.contentType, deleteComment.contentId, false)
+    if (!deleteComment.parentId) {
+      console.log('parent comment')
+      this.handleCount(deleteComment.contentType, deleteComment.contentId, false)
+    }
     return { commentId: deleteComment._id }
   }
 
