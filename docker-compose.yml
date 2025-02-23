@@ -12,7 +12,7 @@ services:
       - auth-service
       - user-service
       - post-cache
-      - post-rabbitmq
+      - rabbitmq
       - feed-service
       # - post-service
     environment:
@@ -75,9 +75,9 @@ services:
       - USER_DB_URI=${USER_DB_URI}
       - LOGGER_DB=${USER_LOGGER_DB}
 
-  post-rabbitmq:
+  rabbitmq:
     image: rabbitmq:3-management
-    container_name: post-rabbitmq
+    container_name: rabbitmq
     ports:
       - "5672:5672" # RabbitMQ broker port
       - "15672:15672" # Management UI port
