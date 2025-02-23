@@ -109,6 +109,8 @@ class ChatRepo implements IChatRepo {
   // * base chatRoom calls
   async createChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
     try {
+      const existingRoom = await this.chatRoomBaseRepo.findRoomById(chatRoom.roomId as string)
+      if(existingRoom) return existingRoom
       const newRoom = await this.chatRoomBaseRepo.createRoom(chatRoom)
       return newRoom
     } catch (error) {

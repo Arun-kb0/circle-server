@@ -17,7 +17,5 @@ router.route('/chat-room')
   .get(findChatRoom)
   .delete(deleteChatRoom)
 
-router.get('/call-room/')
-
 
 export default router
