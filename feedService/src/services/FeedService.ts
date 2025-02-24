@@ -6,6 +6,7 @@ import IPost, { IPostExt } from '../interfaces/IPost';
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
 import ILike from '../interfaces/ILike';
+import { validateResponse } from '../util/validations';
 
 const LIMIT = Number(process.env.PAGINATION_LIMIT) || 10
 
@@ -14,6 +15,56 @@ class FeedService implements IFeedService {
   constructor(
     private feedRepo: IFeedRepo
   ) { }
+  
+  async getFeedCounts(): SvcReturnType<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }> {
+    try {
+      const { totalPostsCount, totalCommentsCount, totalLikesCount } = await this.feedRepo.getFeedCounts()
+      return { err: null, data: { totalPostsCount, totalCommentsCount, totalLikesCount } }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async popularPosts(limit: number): SvcReturnType<IPostExt[] | null> {
+    try {
+      const posts = await this.feedRepo.popularPosts(limit)
+      return { err: null, data: posts }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async totalPostsCount(): SvcReturnType<number> {
+    try {
+      const count = await this.feedRepo.totalPostsCount()
+      return { err: null, data: count }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async totalCommentsCount(): SvcReturnType<number> {
+    try {
+      const count = await this.feedRepo.totalCommentsCount()
+      return { err: null, data: count }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async totalLikesCount(): SvcReturnType<number> {
+    try {
+      const count = await this.feedRepo.totalLikesCount()
+      return { err: null, data: count }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
 
   async getUserCreatedPosts(userId: string, page: number): SvcReturnType<PaginationPost<IPostExt[]>> {
     try {
@@ -154,7 +205,7 @@ class FeedService implements IFeedService {
       const total = await this.feedRepo.getCommentChildrenCount(contentId, parentId)
       const numberOfPages = Math.ceil(total / LIMIT)
 
-      const comments = await this.feedRepo.getCommentChildren(contentId,  LIMIT, startIndex,parentId)
+      const comments = await this.feedRepo.getCommentChildren(contentId, LIMIT, startIndex, parentId)
       const commentIds = comments.map(comment => comment._id)
       const likes = await this.feedRepo.getLikes(commentIds, 'comment')
       const data = {

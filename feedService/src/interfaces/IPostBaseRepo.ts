@@ -10,6 +10,8 @@ interface IPostBaseRepo {
   findPostByPostId(postId: string): Promise<IPost | null>
   findPostsBySearchText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IPost[] | null>
   findPostsByAuthorId(userId: string, limit: number, startIndex: number): Promise<IPost[] | null>
+
+  findPopularPosts(limit: number): Promise<IPost[] | null>
 }
 
 export default IPostBaseRepo

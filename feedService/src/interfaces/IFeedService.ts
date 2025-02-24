@@ -14,6 +14,12 @@ interface IFeedService {
 
   getComments(contentId: string, page: number): SvcReturnType<PaginationComment<ICommentExt[]>>
   getCommentChildren(contentId: string, page: number, parentId?: string): SvcReturnType<PaginationComment<ICommentExt[]>>
+
+  popularPosts(limit: number): SvcReturnType<IPostExt[] | null>
+  totalPostsCount(): SvcReturnType<number>
+  totalCommentsCount(): SvcReturnType<number>
+  totalLikesCount(): SvcReturnType<number>
+  getFeedCounts(): SvcReturnType<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }>
 }
 
 export default IFeedService

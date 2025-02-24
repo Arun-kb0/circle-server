@@ -57,3 +57,30 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
     next(error)
   }
 }
+
+export const getPopularPosts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { limit } = req.query
+    console.log('limit', limit)
+    if (isNaN(Number(limit))) throw new HttpError(httpStatus.BAD_REQUEST, 'limit must be a number')
+    feedClient.getPopularPosts({ limit: Number(limit) }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get popular posts failed.'))
+      res.status(httpStatus.OK).json({ message: "get popular posts success", posts: msg.posts })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFeedCounts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    feedClient.getFeedCounts({}, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get feed counts failed.'))
+      res.status(httpStatus.OK).json({ message: "get feed counts success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

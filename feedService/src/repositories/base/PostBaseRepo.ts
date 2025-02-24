@@ -2,10 +2,21 @@ import IPost from "../../interfaces/IPost";
 import IPostBaseRepo from "../../interfaces/IPostBaseRepo";
 import handleError from '../../util/handleError'
 import { IPostDb, Post } from '../../model/postModel'
-import { convertIPostDbToIPost, convertIPostToIPostDb, convertToObjectId, stringToDate } from '../../util/converter'
+import { convertIPostDbToIPost, convertToObjectId } from '../../util/converter'
 import { FilterQuery } from "mongoose";
 
 class PostBaseRepo implements IPostBaseRepo {
+  
+  async findPopularPosts(limit: number = 10): Promise<IPost[] | null> {
+    try {
+      const posts = await Post.find().sort({ likesCount: -1 }).limit(limit)
+      const convertedPosts = posts.map(post => convertIPostDbToIPost(post))
+      return convertedPosts
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async findPostCount(): Promise<number> {
     try {

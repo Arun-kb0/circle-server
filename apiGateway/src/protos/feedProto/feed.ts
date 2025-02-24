@@ -16,10 +16,20 @@ export interface ProtoGrpcType {
     GetCommentChildrenResponse: MessageTypeDefinition
     GetCommentRequest: MessageTypeDefinition
     GetCommentResponse: MessageTypeDefinition
+    GetFeedCountsRequest: MessageTypeDefinition
+    GetFeedCountsResponse: MessageTypeDefinition
     GetGlobalFeedRequest: MessageTypeDefinition
     GetGlobalFeedResponse: MessageTypeDefinition
+    GetPopularPostsRequest: MessageTypeDefinition
+    GetPopularPostsResponse: MessageTypeDefinition
     GetPostRequest: MessageTypeDefinition
     GetPostResponse: MessageTypeDefinition
+    GetTotalCommentsCountRequest: MessageTypeDefinition
+    GetTotalCommentsCountResponse: MessageTypeDefinition
+    GetTotalLikesCountRequest: MessageTypeDefinition
+    GetTotalLikesCountResponse: MessageTypeDefinition
+    GetTotalPostsCountRequest: MessageTypeDefinition
+    GetTotalPostsCountResponse: MessageTypeDefinition
     GetUserCreatedPostsRequest: MessageTypeDefinition
     GetUserCreatedPostsResponse: MessageTypeDefinition
     GetUserFeedRequest: MessageTypeDefinition

@@ -11,7 +11,7 @@ class UserBaseRepo implements IUserBaseRepo {
 
   async countUsersByDate(startDate: string, endDate: string): Promise<UsersCountType> {
     try {
-      const match: FilterQuery<IUserDb> = {};
+      const match: FilterQuery<IUserDb> = { role: 'user' };
       if (startDate) match.createdAt = { $gte: stringToDate(startDate) };
       if (endDate) match.createdAt = { ...match.createdAt, $lte: stringToDate(endDate) };
       const aggregation = [

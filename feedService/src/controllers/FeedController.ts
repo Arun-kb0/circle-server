@@ -1,9 +1,12 @@
 import { PaginationComment, PaginationPost } from "../constants/SvcTypes";
 import { ICommentExt } from "../interfaces/IComment";
 import IFeedController, {
-  GetCommentChildrenHandler,
-  GetCommentsHandler, GetGlobalFeedHandler,
-  GetPostHandler, GetUserCreatedPostsHandler, GetUserFeedHandler, SearchPostHandler
+  GetCommentsHandler, GetGlobalFeedHandler, GetPopularPostsHandler,
+  GetPostHandler, GetTotalCommentsCountHandler,
+  GetTotalLikesCountHandler, GetCommentChildrenHandler,
+  GetTotalPostsCountHandler, GetUserCreatedPostsHandler, GetUserFeedHandler,
+  SearchPostHandler,
+  GetFeedCountsHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -17,6 +20,66 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getFeedCounts: GetFeedCountsHandler = async (call, cb) => {
+    try {
+      const res = await this.feedService.getFeedCounts()
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getPopularPosts: GetPopularPostsHandler = async (call, cb) => {
+    try {
+      const { limit } = call.request
+      validateRequest('page is required.', limit)
+      const res = await this.feedService.popularPosts(limit as number)
+      validateResponse(res)
+      cb(null, { posts: res.data as IPostExt[] })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getTotalPostsCount: GetTotalPostsCountHandler = async (call, cb) => {
+    try {
+      const { } = call.request
+      const res = await this.feedService.totalPostsCount()
+      validateResponse(res)
+      cb(null, { totalPostsCount: res.data as number })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getTotalCommentsCount: GetTotalCommentsCountHandler = async (call, cb) => {
+    try {
+      const { } = call.request
+      const res = await this.feedService.totalCommentsCount()
+      validateResponse(res)
+      cb(null, { totalCommentsCount: res.data as number })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getTotalLikesCount: GetTotalLikesCountHandler = async (call, cb) => {
+    try {
+      const { } = call.request
+      const res = await this.feedService.totalLikesCount()
+      validateResponse(res)
+      cb(null, { totalLikesCount: res.data as number })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getUserCreatedPosts: GetUserCreatedPostsHandler = async (call, cb) => {
     try {
@@ -111,7 +174,7 @@ class FeedController implements IFeedController {
     try {
       const { contentId, parentId, page } = call.request
       validateRequest('contentId, parentId and page are required.', contentId, page)
-      const res = await this.feedService.getCommentChildren(contentId as string, page as number,parentId)
+      const res = await this.feedService.getCommentChildren(contentId as string, page as number, parentId)
       validateResponse(res)
       const { comments, likes, ...rest } = res.data as PaginationComment<ICommentExt[]>
       const response = { comments, likes, ...rest }
