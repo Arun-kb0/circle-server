@@ -1,6 +1,6 @@
 import express from 'express'
 import { updatePost, searchPosts, deletePost } from '../../controller/admin/postAdminController'
-import { getAllUsers, blockUser, unblockUser } from '../../controller/admin/userAdminController'
+import { getAllUsers, blockUser, unblockUser, countUsers } from '../../controller/admin/userAdminController'
 import authorizeAdmin from '../../middleware/authorizeAdmin'
 
 const router = express.Router()
@@ -12,6 +12,7 @@ router.use(authorizeAdmin)
 router.get('/user/all', getAllUsers)
 router.post('/user/block', blockUser)
 router.post('/user/unblock', unblockUser)
+router.get('/user/count', countUsers)
 
 // * post
 router.get('/post/search-post', searchPosts)

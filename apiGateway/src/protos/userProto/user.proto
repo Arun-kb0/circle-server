@@ -19,7 +19,8 @@ service UserService {
 
   rpc FollowUser(FollowUserRequest) returns (FollowUserResponse) {};
   rpc UnFollowUser(UnFollowUserRequest) returns (UnFollowUserResponse) {};
-
+  
+  rpc UsersCount(UsersCountRequest) returns (UsersCountResponse) {};
 }
 
 message Image {
@@ -170,4 +171,16 @@ message UnFollowUserRequest {
 
 message UnFollowUserResponse {
   User user =1;
+}
+
+message UsersCountRequest {
+  string startDate=1;
+  string endDate=2;
+}
+
+message UsersCountResponse{
+  int32 usersCount =1;
+  int32 femaleUsersCount=2;
+  int32 maleUsersCount=3;
+  int32 otherUsersCount=4;
 }

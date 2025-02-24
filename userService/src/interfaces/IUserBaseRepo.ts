@@ -1,4 +1,5 @@
 import IUser from './IUser'
+import { UsersCountType } from '../constants/types'
 
 interface IUserBaseRepo {
   countDocs(): Promise<number>
@@ -11,6 +12,8 @@ interface IUserBaseRepo {
   update(userId: string, user: Partial<IUser>): Promise<IUser | null>
   delete(userId: string): Promise<string>
   updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null>
+
+  countUsersByDate(startDate?: string, endDate?: string): Promise<UsersCountType>
 }
 
 export default IUserBaseRepo

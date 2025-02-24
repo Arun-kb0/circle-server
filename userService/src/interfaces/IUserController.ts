@@ -11,6 +11,8 @@ import { UpdateUserRequest__Output } from "../proto/user/UpdateUserRequest";
 import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
 import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
 import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
+import { UsersCountRequest__Output } from '../proto/user/UsersCountRequest';
+import { UsersCountResponse } from '../proto/user/UsersCountResponse';
 
 
 interface IUserController {
@@ -21,6 +23,7 @@ interface IUserController {
   updateUser: grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
 
   getMultipleUsers: grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
+  usersCount: grpc.handleUnaryCall<UsersCountRequest__Output, UsersCountResponse>;
 }
 
 export default IUserController

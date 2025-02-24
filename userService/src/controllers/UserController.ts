@@ -19,6 +19,8 @@ import IUserController from '../interfaces/IUserController'
 import IUserService from "../interfaces/IUserService";
 import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
 import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
+import { UsersCountRequest__Output } from '../proto/user/UsersCountRequest';
+import { UsersCountResponse } from '../proto/user/UsersCountResponse';
 
 
 type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
@@ -27,12 +29,25 @@ type BlockUserHandler = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUser
 type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
 type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
 type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
+type CountUsersHandler = grpc.handleUnaryCall<UsersCountRequest__Output, UsersCountResponse>;
 
 export class UserController implements IUserController {
 
   constructor(
     private userService: IUserService
   ) { }
+
+  usersCount: CountUsersHandler = async (call, cb) => {
+    try {
+      const { startDate, endDate } = call.request
+      const res = await this.userService.countUsers(startDate, endDate)
+      validateResponse(res)
+      cb(null, res?.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   getMultipleUsers: GetMultipleUsersHandler = async (call, cb) => {
     try {

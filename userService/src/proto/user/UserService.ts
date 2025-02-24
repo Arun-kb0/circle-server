@@ -26,6 +26,8 @@ import type { UnblockUserRequest as _user_UnblockUserRequest, UnblockUserRequest
 import type { UnblockUserResponse as _user_UnblockUserResponse, UnblockUserResponse__Output as _user_UnblockUserResponse__Output } from '../user/UnblockUserResponse';
 import type { UpdateUserRequest as _user_UpdateUserRequest, UpdateUserRequest__Output as _user_UpdateUserRequest__Output } from '../user/UpdateUserRequest';
 import type { UpdateUserResponse as _user_UpdateUserResponse, UpdateUserResponse__Output as _user_UpdateUserResponse__Output } from '../user/UpdateUserResponse';
+import type { UsersCountRequest as _user_UsersCountRequest, UsersCountRequest__Output as _user_UsersCountRequest__Output } from '../user/UsersCountRequest';
+import type { UsersCountResponse as _user_UsersCountResponse, UsersCountResponse__Output as _user_UsersCountResponse__Output } from '../user/UsersCountResponse';
 
 export interface UserServiceClient extends grpc.Client {
   BlockUser(argument: _user_BlockUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_BlockUserResponse__Output>): grpc.ClientUnaryCall;
@@ -136,6 +138,15 @@ export interface UserServiceClient extends grpc.Client {
   updateUser(argument: _user_UpdateUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UpdateUserResponse__Output>): grpc.ClientUnaryCall;
   updateUser(argument: _user_UpdateUserRequest, callback: grpc.requestCallback<_user_UpdateUserResponse__Output>): grpc.ClientUnaryCall;
   
+  UsersCount(argument: _user_UsersCountRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  UsersCount(argument: _user_UsersCountRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  UsersCount(argument: _user_UsersCountRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  UsersCount(argument: _user_UsersCountRequest, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  usersCount(argument: _user_UsersCountRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  usersCount(argument: _user_UsersCountRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  usersCount(argument: _user_UsersCountRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  usersCount(argument: _user_UsersCountRequest, callback: grpc.requestCallback<_user_UsersCountResponse__Output>): grpc.ClientUnaryCall;
+  
 }
 
 export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
@@ -163,6 +174,8 @@ export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
   
   UpdateUser: grpc.handleUnaryCall<_user_UpdateUserRequest__Output, _user_UpdateUserResponse>;
   
+  UsersCount: grpc.handleUnaryCall<_user_UsersCountRequest__Output, _user_UsersCountResponse>;
+  
 }
 
 export interface UserServiceDefinition extends grpc.ServiceDefinition {
@@ -178,4 +191,5 @@ export interface UserServiceDefinition extends grpc.ServiceDefinition {
   UnFollowUser: MethodDefinition<_user_UnFollowUserRequest, _user_UnFollowUserResponse, _user_UnFollowUserRequest__Output, _user_UnFollowUserResponse__Output>
   UnblockUser: MethodDefinition<_user_UnblockUserRequest, _user_UnblockUserResponse, _user_UnblockUserRequest__Output, _user_UnblockUserResponse__Output>
   UpdateUser: MethodDefinition<_user_UpdateUserRequest, _user_UpdateUserResponse, _user_UpdateUserRequest__Output, _user_UpdateUserResponse__Output>
+  UsersCount: MethodDefinition<_user_UsersCountRequest, _user_UsersCountResponse, _user_UsersCountRequest__Output, _user_UsersCountResponse__Output>
 }

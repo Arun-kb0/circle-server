@@ -38,6 +38,8 @@ export interface ProtoGrpcType {
     UpdateUserResponse: MessageTypeDefinition
     User: MessageTypeDefinition
     UserService: SubtypeConstructor<typeof grpc.Client, _user_UserServiceClient> & { service: _user_UserServiceDefinition }
+    UsersCountRequest: MessageTypeDefinition
+    UsersCountResponse: MessageTypeDefinition
   }
 }
 
