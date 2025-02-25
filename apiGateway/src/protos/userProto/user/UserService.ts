@@ -18,6 +18,8 @@ import type { GetMultipleUserRequest as _user_GetMultipleUserRequest, GetMultipl
 import type { GetMultipleUserResponse as _user_GetMultipleUserResponse, GetMultipleUserResponse__Output as _user_GetMultipleUserResponse__Output } from '../user/GetMultipleUserResponse';
 import type { GetSuggestedPeopleRequest as _user_GetSuggestedPeopleRequest, GetSuggestedPeopleRequest__Output as _user_GetSuggestedPeopleRequest__Output } from '../user/GetSuggestedPeopleRequest';
 import type { GetSuggestedPeopleResponse as _user_GetSuggestedPeopleResponse, GetSuggestedPeopleResponse__Output as _user_GetSuggestedPeopleResponse__Output } from '../user/GetSuggestedPeopleResponse';
+import type { GetUserCountByDateDetailsRequest as _user_GetUserCountByDateDetailsRequest, GetUserCountByDateDetailsRequest__Output as _user_GetUserCountByDateDetailsRequest__Output } from '../user/GetUserCountByDateDetailsRequest';
+import type { GetUserCountByDateDetailsResponse as _user_GetUserCountByDateDetailsResponse, GetUserCountByDateDetailsResponse__Output as _user_GetUserCountByDateDetailsResponse__Output } from '../user/GetUserCountByDateDetailsResponse';
 import type { GetUserRequest as _user_GetUserRequest, GetUserRequest__Output as _user_GetUserRequest__Output } from '../user/GetUserRequest';
 import type { GetUserResponse as _user_GetUserResponse, GetUserResponse__Output as _user_GetUserResponse__Output } from '../user/GetUserResponse';
 import type { UnFollowUserRequest as _user_UnFollowUserRequest, UnFollowUserRequest__Output as _user_UnFollowUserRequest__Output } from '../user/UnFollowUserRequest';
@@ -111,6 +113,15 @@ export interface UserServiceClient extends grpc.Client {
   getUser(argument: _user_GetUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetUserResponse__Output>): grpc.ClientUnaryCall;
   getUser(argument: _user_GetUserRequest, callback: grpc.requestCallback<_user_GetUserResponse__Output>): grpc.ClientUnaryCall;
   
+  GetUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  getUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  getUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  getUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  getUserCountByDateDetails(argument: _user_GetUserCountByDateDetailsRequest, callback: grpc.requestCallback<_user_GetUserCountByDateDetailsResponse__Output>): grpc.ClientUnaryCall;
+  
   UnFollowUser(argument: _user_UnFollowUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UnFollowUserResponse__Output>): grpc.ClientUnaryCall;
   UnFollowUser(argument: _user_UnFollowUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_UnFollowUserResponse__Output>): grpc.ClientUnaryCall;
   UnFollowUser(argument: _user_UnFollowUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_UnFollowUserResponse__Output>): grpc.ClientUnaryCall;
@@ -168,6 +179,8 @@ export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetUser: grpc.handleUnaryCall<_user_GetUserRequest__Output, _user_GetUserResponse>;
   
+  GetUserCountByDateDetails: grpc.handleUnaryCall<_user_GetUserCountByDateDetailsRequest__Output, _user_GetUserCountByDateDetailsResponse>;
+  
   UnFollowUser: grpc.handleUnaryCall<_user_UnFollowUserRequest__Output, _user_UnFollowUserResponse>;
   
   UnblockUser: grpc.handleUnaryCall<_user_UnblockUserRequest__Output, _user_UnblockUserResponse>;
@@ -188,6 +201,7 @@ export interface UserServiceDefinition extends grpc.ServiceDefinition {
   GetMultipleUser: MethodDefinition<_user_GetMultipleUserRequest, _user_GetMultipleUserResponse, _user_GetMultipleUserRequest__Output, _user_GetMultipleUserResponse__Output>
   GetSuggestedPeople: MethodDefinition<_user_GetSuggestedPeopleRequest, _user_GetSuggestedPeopleResponse, _user_GetSuggestedPeopleRequest__Output, _user_GetSuggestedPeopleResponse__Output>
   GetUser: MethodDefinition<_user_GetUserRequest, _user_GetUserResponse, _user_GetUserRequest__Output, _user_GetUserResponse__Output>
+  GetUserCountByDateDetails: MethodDefinition<_user_GetUserCountByDateDetailsRequest, _user_GetUserCountByDateDetailsResponse, _user_GetUserCountByDateDetailsRequest__Output, _user_GetUserCountByDateDetailsResponse__Output>
   UnFollowUser: MethodDefinition<_user_UnFollowUserRequest, _user_UnFollowUserResponse, _user_UnFollowUserRequest__Output, _user_UnFollowUserResponse__Output>
   UnblockUser: MethodDefinition<_user_UnblockUserRequest, _user_UnblockUserResponse, _user_UnblockUserRequest__Output, _user_UnblockUserResponse__Output>
   UpdateUser: MethodDefinition<_user_UpdateUserRequest, _user_UpdateUserResponse, _user_UpdateUserRequest__Output, _user_UpdateUserResponse__Output>

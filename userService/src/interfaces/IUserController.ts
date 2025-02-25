@@ -13,17 +13,30 @@ import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserReq
 import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
 import { UsersCountRequest__Output } from '../proto/user/UsersCountRequest';
 import { UsersCountResponse } from '../proto/user/UsersCountResponse';
+import { GetUserCountByDateDetailsRequest__Output } from '../proto/user/GetUserCountByDateDetailsRequest';
+import { GetUserCountByDateDetailsResponse} from '../proto/user/GetUserCountByDateDetailsResponse';
+
+
+export type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
+export type GetUserHandler = grpc.handleUnaryCall<GetUserRequest__Output, GetUserResponse>;
+export type BlockUserHandler = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
+export type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
+export type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
+export type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
+export type CountUsersHandler = grpc.handleUnaryCall<UsersCountRequest__Output, UsersCountResponse>;
+export type GetUserCountDetailsHandler = grpc.handleUnaryCall<GetUserCountByDateDetailsRequest__Output, GetUserCountByDateDetailsResponse>;
 
 
 interface IUserController {
-  getAllUsers: grpc.handleUnaryCall<GetAllUsersRequest__Output,GetAllUsersResponse>
-  getUser: grpc.handleUnaryCall<GetUserRequest__Output, GetUserResponse>;
-  blockUser: grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
-  unblockUser: grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
-  updateUser: grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
+  getAllUsers: GetAllUserHandler
+  getUser: GetUserHandler
+  blockUser: BlockUserHandler
+  unblockUser: UnblockUserHandler
+  updateUser: UpdateUserHandler
 
-  getMultipleUsers: grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
-  usersCount: grpc.handleUnaryCall<UsersCountRequest__Output, UsersCountResponse>;
+  getMultipleUsers: GetMultipleUsersHandler
+  usersCount: CountUsersHandler
+  getUserCountByDateDetails: GetUserCountDetailsHandler
 }
 
 export default IUserController

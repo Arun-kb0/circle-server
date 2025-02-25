@@ -84,3 +84,17 @@ export const getFeedCounts = async (req: Request, res: Response, next: NextFunct
     next(error)
   }
 }
+
+export const getPostCountByDate = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { startDate, endDate } = req.query
+    if (typeof startDate !== 'string' || typeof endDate !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'startDate and endDate are required')
+    feedClient.getPostsCountByDate({ startDate, endDate }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get post counts by date failed.'))
+      res.status(httpStatus.OK).json({ message: "get post counts by date success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

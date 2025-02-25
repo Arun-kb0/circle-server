@@ -14,6 +14,16 @@ export class UserService implements IUserService {
     private userRepo: IUserRepo,
   ) { }
 
+  async getUserCountByDateDetails(startDate: string, endDate: string): FuncReturnType<{ date: string; count: number }[]> {
+    try {
+      const userCount = await this.userRepo.getUserCountByDateDetails(startDate, endDate)
+      return { err: null, data: userCount }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
+
   async countUsers(startDate?: string, endDate?: string): FuncReturnType<UsersCountType> {
     try {
       const userCount = await this.userRepo.countUsers(startDate, endDate)

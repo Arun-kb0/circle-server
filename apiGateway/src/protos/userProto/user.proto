@@ -21,6 +21,7 @@ service UserService {
   rpc UnFollowUser(UnFollowUserRequest) returns (UnFollowUserResponse) {};
   
   rpc UsersCount(UsersCountRequest) returns (UsersCountResponse) {};
+  rpc GetUserCountByDateDetails(GetUserCountByDateDetailsRequest) returns (GetUserCountByDateDetailsResponse) {};
 }
 
 message Image {
@@ -183,4 +184,18 @@ message UsersCountResponse{
   int32 femaleUsersCount=2;
   int32 maleUsersCount=3;
   int32 otherUsersCount=4;
+}
+
+message GetUserCountByDateDetailsRequest {
+  string startDate=1;
+  string endDate=2;
+}
+
+message UserByDateDetails {
+  string date=1;
+  int32 count=2;
+}
+
+message GetUserCountByDateDetailsResponse {
+  repeated UserByDateDetails userCountArray =1;
 }

@@ -20,6 +20,8 @@ interface IFeedService {
   totalCommentsCount(): SvcReturnType<number>
   totalLikesCount(): SvcReturnType<number>
   getFeedCounts(): SvcReturnType<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }>
+  getPostsCountByDate(startDate: string, endDate: string): SvcReturnType<{ date: string, count: number }[]>
+
 }
 
 export default IFeedService

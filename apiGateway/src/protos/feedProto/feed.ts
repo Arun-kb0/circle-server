@@ -24,6 +24,8 @@ export interface ProtoGrpcType {
     GetPopularPostsResponse: MessageTypeDefinition
     GetPostRequest: MessageTypeDefinition
     GetPostResponse: MessageTypeDefinition
+    GetPostsCountByDateRequest: MessageTypeDefinition
+    GetPostsCountByDateResponse: MessageTypeDefinition
     GetTotalCommentsCountRequest: MessageTypeDefinition
     GetTotalCommentsCountResponse: MessageTypeDefinition
     GetTotalLikesCountRequest: MessageTypeDefinition
@@ -38,6 +40,7 @@ export interface ProtoGrpcType {
     Like: MessageTypeDefinition
     Media: EnumTypeDefinition
     Post: MessageTypeDefinition
+    PostsCountArray: MessageTypeDefinition
     SearchPostRequest: MessageTypeDefinition
     SearchPostResponse: MessageTypeDefinition
     Status: EnumTypeDefinition

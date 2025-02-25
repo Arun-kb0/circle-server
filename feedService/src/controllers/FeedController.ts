@@ -6,7 +6,8 @@ import IFeedController, {
   GetTotalLikesCountHandler, GetCommentChildrenHandler,
   GetTotalPostsCountHandler, GetUserCreatedPostsHandler, GetUserFeedHandler,
   SearchPostHandler,
-  GetFeedCountsHandler
+  GetFeedCountsHandler,
+  GetPostsCountByDateHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -20,6 +21,20 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getPostsCountByDate: GetPostsCountByDateHandler = async (call, cb) => {
+    try {
+      const { startDate, endDate } = call.request
+      validateRequest('startDate and endDate are required.', startDate, endDate)
+      const res = await this.feedService.getPostsCountByDate(startDate as string, endDate as string)
+      validateResponse(res)
+      console.log(res.data)
+      cb(null, { postsCountArray: res.data as { date: string, count: number }[] })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getFeedCounts: GetFeedCountsHandler = async (call, cb) => {
     try {

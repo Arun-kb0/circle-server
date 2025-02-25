@@ -2,12 +2,59 @@ import { Date, FilterQuery } from "mongoose";
 import IUser from "../../interfaces/IUser";
 import IUserBaseRepo from "../../interfaces/IUserBaseRepo";
 import { IUserDb, User } from "../../model/UserModel";
-import { convertIUserDbToIUser, convertIUserToIUserDb, convertToObjectId, stringToDate } from '../../util/converter'
+import { convertIUserDbToIUser, convertIUserToIUserDb, convertToObjectId, dateToString, stringToDate } from '../../util/converter'
 import handleError from "../../util/handeError";
 import { UsersCountType } from "../../constants/types";
 
 
 class UserBaseRepo implements IUserBaseRepo {
+
+
+  async findUserCountByDateWithDetails(startDate: string, endDate: string): Promise<{ date: string, count: number }[]> {
+    try {
+      const pipeline = [
+        {
+          $match: {
+            createdAt: {
+              $gte: stringToDate(startDate),
+              $lt: stringToDate(endDate)
+            }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: '$createdAt'
+              }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            date: '$_id',
+            count: 1,
+            _id: 0
+          }
+        },
+        { $sort: { date: 1 as 1 | -1 } }
+      ]
+      const result = await User.aggregate(pipeline)
+      if (result.length === 0) {
+        return [{ date: startDate, count: 0 }]
+      }
+      const convertedResult = result.map((item => (
+        { date: dateToString(item.date), count: item.count }
+      )))
+      console.log(convertedResult)
+      return convertedResult
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async countUsersByDate(startDate: string, endDate: string): Promise<UsersCountType> {
     try {

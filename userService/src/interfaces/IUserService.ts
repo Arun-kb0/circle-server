@@ -13,6 +13,7 @@ interface IUserService {
 
   getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
   countUsers(startDate?: string, endDate?: string): FuncReturnType<UsersCountType>
+  getUserCountByDateDetails(startDate: string, endDate: string): FuncReturnType<{ date: string, count: number }[]>
 }
 
 

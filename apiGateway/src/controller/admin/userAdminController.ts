@@ -71,3 +71,21 @@ export const countUsers = async (req: Request, res: Response, next: NextFunction
     next(error)
   }
 }
+
+export const getUserCountDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { startDate, endDate } = req.query
+    if ((typeof startDate !== 'string' && startDate !== undefined) ||
+      (typeof endDate !== 'string' && endDate !== undefined)) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'startDate and endDate must be strings or undefined.')
+    }
+    userClient.getUserCountByDateDetails({ startDate, endDate }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no user count details found'))
+      console.log(msg)
+      res.status(httpStatus.OK).json({ message: "get user count details success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

@@ -22,7 +22,9 @@ import { GetTotalCommentsCountResponse } from '../proto/feed/GetTotalCommentsCou
 import { GetTotalLikesCountRequest__Output } from '../proto/feed/GetTotalLikesCountRequest'
 import { GetTotalLikesCountResponse } from '../proto/feed/GetTotalLikesCountResponse'
 import { GetFeedCountsRequest__Output } from '../proto/feed/GetFeedCountsRequest'
-import { GetFeedCountsResponse} from '../proto/feed/GetFeedCountsResponse'
+import { GetFeedCountsResponse } from '../proto/feed/GetFeedCountsResponse'
+import { GetPostsCountByDateRequest__Output } from '../proto/feed/GetPostsCountByDateRequest'
+import { GetPostsCountByDateResponse } from '../proto/feed/GetPostsCountByDateResponse'
 
 export type GetGlobalFeedHandler = grpc.handleUnaryCall<GetGlobalFeedRequest__Output, GetGlobalFeedResponse>
 export type GetUserFeedHandler = grpc.handleUnaryCall<GetUserFeedRequest__Output, GetUserFeedResponse>
@@ -37,6 +39,8 @@ export type GetTotalPostsCountHandler = grpc.handleUnaryCall<GetTotalPostsCountR
 export type GetTotalCommentsCountHandler = grpc.handleUnaryCall<GetTotalCommentsCountRequest__Output, GetTotalCommentsCountResponse>
 export type GetTotalLikesCountHandler = grpc.handleUnaryCall<GetTotalLikesCountRequest__Output, GetTotalLikesCountResponse>
 export type GetFeedCountsHandler = grpc.handleUnaryCall<GetFeedCountsRequest__Output, GetFeedCountsResponse>
+export type GetPostsCountByDateHandler = grpc.handleUnaryCall<GetPostsCountByDateRequest__Output, GetPostsCountByDateResponse>
+
 
 interface IFeedController {
 
@@ -54,6 +58,7 @@ interface IFeedController {
   getTotalCommentsCount: GetTotalCommentsCountHandler
   getTotalLikesCount: GetTotalLikesCountHandler
   getFeedCounts: GetFeedCountsHandler
+  getPostsCountByDate: GetPostsCountByDateHandler
 }
 
 export default IFeedController

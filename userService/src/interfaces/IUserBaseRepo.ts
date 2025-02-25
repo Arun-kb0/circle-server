@@ -14,6 +14,7 @@ interface IUserBaseRepo {
   updateFollowCount(userId: string, isInc: boolean, field: 'followeeCount' | 'followerCount'): Promise<IUser | null>
 
   countUsersByDate(startDate?: string, endDate?: string): Promise<UsersCountType>
+  findUserCountByDateWithDetails(startDate: string, endDate: string): Promise<{ date: string, count: number }[]>
 }
 
 export default IUserBaseRepo

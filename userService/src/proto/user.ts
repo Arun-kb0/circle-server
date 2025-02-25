@@ -25,6 +25,8 @@ export interface ProtoGrpcType {
     GetMultipleUserResponse: MessageTypeDefinition
     GetSuggestedPeopleRequest: MessageTypeDefinition
     GetSuggestedPeopleResponse: MessageTypeDefinition
+    GetUserCountByDateDetailsRequest: MessageTypeDefinition
+    GetUserCountByDateDetailsResponse: MessageTypeDefinition
     GetUserRequest: MessageTypeDefinition
     GetUserResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
@@ -37,6 +39,7 @@ export interface ProtoGrpcType {
     UpdateUserRequest: MessageTypeDefinition
     UpdateUserResponse: MessageTypeDefinition
     User: MessageTypeDefinition
+    UserByDateDetails: MessageTypeDefinition
     UserService: SubtypeConstructor<typeof grpc.Client, _user_UserServiceClient> & { service: _user_UserServiceDefinition }
     UsersCountRequest: MessageTypeDefinition
     UsersCountResponse: MessageTypeDefinition

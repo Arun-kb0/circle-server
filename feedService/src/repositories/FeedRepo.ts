@@ -21,6 +21,16 @@ class FeedRepo implements IFeedRepo {
     private likeBaseRepo: ILikeBaseRepo,
   ) { }
 
+  async getPostsCountByDate(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
+    try {
+      const postData = await this.postBaseRepo.findPostCountByDate(startDate, endDate) 
+      return postData
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async getFeedCounts(): Promise<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }> {
     try {
       const postsCount = await this.postBaseRepo.findPostCount()

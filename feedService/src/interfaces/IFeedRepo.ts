@@ -27,6 +27,8 @@ interface IFeedRepo {
   totalCommentsCount(): Promise<number>
   totalLikesCount(): Promise<number>
   getFeedCounts(): Promise<{ totalPostsCount: number, totalCommentsCount: number, totalLikesCount: number }>
+  getPostsCountByDate(startDate: string, endDate: string): Promise<{ date: string, count: number }[]>
+
 }
 
 export default IFeedRepo

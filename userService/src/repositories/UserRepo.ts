@@ -11,6 +11,16 @@ export class UserRepo implements IUserRepo {
     private userBaseRepo: IUserBaseRepo
   ) { }
 
+  async getUserCountByDateDetails(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
+    try {
+      const userCount = await this.userBaseRepo.findUserCountByDateWithDetails(startDate, endDate)
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async countUsers(startDate?: string, endDate?: string): Promise<UsersCountType> {
     try {
       const userCount = await this.userBaseRepo.countUsersByDate(startDate, endDate) 

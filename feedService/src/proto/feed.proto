@@ -17,6 +17,7 @@ service FeedService {
   rpc GetTotalCommentsCount(GetTotalCommentsCountRequest) returns (GetTotalCommentsCountResponse) {};
   rpc GetTotalLikesCount(GetTotalLikesCountRequest) returns (GetTotalLikesCountResponse) {};
   rpc GetFeedCounts(GetFeedCountsRequest) returns (GetFeedCountsResponse) {};
+  rpc GetPostsCountByDate(GetPostsCountByDateRequest) returns (GetPostsCountByDateResponse) {};
 };
 
 
@@ -215,4 +216,17 @@ message  GetFeedCountsResponse {
   int32 totalPostsCount=1;
   int32 totalCommentsCount=2;
   int32 totalLikesCount=3;
+}
+
+message GetPostsCountByDateRequest {
+  string startDate=1;
+  string endDate=2;
+}
+
+message PostsCountArray {
+  string date=1;
+  int32 count=2;
+}
+message GetPostsCountByDateResponse {
+  repeated PostsCountArray postsCountArray=1;
 }

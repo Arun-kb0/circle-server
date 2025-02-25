@@ -15,7 +15,17 @@ class FeedService implements IFeedService {
   constructor(
     private feedRepo: IFeedRepo
   ) { }
-  
+ 
+  async getPostsCountByDate(startDate: string, endDate: string): SvcReturnType<{ date: string; count: number; }[]> {
+    try {
+      const postData = await this.feedRepo.getPostsCountByDate(startDate, endDate)
+      return { err: null, data: postData }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
   async getFeedCounts(): SvcReturnType<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }> {
     try {
       const { totalPostsCount, totalCommentsCount, totalLikesCount } = await this.feedRepo.getFeedCounts()
