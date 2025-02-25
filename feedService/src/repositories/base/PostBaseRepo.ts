@@ -2,10 +2,69 @@ import IPost from "../../interfaces/IPost";
 import IPostBaseRepo from "../../interfaces/IPostBaseRepo";
 import handleError from '../../util/handleError'
 import { IPostDb, Post } from '../../model/postModel'
-import { convertIPostDbToIPost, convertIPostToIPostDb, convertToObjectId, stringToDate } from '../../util/converter'
+import { convertIPostDbToIPost, convertToObjectId, dateToString, stringToDate } from '../../util/converter'
 import { FilterQuery } from "mongoose";
+import { sortAndDeduplicateDiagnostics } from "typescript";
 
 class PostBaseRepo implements IPostBaseRepo {
+
+  async findPostCountByDate(startDate: string, endDate: string): Promise<{ date: string, count: number }[]> {
+    try {
+      const pipeline = [
+        {
+          $match: {
+            createdAt: {
+              $gte: stringToDate(startDate),
+              $lt: stringToDate(endDate)
+            }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: '$createdAt'
+              }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            date: '$_id',
+            count: 1,
+            _id: 0
+          }
+        },
+        { $sort: { date: 1 as 1 | -1 } }
+      ]
+      const result = await Post.aggregate(pipeline)
+      if (result.length === 0) {
+        return [{ date: startDate, count: 0 }]
+      }
+      const convertedResult = result.map((item => (
+        { date: dateToString(item.date), count: item.count }
+      )))
+      console.log(convertedResult)
+      return convertedResult
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+
+  async findPopularPosts(limit: number = 10): Promise<IPost[] | null> {
+    try {
+      const posts = await Post.find().sort({ likesCount: -1 }).limit(limit)
+      const convertedPosts = posts.map(post => convertIPostDbToIPost(post))
+      return convertedPosts
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async findPostCount(): Promise<number> {
     try {
@@ -128,7 +187,7 @@ class PostBaseRepo implements IPostBaseRepo {
     }
   }
 
-  
+
 
 
 }

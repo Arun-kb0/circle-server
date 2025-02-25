@@ -2,12 +2,34 @@ import IUser from '../interfaces/IUser'
 import IUserRepo from "../interfaces/IUserRepo";
 import IUserBaseRepo from '../interfaces/IUserBaseRepo'
 import handleError from '../util/handeError';
+import { User } from '../proto/user/User';
+import { UsersCountType } from '../constants/types';
 
 export class UserRepo implements IUserRepo {
 
   constructor(
     private userBaseRepo: IUserBaseRepo
   ) { }
+
+  async getUserCountByDateDetails(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
+    try {
+      const userCount = await this.userBaseRepo.findUserCountByDateWithDetails(startDate, endDate)
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async countUsers(startDate?: string, endDate?: string): Promise<UsersCountType> {
+    try {
+      const userCount = await this.userBaseRepo.countUsersByDate(startDate, endDate) 
+      return userCount
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async getMultipleUsers(userIds: string[]): Promise<IUser[]> {
     try {

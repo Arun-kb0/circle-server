@@ -8,6 +8,16 @@ import { FilterQuery } from 'mongoose';
 
 class CommentBaseRepo implements ICommentBaseRepo {
 
+  async totalCommentsCount(): Promise<number> {
+    try {
+      const count = await Comment.countDocuments()      
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async findCommentsByContentId(contentId: string, limit: number, startIndex: number): Promise<IComment[]> {
     try {
       const comments = await Comment.find({ contentId, parentId: undefined })

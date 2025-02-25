@@ -6,6 +6,7 @@ interface ICommentBaseRepo {
 
   findCommentsByContentIdCount(contentId: string): Promise<number>
   findCommentsByParentIdCount(contentId: string, parentId?: string): Promise<number>
+  totalCommentsCount(): Promise<number>
 }
 
 export default ICommentBaseRepo

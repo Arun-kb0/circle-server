@@ -11,6 +11,13 @@ service FeedService {
   
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {};
   rpc GetCommentChildren(GetCommentChildrenRequest) returns (GetCommentChildrenResponse) {};
+  
+  rpc GetPopularPosts(GetPopularPostsRequest) returns (GetPopularPostsResponse) {};
+  rpc GetTotalPostsCount(GetTotalPostsCountRequest) returns (GetTotalPostsCountResponse) {};
+  rpc GetTotalCommentsCount(GetTotalCommentsCountRequest) returns (GetTotalCommentsCountResponse) {};
+  rpc GetTotalLikesCount(GetTotalLikesCountRequest) returns (GetTotalLikesCountResponse) {};
+  rpc GetFeedCounts(GetFeedCountsRequest) returns (GetFeedCountsResponse) {};
+  rpc GetPostsCountByDate(GetPostsCountByDateRequest) returns (GetPostsCountByDateResponse) {};
 };
 
 
@@ -175,4 +182,51 @@ message GetCommentChildrenResponse {
   int32 currentPage =2;
   int32 numberOfPages=3;
   repeated Like likes=4;
+}
+
+message  GetPopularPostsRequest {
+  int32 limit=1;
+}
+
+message  GetPopularPostsResponse {
+  repeated Post posts=1;
+}
+
+message GetTotalPostsCountRequest {}
+
+message GetTotalPostsCountResponse {
+  int32 totalPostsCount=1;
+}
+
+message GetTotalCommentsCountRequest {}
+
+message GetTotalCommentsCountResponse {
+  int32 totalCommentsCount=1;
+}
+
+message GetTotalLikesCountRequest {}
+
+message GetTotalLikesCountResponse {
+  int32 totalLikesCount=1;
+}
+
+message  GetFeedCountsRequest {}
+
+message  GetFeedCountsResponse {
+  int32 totalPostsCount=1;
+  int32 totalCommentsCount=2;
+  int32 totalLikesCount=3;
+}
+
+message GetPostsCountByDateRequest {
+  string startDate=1;
+  string endDate=2;
+}
+
+message PostsCountArray {
+  string date=1;
+  int32 count=2;
+}
+message GetPostsCountByDateResponse {
+  repeated PostsCountArray postsCountArray=1;
 }

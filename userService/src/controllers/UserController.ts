@@ -1,38 +1,48 @@
 import * as grpc from '@grpc/grpc-js'
-import { BlockUserRequest__Output } from "../proto/user/BlockUserRequest";
-import { BlockUserResponse } from "../proto/user/BlockUserResponse";
-import { GetAllUsersRequest__Output } from "../proto/user/GetAllUsersRequest";
-import { GetAllUsersResponse } from "../proto/user/GetAllUsersResponse";
-import { GetUserResponse } from "../proto/user/GetUserResponse";
-import { GetUserRequest__Output } from "../proto/user/GetUserRequest";
-import { UnblockUserRequest__Output } from "../proto/user/UnblockUserRequest";
-import { UnblockUserResponse } from "../proto/user/UnblockUserResponse";
-import { UpdateUserRequest__Output } from "../proto/user/UpdateUserRequest";
-import { UpdateUserResponse } from "../proto/user/UpdateUserResponse";
 import { CustomError } from "../util/CustomError";
 import handleError from "../util/handeError";
 import { User } from '../proto/user/User'
-import { convertGrpcUserForUpdate, convertUserForGrpc } from '../util/converter'
+import {  convertUserForGrpc } from '../util/converter'
 import { validateRequest, validateResponse } from '../util/validations'
 import IUser from "../interfaces/IUser";
-import IUserController from '../interfaces/IUserController'
+import IUserController, {
+  BlockUserHandler, CountUsersHandler, GetAllUserHandler,
+  GetMultipleUsersHandler, GetUserCountDetailsHandler,
+  GetUserHandler, UnblockUserHandler, UpdateUserHandler
+} from '../interfaces/IUserController'
 import IUserService from "../interfaces/IUserService";
-import { GetMultipleUserRequest__Output } from '../proto/user/GetMultipleUserRequest';
-import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
 
-
-type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
-type GetUserHandler = grpc.handleUnaryCall<GetUserRequest__Output, GetUserResponse>;
-type BlockUserHandler = grpc.handleUnaryCall<BlockUserRequest__Output, BlockUserResponse>;
-type UnblockUserHandler = grpc.handleUnaryCall<UnblockUserRequest__Output, UnblockUserResponse>;
-type UpdateUserHandler = grpc.handleUnaryCall<UpdateUserRequest__Output, UpdateUserResponse>;
-type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserRequest__Output, GetMultipleUserResponse>;
 
 export class UserController implements IUserController {
 
   constructor(
     private userService: IUserService
   ) { }
+
+  getUserCountByDateDetails: GetUserCountDetailsHandler = async (call, cb) => {
+    try {
+      const { startDate, endDate } = call.request
+      validateRequest('startDate and endDate is required', startDate, endDate)
+      const res = await this.userService.getUserCountByDateDetails(startDate as string, endDate as string)
+      validateResponse(res)
+      cb(null, { userCountArray: res.data as { date: string; count: number; }[] })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  usersCount: CountUsersHandler = async (call, cb) => {
+    try {
+      const { startDate, endDate } = call.request
+      const res = await this.userService.countUsers(startDate, endDate)
+      validateResponse(res)
+      cb(null, res?.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   getMultipleUsers: GetMultipleUsersHandler = async (call, cb) => {
     try {

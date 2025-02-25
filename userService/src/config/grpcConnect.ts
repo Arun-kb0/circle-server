@@ -39,7 +39,10 @@ const grpcConnect = () => {
       getFollowers: logInterceptor(followController.getFollowers),
       getSuggestedPeople: logInterceptor(followController.getSuggestedPeople),
       followUser: logInterceptor(followController.followUser),
-      unFollowUser: logInterceptor(followController.unFollowUser)
+      unFollowUser: logInterceptor(followController.unFollowUser),
+
+      usersCount: logInterceptor(userController.usersCount),
+      getUserCountByDateDetails: logInterceptor(userController.getUserCountByDateDetails)
     }
   )
 }

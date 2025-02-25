@@ -1,12 +1,101 @@
-import { Date } from "mongoose";
+import { Date, FilterQuery } from "mongoose";
 import IUser from "../../interfaces/IUser";
 import IUserBaseRepo from "../../interfaces/IUserBaseRepo";
 import { IUserDb, User } from "../../model/UserModel";
-import { convertDbDateToIsoString, convertIUserDbToIUser, convertToObjectId, stringToDate } from '../../util/converter'
+import { convertIUserDbToIUser, convertIUserToIUserDb, convertToObjectId, dateToString, stringToDate } from '../../util/converter'
 import handleError from "../../util/handeError";
+import { UsersCountType } from "../../constants/types";
 
 
 class UserBaseRepo implements IUserBaseRepo {
+
+
+  async findUserCountByDateWithDetails(startDate: string, endDate: string): Promise<{ date: string, count: number }[]> {
+    try {
+      const pipeline = [
+        {
+          $match: {
+            createdAt: {
+              $gte: stringToDate(startDate),
+              $lt: stringToDate(endDate)
+            }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: '$createdAt'
+              }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            date: '$_id',
+            count: 1,
+            _id: 0
+          }
+        },
+        { $sort: { date: 1 as 1 | -1 } }
+      ]
+      const result = await User.aggregate(pipeline)
+      if (result.length === 0) {
+        return [{ date: startDate, count: 0 }]
+      }
+      const convertedResult = result.map((item => (
+        { date: dateToString(item.date), count: item.count }
+      )))
+      console.log(convertedResult)
+      return convertedResult
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async countUsersByDate(startDate: string, endDate: string): Promise<UsersCountType> {
+    try {
+      const match: FilterQuery<IUserDb> = { role: 'user' };
+      if (startDate) match.createdAt = { $gte: stringToDate(startDate) };
+      if (endDate) match.createdAt = { ...match.createdAt, $lte: stringToDate(endDate) };
+      const aggregation = [
+        { $match: match },
+        {
+          $group: {
+            _id: null,
+            usersCount: { $sum: 1 },
+            femaleUsersCount: { $sum: { $cond: [{ $eq: ["$gender", "female"] }, 1, 0] } },
+            maleUsersCount: { $sum: { $cond: [{ $eq: ["$gender", "male"] }, 1, 0] } },
+            otherUsersCount: { $sum: { $cond: [{ $and: [{ $ne: ["$gender", "female"] }, { $ne: ["$gender", "male"] }] }, 1, 0] } }
+          }
+        }
+      ]
+
+      const result = await User.aggregate(aggregation).exec();
+      if (result.length === 0) {
+        return {
+          usersCount: 0,
+          femaleUsersCount: 0,
+          maleUsersCount: 0,
+          otherUsersCount: 0
+        }
+      }
+
+      const { usersCount, femaleUsersCount, maleUsersCount, otherUsersCount } = result[0];
+      return {
+        usersCount,
+        femaleUsersCount,
+        maleUsersCount,
+        otherUsersCount
+      }
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async getMultipleUsers(userIds: string[]): Promise<IUser[]> {
     try {
@@ -90,9 +179,11 @@ class UserBaseRepo implements IUserBaseRepo {
   async update(userId: string, user: Partial<IUser>): Promise<IUser | null> {
     try {
       const objId = convertToObjectId(userId)
+      const convertedUser = convertIUserToIUserDb(user)
+      console.log(convertedUser, userId)
       const updatedUser = await User.findOneAndUpdate(
         { _id: objId },
-        { $set: { ...user } },
+        { $set: { ...convertedUser } },
         { new: true }
       ).select('-password -refreshToken')
       if (!updatedUser) return null

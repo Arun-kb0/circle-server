@@ -3,6 +3,8 @@ import IUserRepo from '../interfaces/IUserRepo'
 import handleError from '../util/handeError'
 import IUserService from '../interfaces/IUserService'
 import httpStatus from '../constants/httpStatus'
+import { FuncReturnType } from '../constants/svcTypes'
+import { UsersCountType } from '../constants/types'
 
 const LIMIT = 5
 
@@ -11,6 +13,26 @@ export class UserService implements IUserService {
   constructor(
     private userRepo: IUserRepo,
   ) { }
+
+  async getUserCountByDateDetails(startDate: string, endDate: string): FuncReturnType<{ date: string; count: number }[]> {
+    try {
+      const userCount = await this.userRepo.getUserCountByDateDetails(startDate, endDate)
+      return { err: null, data: userCount }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
+
+  async countUsers(startDate?: string, endDate?: string): FuncReturnType<UsersCountType> {
+    try {
+      const userCount = await this.userRepo.countUsers(startDate, endDate)
+      return { err: null, data: userCount }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, data: null }
+    }
+  }
 
   async getMultipleUsers(userIds: string[]) {
     try {

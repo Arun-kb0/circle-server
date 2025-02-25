@@ -1,5 +1,6 @@
 import IUser from './IUser'
 import { FuncReturnType } from '../constants/svcTypes'
+import { UsersCountType } from '../constants/types'
 
 
 interface IUserService {
@@ -11,7 +12,8 @@ interface IUserService {
   unBlockUser(userId: string): FuncReturnType<IUser>
 
   getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
-
+  countUsers(startDate?: string, endDate?: string): FuncReturnType<UsersCountType>
+  getUserCountByDateDetails(startDate: string, endDate: string): FuncReturnType<{ date: string, count: number }[]>
 }
 
 

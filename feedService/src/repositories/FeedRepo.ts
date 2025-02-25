@@ -10,6 +10,7 @@ import ILike from '../interfaces/ILike';
 import IPostBaseRepo from '../interfaces/IPostBaseRepo'
 import ICommentBaseRepo from '../interfaces/ICommentBaseRepo'
 import ILikeBaseRepo from '../interfaces/ILikeBaseRepo'
+import handleError from '../util/handleError';
 
 
 class FeedRepo implements IFeedRepo {
@@ -19,6 +20,74 @@ class FeedRepo implements IFeedRepo {
     private commentBaseRepo: ICommentBaseRepo,
     private likeBaseRepo: ILikeBaseRepo,
   ) { }
+
+  async getPostsCountByDate(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
+    try {
+      const postData = await this.postBaseRepo.findPostCountByDate(startDate, endDate) 
+      return postData
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getFeedCounts(): Promise<{ totalPostsCount: number; totalCommentsCount: number; totalLikesCount: number; }> {
+    try {
+      const postsCount = await this.postBaseRepo.findPostCount()
+      const commentsCount = await this.commentBaseRepo.totalCommentsCount()
+      const likesCount = await this.likeBaseRepo.totalLikesCount()
+      return {
+        totalPostsCount: postsCount,
+        totalCommentsCount: commentsCount,
+        totalLikesCount: likesCount
+      }
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async popularPosts(limit: number): Promise<IPostExt[] | null> {
+    try {
+      const posts = await this.postBaseRepo.findPopularPosts(limit)
+      if(!posts) return null
+      const updatedPosts = await addUserToPosts(posts)
+      return updatedPosts
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async totalPostsCount(): Promise<number> {
+    try {
+      const count = await this.postBaseRepo.findPostCount()
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+ async totalCommentsCount(): Promise<number> {
+    try {
+      const count = await this.commentBaseRepo.totalCommentsCount()
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async totalLikesCount(): Promise<number> {
+    try {
+      const count = await this.likeBaseRepo.totalLikesCount()
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async getUserCreatedPostCount(userId: string): Promise<number> {
     const count = await this.postBaseRepo.findPostCountByAuthorId(userId)
