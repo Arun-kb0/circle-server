@@ -26,6 +26,8 @@ export interface ProtoGrpcType {
     GetPostResponse: MessageTypeDefinition
     GetPostsCountByDateRequest: MessageTypeDefinition
     GetPostsCountByDateResponse: MessageTypeDefinition
+    GetSingleCommentRequest: MessageTypeDefinition
+    GetSingleCommentResponse: MessageTypeDefinition
     GetTotalCommentsCountRequest: MessageTypeDefinition
     GetTotalCommentsCountResponse: MessageTypeDefinition
     GetTotalLikesCountRequest: MessageTypeDefinition

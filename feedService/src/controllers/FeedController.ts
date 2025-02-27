@@ -7,7 +7,8 @@ import IFeedController, {
   GetTotalPostsCountHandler, GetUserCreatedPostsHandler, GetUserFeedHandler,
   SearchPostHandler,
   GetFeedCountsHandler,
-  GetPostsCountByDateHandler
+  GetPostsCountByDateHandler,
+  GetSingleCommentHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -21,6 +22,20 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getSingleComment: GetSingleCommentHandler = async (call, cb) => {
+    try {
+      const { commentId } = call.request
+      validateRequest('commentId is required.', commentId)
+      const res = await this.feedService.getSingleComment(commentId as string)
+      validateResponse(res)
+      console.log(res.data)
+      cb(null, { comment: res.data })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getPostsCountByDate: GetPostsCountByDateHandler = async (call, cb) => {
     try {

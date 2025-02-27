@@ -4,6 +4,11 @@ import ILikeService from '../interfaces/ILikeService'
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
 import ILikeRepo from '../interfaces/ILikeRepo';
+import { publishMessage } from '../util/rabbitmq';
+import { QueueNotificationDataType } from '../constants/types'
+import { addUserToLike } from '../util/userClientFunctions';
+
+const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || ""
 
 class LikeService implements ILikeService {
 
@@ -22,6 +27,26 @@ class LikeService implements ILikeService {
         authorId
       }
       const newLike = await this.likeRepo.like(like)
+      if (!newLike) throw new Error('like failed')
+
+      const userAddedLike = await addUserToLike(newLike)
+      // * send notification
+      const notificationData: QueueNotificationDataType = {
+        _id: '',
+        authorId: newLike.authorId,
+        receiverId: '',
+        type: 'like',
+        message: 'user liked post',
+        read: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        data: {
+          id: newLike.contentId,
+          contentType: newLike.contentType,
+          authorName: userAddedLike?.authorName
+        }
+      }
+      publishMessage(QUEUE_NAME, JSON.stringify(notificationData))
       return { err: null, data: newLike }
     } catch (error) {
       const { code, message } = handleError(error)
@@ -29,7 +54,7 @@ class LikeService implements ILikeService {
     }
   }
 
-  async unlike(authorId: string,contentId: string, ): SvcFuncReturnType<ILike> {
+  async unlike(authorId: string, contentId: string,): SvcFuncReturnType<ILike> {
     try {
       const isLiked = await this.likeRepo.checkIsLiked(authorId, contentId)
       if (!isLiked) return { err: httpStatus.CONFLICT, errMsg: 'already unliked', data: null }

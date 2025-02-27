@@ -21,9 +21,21 @@ class FeedRepo implements IFeedRepo {
     private likeBaseRepo: ILikeBaseRepo,
   ) { }
 
+  async getSingleComment(commentId: string): Promise<ICommentExt | null> {
+    try {
+      const commentData = await this.commentBaseRepo.findCommentByCommentId(commentId)
+      if (!commentData) return null
+      const userAddedComment = await addUserToComments([commentData])
+      return userAddedComment[0]
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async getPostsCountByDate(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
     try {
-      const postData = await this.postBaseRepo.findPostCountByDate(startDate, endDate) 
+      const postData = await this.postBaseRepo.findPostCountByDate(startDate, endDate)
       return postData
     } catch (error) {
       const err = handleError(error)
@@ -50,7 +62,7 @@ class FeedRepo implements IFeedRepo {
   async popularPosts(limit: number): Promise<IPostExt[] | null> {
     try {
       const posts = await this.postBaseRepo.findPopularPosts(limit)
-      if(!posts) return null
+      if (!posts) return null
       const updatedPosts = await addUserToPosts(posts)
       return updatedPosts
     } catch (error) {
@@ -69,7 +81,7 @@ class FeedRepo implements IFeedRepo {
     }
   }
 
- async totalCommentsCount(): Promise<number> {
+  async totalCommentsCount(): Promise<number> {
     try {
       const count = await this.commentBaseRepo.totalCommentsCount()
       return count

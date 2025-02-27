@@ -16,6 +16,8 @@ import type { GetPostRequest as _feed_GetPostRequest, GetPostRequest__Output as 
 import type { GetPostResponse as _feed_GetPostResponse, GetPostResponse__Output as _feed_GetPostResponse__Output } from '../feed/GetPostResponse';
 import type { GetPostsCountByDateRequest as _feed_GetPostsCountByDateRequest, GetPostsCountByDateRequest__Output as _feed_GetPostsCountByDateRequest__Output } from '../feed/GetPostsCountByDateRequest';
 import type { GetPostsCountByDateResponse as _feed_GetPostsCountByDateResponse, GetPostsCountByDateResponse__Output as _feed_GetPostsCountByDateResponse__Output } from '../feed/GetPostsCountByDateResponse';
+import type { GetSingleCommentRequest as _feed_GetSingleCommentRequest, GetSingleCommentRequest__Output as _feed_GetSingleCommentRequest__Output } from '../feed/GetSingleCommentRequest';
+import type { GetSingleCommentResponse as _feed_GetSingleCommentResponse, GetSingleCommentResponse__Output as _feed_GetSingleCommentResponse__Output } from '../feed/GetSingleCommentResponse';
 import type { GetTotalCommentsCountRequest as _feed_GetTotalCommentsCountRequest, GetTotalCommentsCountRequest__Output as _feed_GetTotalCommentsCountRequest__Output } from '../feed/GetTotalCommentsCountRequest';
 import type { GetTotalCommentsCountResponse as _feed_GetTotalCommentsCountResponse, GetTotalCommentsCountResponse__Output as _feed_GetTotalCommentsCountResponse__Output } from '../feed/GetTotalCommentsCountResponse';
 import type { GetTotalLikesCountRequest as _feed_GetTotalLikesCountRequest, GetTotalLikesCountRequest__Output as _feed_GetTotalLikesCountRequest__Output } from '../feed/GetTotalLikesCountRequest';
@@ -93,6 +95,15 @@ export interface FeedServiceClient extends grpc.Client {
   getPostsCountByDate(argument: _feed_GetPostsCountByDateRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetPostsCountByDateResponse__Output>): grpc.ClientUnaryCall;
   getPostsCountByDate(argument: _feed_GetPostsCountByDateRequest, callback: grpc.requestCallback<_feed_GetPostsCountByDateResponse__Output>): grpc.ClientUnaryCall;
   
+  GetSingleComment(argument: _feed_GetSingleCommentRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  GetSingleComment(argument: _feed_GetSingleCommentRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  GetSingleComment(argument: _feed_GetSingleCommentRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  GetSingleComment(argument: _feed_GetSingleCommentRequest, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  getSingleComment(argument: _feed_GetSingleCommentRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  getSingleComment(argument: _feed_GetSingleCommentRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  getSingleComment(argument: _feed_GetSingleCommentRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  getSingleComment(argument: _feed_GetSingleCommentRequest, callback: grpc.requestCallback<_feed_GetSingleCommentResponse__Output>): grpc.ClientUnaryCall;
+  
   GetTotalCommentsCount(argument: _feed_GetTotalCommentsCountRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetTotalCommentsCountResponse__Output>): grpc.ClientUnaryCall;
   GetTotalCommentsCount(argument: _feed_GetTotalCommentsCountRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetTotalCommentsCountResponse__Output>): grpc.ClientUnaryCall;
   GetTotalCommentsCount(argument: _feed_GetTotalCommentsCountRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetTotalCommentsCountResponse__Output>): grpc.ClientUnaryCall;
@@ -164,6 +175,8 @@ export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetPostsCountByDate: grpc.handleUnaryCall<_feed_GetPostsCountByDateRequest__Output, _feed_GetPostsCountByDateResponse>;
   
+  GetSingleComment: grpc.handleUnaryCall<_feed_GetSingleCommentRequest__Output, _feed_GetSingleCommentResponse>;
+  
   GetTotalCommentsCount: grpc.handleUnaryCall<_feed_GetTotalCommentsCountRequest__Output, _feed_GetTotalCommentsCountResponse>;
   
   GetTotalLikesCount: grpc.handleUnaryCall<_feed_GetTotalLikesCountRequest__Output, _feed_GetTotalLikesCountResponse>;
@@ -186,6 +199,7 @@ export interface FeedServiceDefinition extends grpc.ServiceDefinition {
   GetPopularPosts: MethodDefinition<_feed_GetPopularPostsRequest, _feed_GetPopularPostsResponse, _feed_GetPopularPostsRequest__Output, _feed_GetPopularPostsResponse__Output>
   GetPost: MethodDefinition<_feed_GetPostRequest, _feed_GetPostResponse, _feed_GetPostRequest__Output, _feed_GetPostResponse__Output>
   GetPostsCountByDate: MethodDefinition<_feed_GetPostsCountByDateRequest, _feed_GetPostsCountByDateResponse, _feed_GetPostsCountByDateRequest__Output, _feed_GetPostsCountByDateResponse__Output>
+  GetSingleComment: MethodDefinition<_feed_GetSingleCommentRequest, _feed_GetSingleCommentResponse, _feed_GetSingleCommentRequest__Output, _feed_GetSingleCommentResponse__Output>
   GetTotalCommentsCount: MethodDefinition<_feed_GetTotalCommentsCountRequest, _feed_GetTotalCommentsCountResponse, _feed_GetTotalCommentsCountRequest__Output, _feed_GetTotalCommentsCountResponse__Output>
   GetTotalLikesCount: MethodDefinition<_feed_GetTotalLikesCountRequest, _feed_GetTotalLikesCountResponse, _feed_GetTotalLikesCountRequest__Output, _feed_GetTotalLikesCountResponse__Output>
   GetTotalPostsCount: MethodDefinition<_feed_GetTotalPostsCountRequest, _feed_GetTotalPostsCountResponse, _feed_GetTotalPostsCountRequest__Output, _feed_GetTotalPostsCountResponse__Output>

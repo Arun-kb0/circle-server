@@ -1,0 +1,36 @@
+syntax = "proto3";
+package notification;
+
+service NotificationService {
+  rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
+}
+
+enum NotificationType {
+  call = 0;
+  message = 1;
+  follow = 2;
+  like = 3;
+  comment = 4;
+  replay = 5;
+}
+
+message Notification {
+  string _id = 1;
+  string authorId = 2;
+  string receiverId = 3;
+  NotificationType type=4;
+  string message = 5;
+  bool read = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+
+message SendNotificationRequest {
+  Notification notification = 1;
+}
+
+message SendNotificationResponse {
+  bool success = 1;
+  string message = 2;
+}

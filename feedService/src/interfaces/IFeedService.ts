@@ -4,6 +4,7 @@ import ILike from './ILike'
 import { IPostExt } from './IPost'
 
 interface IFeedService {
+  getSingleComment(commentId: string): SvcReturnType<ICommentExt | null>
 
   getGlobalFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>>
   getUserFeed(page: number): SvcReturnType<PaginationPost<IPostExt[]>>

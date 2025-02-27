@@ -18,6 +18,9 @@ service FeedService {
   rpc GetTotalLikesCount(GetTotalLikesCountRequest) returns (GetTotalLikesCountResponse) {};
   rpc GetFeedCounts(GetFeedCountsRequest) returns (GetFeedCountsResponse) {};
   rpc GetPostsCountByDate(GetPostsCountByDateRequest) returns (GetPostsCountByDateResponse) {};
+
+  rpc GetSingleComment(GetSingleCommentRequest) returns (GetSingleCommentResponse) {};
+
 };
 
 
@@ -229,4 +232,12 @@ message PostsCountArray {
 }
 message GetPostsCountByDateResponse {
   repeated PostsCountArray postsCountArray=1;
+}
+
+message GetSingleCommentRequest {
+  string commentId=1;
+}
+
+message GetSingleCommentResponse {
+  Comment comment =1; 
 }

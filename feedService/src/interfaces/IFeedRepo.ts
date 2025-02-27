@@ -3,6 +3,7 @@ import { ICommentExt } from '../interfaces/IComment'
 import ILike, { ILikeExt } from './ILike'
 
 interface IFeedRepo {
+  getSingleComment(commentId: string): Promise<ICommentExt | null>
 
   getSearchPostsCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
   getPostCount(followeeIds?: string[]): Promise<number>

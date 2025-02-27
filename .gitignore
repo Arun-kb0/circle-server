@@ -30,3 +30,8 @@ feedService/logs
 chatService/node_modules
 chatService/.env
 chatService/logs
+
+# notification service
+notificationService/node_modules
+notificationService/.env
+notificationService/logs
