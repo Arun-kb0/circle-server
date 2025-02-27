@@ -6,6 +6,7 @@ import { ProtoGrpcType } from "../protos/auth";
 import httpStatus from "../constants/httpStatus";
 import HttpError from "../util/HttpError";
 import connectUserSockets from '../util/connectUserSockets'
+import { AuthRequest } from "../constants/types";
 
 const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'auth.proto')
@@ -121,7 +122,7 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     // * get userId from user obj from token
     const cookies = req.cookies

@@ -5,7 +5,6 @@ import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
 import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
 import { SocketEvents } from "../constants/enums";
-import onlineUsersMap from "../util/onlineUsersMap";
 
 const chatClient = ChatGrpcClient.getClient()
 ChatGrpcClient.IsClientConnected()
