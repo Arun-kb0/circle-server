@@ -2,9 +2,11 @@ import { INotification } from "./INotification";
 import { QueueNotificationDataType, SvcReturnType } from '../constants/types'
 
 interface INotificationService {
-  sendNotification(notification: INotification): SvcReturnType<{ status: boolean }>
-  sendLikeNotifications(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
+  handleNotification(data: QueueNotificationDataType): Promise<void>
 
+  handleLikeNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
+
+  sendNotification(notification: Omit<INotification, '_id'>): SvcReturnType<{ status: boolean }>
 }
 
 export default INotificationService

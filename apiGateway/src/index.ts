@@ -25,7 +25,6 @@ import chatRouter from './router/chatRouter'
 import { SocketEvents } from './constants/enums'
 import socketLogger from './middleware/socketLogger'
 import { getOnlineUserKeys, removeSingleOnlineUser, setOnlineUser} from './util/onlineUsersCache'
-// import onlineUsersMap from './util/onlineUsersMap'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -56,10 +55,6 @@ io.on("connection", async (socket) => {
 
   const userId = socket.handshake.query.userId
   if (typeof userId !== 'string') throw new Error('invalid userId on socket connection')
-  // if (userId) onlineUsersMap.set(userId, socket.id)
-  // socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
-  // socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
-
   if (userId) await setOnlineUser(userId, socket.id)
   const onlineUsers = await getOnlineUserKeys()
   io.emit(SocketEvents.getOnlineUsers, { onlineUsers })
@@ -74,9 +69,6 @@ io.on("connection", async (socket) => {
 
   socket.on("disconnect", async () => {
     console.log('user disconnected - ', socket.id)
-    // onlineUsersMap.delete(userId)
-    // socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
-
     await removeSingleOnlineUser(userId)
     const onlineUsers = await getOnlineUserKeys()
     io.emit(SocketEvents.getOnlineUsers, { onlineUsers })

@@ -4,38 +4,39 @@ import INotificationRepo from "../interfaces/INotificationRepo";
 import INotificationService from "../interfaces/INotificationService";
 import handleError from "../util/handleError";
 import FeedGrpcClient from '../config/FeedGrpcClient'
+import { Server, Socket } from "socket.io";
+import { SocketEvents } from "../constants/enums";
+import { getUser } from "../util/notificationUsersCache";
 
 const feedClient = FeedGrpcClient.getClient()
 
 class NotificationService implements INotificationService {
 
   constructor(
-    private notificationRepo: INotificationRepo
+    private notificationRepo: INotificationRepo,
+    private socket: Server
   ) { }
 
-  async sendLikeNotifications(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
+  async handleLikeNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
     try {
       console.log('sendNotification function in service')
       console.log(data)
       const { id, contentType, authorName } = data.data
       if (contentType === 'post') {
-        feedClient.getPost({ postId: id }, (err, msg) => {
+        feedClient.getPost({ postId: id }, async (err, msg) => {
           if (err) return new Error(err.message)
           if (!msg) return new Error('no data found')
           const receiverId = msg.post?.authorId
-          const notification: Partial<INotification> = {
+          const notification: Omit<INotification,'_id'> = {
             authorId: data.authorId,
-            receiverId,
+            receiverId : receiverId as string,
             type: "like",
             message: `${authorName} liked your post`,
             read: false,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt
           }
-          console.log(notification)
-          //  ! get socket by using this id
-          //   ! add user and socket id to redis
-          //  ! send notification to that socket
+          this.sendNotification(notification)
           return { err: null, data: { status: true } }
         })
       }
@@ -45,16 +46,16 @@ class NotificationService implements INotificationService {
           if (err) return new Error(err.message)
           if (!msg) return new Error('no data found')
           const receiverId = msg.comment?.authorId
-          const notification: Partial<INotification> = {
+          const notification: Omit<INotification,'_id'> = {
             authorId: data.authorId,
-            receiverId,
+            receiverId: receiverId as string,
             type: "like",
             message: `${authorName} liked your comment`,
             read: false,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt
           }
-          console.log(notification)
+          this.sendNotification(notification)
           return { err: null, data: { status: true } }
         })
       }
@@ -66,11 +67,22 @@ class NotificationService implements INotificationService {
     }
   }
 
+  async handleNotification(data: QueueNotificationDataType): Promise<void> {
+    switch (data.type) {
+      case 'like':
+        this.handleLikeNotification(data)
+        break;
+      default:
+        console.log('no matching call found')
+    }
+  }
 
-  async sendNotification(notification: INotification): SvcReturnType<{ status: boolean; }> {
+  async sendNotification(notification: Omit<INotification, '_id'>): SvcReturnType<{ status: boolean; }> {
     try {
-      console.log('sendNotification function in service')
       console.log(notification)
+      const userSocket = await getUser(notification.receiverId)
+      if (!userSocket) throw new Error('user socket not found in redis')
+      this.socket.to(userSocket).emit(SocketEvents.newNotification, notification)
       return { err: null, data: { status: true } }
     } catch (error) {
       const err = handleError(error)
