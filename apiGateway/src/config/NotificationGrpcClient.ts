@@ -5,7 +5,7 @@ import { ProtoGrpcType } from '../protos/notificationProto/notification'
 import { NotificationServiceClient } from '../protos/notificationProto/notification/NotificationService'
 
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'notificationProto', 'notification.proto')
-const HOST = process.env.NOTIFICATION_SERVICE_HOST || 'localhost'
+const HOST = process.env.NOTIFICATION_SERVICE_HOST || 'docker.host.internal'
 const PORT = process.env.NOTIFICATION_SERVICE_PORT || 50056
 const IP_ADDRESS = `${HOST}:${PORT}`
 console.log('user service ip  = ', IP_ADDRESS)

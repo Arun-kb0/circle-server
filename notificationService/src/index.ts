@@ -52,23 +52,12 @@ app.all('*', (req, res) => {
 })
 
 
-// dbConnect(MONGODB_URI)
-//   .then(() => {
-//     grpcConnect()
-//     healthCheck.listen(HTTP_PORT, () => {
-//       console.log(`HTTP health check server running on port ${HTTP_PORT}`);
-//     })
-//   })
-//   .catch((err) => console.log(err))
-
-
-
-grpcConnect()
-subscribeToNotificationQueue()
-server.listen(HTTP_PORT, () => {
-  console.log(`notification service is running at ${HTTP_PORT}`)
-})
-
-// healthCheck.listen(HTTP_PORT, () => {
-//   console.log(`HTTP health check server running on port ${HTTP_PORT}`);
-// })
+dbConnect(MONGODB_URI)
+  .then(() => {
+    grpcConnect()
+    subscribeToNotificationQueue()
+    server.listen(HTTP_PORT, () => {
+      console.log(`notification service is running at ${HTTP_PORT}`)
+    })
+  })
+  .catch((err)=> console.log(err))

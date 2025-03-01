@@ -1,3 +1,5 @@
+import { INotificationExt } from "../interfaces/INotification";
+
 export type SvcReturnType<T> = Promise<{
   err: number | null;
   errMsg?: string
@@ -14,4 +16,10 @@ export type QueueNotificationDataType = {
   createdAt: string
   updatedAt: string
   data: any
+}
+
+export type PaginationNotifications = {
+  currentPage: number
+  numberOfPages: number
+  notifications: INotificationExt[]
 }

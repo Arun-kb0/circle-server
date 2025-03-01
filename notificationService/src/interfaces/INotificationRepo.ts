@@ -1,10 +1,10 @@
-import { QueueNotificationDataType } from "../constants/types"
+import { PaginationNotifications, QueueNotificationDataType } from "../constants/types"
 import { INotification } from "./INotification"
 
 interface INotificationRepo {
-  publishNotification(notification: INotification): Promise<{ status: boolean }>
-  sendNotifications(data: INotification): Promise<{ status: boolean }>
-
+  createNotification(notification: Omit<INotification, '_id' | 'cratedAt' | 'updatedAt'>): Promise<INotification>
+  readNotifications(notificationIds: string[]): Promise<string[]>
+  getNotifications(receiverId: string, page: number): Promise<PaginationNotifications>
 }
 
 export default INotificationRepo

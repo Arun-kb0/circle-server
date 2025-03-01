@@ -11,6 +11,7 @@ import PostBaseRepo from './repositories/base/PostBaseRepo'
 import CommentBaseRepo from './repositories/base/CommentBaseRepo'
 import LikeBaseRepo from './repositories/base/LikeBaseRepo'
 
+const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || ""
 
 const postBaseRepo = new PostBaseRepo()
 const postRepo = new PostRepo(postBaseRepo)
@@ -19,10 +20,10 @@ export const postController = new PostController(postService)
 
 const commentBaseRepo = new CommentBaseRepo()
 const commentRepo = new CommentRepo(commentBaseRepo)
-export const commentService = new CommentService(commentRepo)
+export const commentService = new CommentService(commentRepo, QUEUE_NAME)
 export const commentController = new CommentController(commentService)
 
 const likeBaseRepo = new LikeBaseRepo()
 const likeRepo = new LikeRepo(likeBaseRepo)
-export const likeService = new LikeService(likeRepo)
+export const likeService = new LikeService(likeRepo, QUEUE_NAME)
 export const likeController = new LikeController(likeService)

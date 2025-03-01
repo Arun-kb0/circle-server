@@ -8,12 +8,12 @@ import { publishMessage } from '../util/rabbitmq';
 import { QueueNotificationDataType } from '../constants/types'
 import { addUserToLike } from '../util/userClientFunctions';
 
-const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || ""
 
 class LikeService implements ILikeService {
 
   constructor(
-    private likeRepo: ILikeRepo
+    private likeRepo: ILikeRepo,
+    private QUEUE_NAME: string
   ) { }
 
   async like(contentId: string, contentType: ILike['contentType'], authorId: string): SvcFuncReturnType<ILikeExt> {
@@ -46,7 +46,7 @@ class LikeService implements ILikeService {
           authorName: userAddedLike?.authorName
         }
       }
-      publishMessage(QUEUE_NAME, JSON.stringify(notificationData))
+      publishMessage(this.QUEUE_NAME, JSON.stringify(notificationData))
       return { err: null, data: newLike }
     } catch (error) {
       const { code, message } = handleError(error)

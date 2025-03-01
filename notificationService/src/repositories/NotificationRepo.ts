@@ -1,39 +1,55 @@
 import { INotification } from "../interfaces/INotification";
 import INotificationRepo from "../interfaces/INotificationRepo";
-import IQueueBaseRepo from "../interfaces/IQueueBaseRepo";
+import INotificationBaseRepo from "../interfaces/INotificationBaseRepo";
 import handleError from "../util/handleError";
-import { publishMessage } from '../util/rabbitmq'
+import { PaginationNotifications } from "../constants/types";
+import { addUserToNotifications } from '../util/notificationClientFunctions'
 
-const QUEUE_NAME = process.env.QUEUE_NAME || ''
+const LIMIT = 10
 
 class NotificationRepo implements INotificationRepo {
 
   constructor(
-    private queueBaseRepo: IQueueBaseRepo
+    private notificationBaseRepo: INotificationBaseRepo
   ) { }
 
-  async sendNotifications(notification: INotification): Promise<{ status: boolean; }> {
+  async getNotifications(receiverId: string, page: number): Promise<PaginationNotifications> {
     try {
-      console.log('notification repo')
-      console.log(notification)
-      return { status: true }
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.notificationBaseRepo.findNotificationsByReceiverIdCount(receiverId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const notifications = await this.notificationBaseRepo.findNotificationsByReceiverId(receiverId, LIMIT, startIndex)
+      const notificationWithUsers = await addUserToNotifications(notifications)
+      return {
+        notifications: notificationWithUsers,
+        numberOfPages,
+        currentPage: page + 1
+      }
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
     }
   }
 
-  async publishNotification(notification: INotification): Promise<{ status: boolean; }> {
+  async createNotification(notification: Omit<INotification, "_id" | "cratedAt" | "updatedAt">): Promise<INotification> {
     try {
-      publishMessage(QUEUE_NAME, JSON.stringify(notification))
-      return { status: true }
+      const newNotification = await this.notificationBaseRepo.createNotification(notification)
+      return newNotification
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
     }
   }
 
-
+  async readNotifications(notificationIds: string[]): Promise<string[]> {
+    try {
+      const updatedIds = await this.notificationBaseRepo.readMultipleNotifications(notificationIds)
+      return updatedIds
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
 
 }

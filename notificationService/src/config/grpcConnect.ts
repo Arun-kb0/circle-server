@@ -29,8 +29,8 @@ const grpcConnect = () => {
   server.addService(
     notificationProto.notification.NotificationService.service,
     {
-      // ! lisen for notification from seperate module and call this from index ts
-      sendNotification: logInterceptor(notificationController.sendNotification)
+      getNotifications: logInterceptor(notificationController.getNotifications),
+      readNotifications: logInterceptor(notificationController.readNotifications)
     }
   )
 

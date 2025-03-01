@@ -9,11 +9,13 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 
 export interface ProtoGrpcType {
   notification: {
+    GetNotificationsRequest: MessageTypeDefinition
+    GetNotificationsResponse: MessageTypeDefinition
     Notification: MessageTypeDefinition
     NotificationService: SubtypeConstructor<typeof grpc.Client, _notification_NotificationServiceClient> & { service: _notification_NotificationServiceDefinition }
     NotificationType: EnumTypeDefinition
-    SendNotificationRequest: MessageTypeDefinition
-    SendNotificationResponse: MessageTypeDefinition
+    ReadNotificationsRequest: MessageTypeDefinition
+    ReadNotificationsResponse: MessageTypeDefinition
   }
 }
 

@@ -2,7 +2,8 @@ syntax = "proto3";
 package notification;
 
 service NotificationService {
-  rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
+  rpc GetNotifications  (GetNotificationsRequest) returns (GetNotificationsResponse);
+  rpc ReadNotifications  (ReadNotificationsRequest) returns (ReadNotificationsResponse);
 }
 
 enum NotificationType {
@@ -25,12 +26,21 @@ message Notification {
   string updatedAt = 8;
 }
 
-
-message SendNotificationRequest {
-  Notification notification = 1;
+message GetNotificationsRequest {
+  int32 page=1;
+  string receiverId=2;
 }
 
-message SendNotificationResponse {
-  bool success = 1;
-  string message = 2;
+message GetNotificationsResponse {
+  int32 numberOfPages=1;
+  int32 currentPage=2;
+  repeated Notification notifications=3;
+}
+
+message ReadNotificationsRequest {
+  repeated string notificationIds=1;
+}
+
+message ReadNotificationsResponse {
+  repeated string notificationIds=1;
 }
