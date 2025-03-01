@@ -23,3 +23,9 @@ export type PaginationNotifications = {
   numberOfPages: number
   notifications: INotificationExt[]
 }
+
+export type ChatUserType = {
+  userId: string
+  name: string,
+  image?: string
+}

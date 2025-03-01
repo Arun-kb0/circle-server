@@ -74,7 +74,14 @@ export type CallUserEventDataType = {
   signal: any
   from: string
   name: string
-  userToCall: string
+  userToCall: string,
+  extraData: {
+    authorId: string
+    authorName: string
+    authorImage?: string
+    receiverId: string
+    receiverName: string
+  }
 }
 
 export type AnswerCallEventDataType = {
@@ -98,13 +105,13 @@ export type LiveUserDataType = {
 export type LiveIceCandidateDataType = {
   candidate: RTCIceCandidateInit,
   to: string
-  streamerUserId:string
+  streamerUserId: string
 }
 
 export type AnswerLiveDataType = {
   signal: any
   to: string
-  streamerUserId:string
+  streamerUserId: string
 }
 
 
@@ -119,3 +126,14 @@ export type LiveMessageType = {
   updatedAt: Date
 }
 
+export type QueueNotificationDataType = {
+  _id: string
+  authorId: string
+  receiverId: string
+  type: 'call' | 'message' | 'follow' | 'like' | 'comment' | 'replay'
+  message: string
+  read: boolean
+  createdAt: string
+  updatedAt: string
+  data: any
+}

@@ -1,4 +1,4 @@
-import { PaginationNotifications, QueueNotificationDataType, SvcReturnType } from "../constants/types";
+import { ChatUserType, PaginationNotifications, QueueNotificationDataType, SvcReturnType } from "../constants/types";
 import { INotification, INotificationExt } from "../interfaces/INotification";
 import INotificationRepo from "../interfaces/INotificationRepo";
 import INotificationService from "../interfaces/INotificationService";
@@ -16,6 +16,32 @@ class NotificationService implements INotificationService {
     private notificationRepo: INotificationRepo,
     private socket: Server
   ) { }
+
+  async handleCallNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
+    try {
+      const { authorName, authorImage, roomId, signal ,callModelType} = data.data
+      const notification: Omit<INotificationExt, '_id'> = {
+        authorId: data.authorId,
+        receiverId: data.receiverId,
+        type: "call",
+        message: `incoming call from ${authorName}`,
+        read: false,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        authorName: authorName
+      }
+      const chatUser: ChatUserType = {
+        userId: data.authorId,
+        name: authorName,
+        image: authorImage
+      }
+      this.sendNotification(notification, { chatUser, roomId, signal, callModelType })
+      return { err: null, data: { status: true } }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
 
   async handleCommentNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
     try {
@@ -125,12 +151,14 @@ class NotificationService implements INotificationService {
       case 'comment':
         this.handleCommentNotification(data)
         break
+      case 'call':
+        this.handleCallNotification(data)
       default:
         console.log('no matching call found')
     }
   }
 
-  async sendNotification(notification: Omit<INotificationExt, '_id'>): SvcReturnType<{ status: boolean; }> {
+  async sendNotification(notification: Omit<INotificationExt, '_id'>, data?: any): SvcReturnType<{ status: boolean; }> {
     try {
       if (notification.receiverId === notification.authorId) return { err: null, data: { status: false } }
       console.log(notification)
@@ -138,7 +166,7 @@ class NotificationService implements INotificationService {
       if (!userSocket) throw new Error('user socket not found in redis')
       const { authorName, authorImage, createdAt, updatedAt, ...rest } = notification
       const newNotification = await this.notificationRepo.createNotification(rest as INotification)
-      const updatedNotification = { ...newNotification, authorImage, authorName }
+      const updatedNotification = { ...newNotification, authorImage, authorName, data }
       this.socket.to(userSocket).emit(SocketEvents.newNotification, updatedNotification)
       return { err: null, data: { status: true } }
     } catch (error) {
