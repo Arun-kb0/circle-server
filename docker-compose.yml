@@ -85,6 +85,10 @@ services:
       - HEALTH_CHECK_PORT=${USER_HEALTH_CHECK_PORT}
       - USER_DB_URI=${USER_DB_URI}
       - LOGGER_DB=${USER_LOGGER_DB}
+      - POST_RABBITMQ_USER=${RABBITMQ_USER}
+      - POST_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
 
   rabbitmq:
     image: rabbitmq:3-management

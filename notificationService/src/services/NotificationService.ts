@@ -7,8 +7,10 @@ import FeedGrpcClient from '../config/FeedGrpcClient'
 import { Server, Socket } from "socket.io";
 import { SocketEvents } from "../constants/enums";
 import { getUser } from "../util/notificationUsersCache";
+import UserGrpcClient from "../config/UserGrpcClient";
 
 const feedClient = FeedGrpcClient.getClient()
+const userClient = UserGrpcClient.getClient()
 
 class NotificationService implements INotificationService {
 
@@ -17,9 +19,35 @@ class NotificationService implements INotificationService {
     private socket: Server
   ) { }
 
+  async handleFollowNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
+    try {
+      userClient.getUser({ userId: data.authorId }, (err, msg) => {
+        if (err) return new Error(err.message)
+        if (!msg) return new Error('no data found')
+        const name = msg.user?.name
+        const notification: Omit<INotificationExt, '_id'> = {
+          authorId: data.authorId,
+          receiverId: data.receiverId,
+          type: "follow",
+          message: `${name} started following you`,
+          read: false,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          authorName: name as string
+        }
+        this.sendNotification(notification)
+        return { err: null, data: { status: true } }
+      })
+      return { err: null, data: { status: false } }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
   async handleCallNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean; }> {
     try {
-      const { authorName, authorImage, roomId, signal ,callModelType} = data.data
+      const { authorName, authorImage, roomId, signal, callModelType } = data.data
       const notification: Omit<INotificationExt, '_id'> = {
         authorId: data.authorId,
         receiverId: data.receiverId,
@@ -153,6 +181,10 @@ class NotificationService implements INotificationService {
         break
       case 'call':
         this.handleCallNotification(data)
+        break
+      case 'follow':
+        this.handleFollowNotification(data)
+        break
       default:
         console.log('no matching call found')
     }

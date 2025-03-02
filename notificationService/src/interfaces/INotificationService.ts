@@ -6,7 +6,9 @@ interface INotificationService {
   handleLikeNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
   handleCommentNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
   handleCallNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
+  handleFollowNotification(data: QueueNotificationDataType): SvcReturnType<{ status: boolean }>
  
+
   sendNotification(notification: Omit<INotificationExt, '_id'>,data?:any): SvcReturnType<{ status: boolean }>
 
   readNotifications(notificationIds: string[]): SvcReturnType<string[]>
