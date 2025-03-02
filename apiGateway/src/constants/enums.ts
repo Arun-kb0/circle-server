@@ -11,6 +11,7 @@ export enum SocketEvents {
   sendMessage = 'send-message',
   receiveMessage = 'receive-message',
   messageDeleted = 'message-deleted',
+  editMessage = 'edit-message',
 
   // * call
   joinCallRoom = 'join-call-room',

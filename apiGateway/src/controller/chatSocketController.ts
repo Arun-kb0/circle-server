@@ -40,12 +40,19 @@ export const sendMessage = (socket: Socket, message: any) => {
 
 export const messageDeleted = async (socket: Socket, message: MessageType) => {
   try {
-    console.log('messageDeleted controller call')
-    console.log(message)
-    // const userSocketId = await getSingleOnlineUser(message.authorId)
-    // console.log(userSocketId)
-    // if (!userSocketId) throw new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'no usersocket found')
     socket.to(message.roomId).emit(SocketEvents.messageDeleted, message)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const editMessage = async (socket: Socket, message: any) => {
+  try {
+    chatClient.updateMessage({ messageId: message.id, message }, (err, msg) => {
+      if (err) return socketErrorHandler(err)
+      if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'update message failed.')
+      socket.to(message.roomId).emit(SocketEvents.editMessage, message)
+    })
   } catch (error) {
     socketErrorHandler(error)
   }

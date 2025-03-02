@@ -78,7 +78,8 @@ message CreateMessageResponse {
 
 
 message UpdateMessageRequest {
-  Message message =1;
+  string messageId=1;
+  Message message =2;
 }
 
 message UpdateMessageResponse {
@@ -140,7 +141,8 @@ message CreateRoomResponse {
 }
 
 message UpdateRoomRequest {
-  ChatRoom chatRoom=1;
+  string roomId=1;
+  ChatRoom chatRoom=2;
 }
 
 message UpdateRoomResponse {
@@ -161,6 +163,5 @@ message FindRoomByRoomIdRequest {
 }
 
 message FindRoomByRoomIdResponse {
-  repeated ChatRoom chatRooms=1;
+  ChatRoom chatRoom=1;
 }
-

@@ -24,8 +24,8 @@ export type MessageType = {
   receiverId: string
   mediaType: 'text' | 'audio' | 'photo'
   message: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   status: 'sent' | 'received' | 'seen'
 }
 
