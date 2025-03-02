@@ -3,13 +3,15 @@ import ChatGrpcClient from '../config/ChatGrpcClient'
 import socketErrorHandler from '../middleware/socketErrorHandler'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
-import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, QueueNotificationDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
+import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, MessageType, QueueNotificationDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
 import { SocketEvents } from "../constants/enums";
 import { publishMessage } from '../util/rabbitmq'
+import { getSingleOnlineUser } from "../util/onlineUsersCache";
 
 const chatClient = ChatGrpcClient.getClient()
 ChatGrpcClient.IsClientConnected()
 const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || 'notification-queue'
+
 
 export const joinUserRoom = (socket: Socket, friendsRoomId: string) => {
   socket.join(friendsRoomId)
@@ -31,6 +33,19 @@ export const sendMessage = (socket: Socket, message: any) => {
       if (err) return socketErrorHandler(err)
       if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Send message failed.')
     })
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const messageDeleted = async (socket: Socket, message: MessageType) => {
+  try {
+    console.log('messageDeleted controller call')
+    console.log(message)
+    // const userSocketId = await getSingleOnlineUser(message.authorId)
+    // console.log(userSocketId)
+    // if (!userSocketId) throw new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'no usersocket found')
+    socket.to(message.roomId).emit(SocketEvents.messageDeleted, message)
   } catch (error) {
     socketErrorHandler(error)
   }

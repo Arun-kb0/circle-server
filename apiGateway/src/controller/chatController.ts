@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import httpStatus from '../constants/httpStatus'
 import HttpError from '../util/HttpError'
 import ChatGrpcClient from '../config/ChatGrpcClient'
-import { randomUUID } from "crypto"
+
 
 const chatClient = ChatGrpcClient.getClient()
 
@@ -48,6 +48,7 @@ export const deleteMessage = async (req: Request, res: Response, next: NextFunct
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'delete messages failed.'))
       res.status(httpStatus.OK).json({ ...msg })
     })
+
   } catch (error) {
     next(error)
   }

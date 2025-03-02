@@ -10,6 +10,7 @@ export enum SocketEvents {
   joinRoom = 'join-room',
   sendMessage = 'send-message',
   receiveMessage = 'receive-message',
+  messageDeleted = 'message-deleted',
 
   // * call
   joinCallRoom = 'join-call-room',
