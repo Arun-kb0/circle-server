@@ -4,7 +4,7 @@ interface IMessage {
   roomId: string
   authorId: string
   receiverId: string
-  mediaType: 'text' | 'audio' | 'photo'
+  mediaType: 'text' | 'audio' | 'photo' | 'gif'
   message: string
   createdAt: string
   updatedAt: string
@@ -19,7 +19,7 @@ export interface IMessageExt {
   authorName?: string
   authorImage?: string
   receiverId: string
-  mediaType: 'text' | 'audio' | 'photo'
+  mediaType: 'text' | 'audio' | 'photo' | 'gif'
   message: string
   createdAt: string
   updatedAt: string
