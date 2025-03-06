@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package payment;
+
+
+service PaymentService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
+  rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentResponse) {};
+  rpc GetSubscriptions (GetSubscriptionsRequest) returns (GetSubscriptionsResponse) {};
+}
+
+message OrderEnum {
+  enum OrderType {
+    user_subscription=0;
+    advertisement=1;
+  }
+
+  enum UserSubscriptionDuration {
+    monthly=0;
+    yearly=1;
+    lifetime=2;
+  }
+
+  enum State {
+    pending=0;
+    completed=1;
+    failed=2;
+  }
+}
+
+message Order {
+  string _id=1;
+  string orderId=2;
+  string userId=3;
+  int32 amount=4;
+  OrderEnum.OrderType orderType=5; 
+  OrderEnum.UserSubscriptionDuration userSubscriptionDuration=6;   
+  OrderEnum.State state=7;
+  string createdAt=8;
+  string updatedAt=9;
+}
+message PaymentEnum {
+  enum Status {
+    initiated=0;
+    successful=1;
+    failed=2;
+  }
+}
+
+message Payment {
+  string _id=1;
+  string paymentId=2;
+  string orderId=3;
+  string method=4;
+  int32 amount=5;
+  string currency=6;
+  PaymentEnum.Status status=7;
+  string transactionDate=8;
+  string createdAt=9;
+  string updatedAt=10;
+}
+
+
+message SubscriptionEnum {
+  enum Plan {
+    monthly=0;
+    yearly=1;
+    lifetime=2;
+  }
+
+  enum Status {
+    inactive=0;
+    active=1;
+    cancelled=2;
+  }
+}
+
+message Subscription {
+  string _id=1;
+  string subscriberUserId=2;
+  string subscriberToUserId=3;
+  SubscriptionEnum.Plan plan=4;
+  SubscriptionEnum.Status status=5;
+  string createdAt=6;
+  string updatedAt=7;
+}
+
+message CreateOrderRequest {
+  Order order=1;
+}
+
+message CreateOrderResponse {
+  Order order=2;
+}
+
+message CreatePaymentRequest {
+  Payment paymentData=1;
+}
+
+message CreatePaymentResponse  {
+  Payment paymentData=1;
+}
+
+message GetSubscriptionsRequest {
+  string userId =1;
+}
+
+message GetSubscriptionsResponse {
+ repeated Subscription subscriptions=1;
+}

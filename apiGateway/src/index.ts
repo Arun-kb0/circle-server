@@ -26,6 +26,7 @@ import { SocketEvents } from './constants/enums'
 import socketLogger from './middleware/socketLogger'
 import { getOnlineUserKeys, removeSingleOnlineUser, setOnlineUser } from './util/onlineUsersCache'
 import notificationRouter from './router/notificationRoutes'
+import paymentRouter from './router/paymentRouter'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -46,7 +47,8 @@ app.use('/comment', authorize, commentRouter)
 app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
 app.use('/chat', authorize, chatRouter)
-app.use('/notification', authorize, notificationRouter )
+app.use('/notification', authorize, notificationRouter)
+app.use('/payment', paymentRouter)
 
 app.use('/admin', authorize, adminRouter)
 

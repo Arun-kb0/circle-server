@@ -35,3 +35,8 @@ chatService/logs
 notificationService/node_modules
 notificationService/.env
 notificationService/logs
+
+# payment service
+paymentService/node_modules
+paymentService/.env
+paymentService/logs

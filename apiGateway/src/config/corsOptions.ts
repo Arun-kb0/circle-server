@@ -3,12 +3,17 @@ import { allowOrigins } from './allowOrigins'
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    if (origin && allowOrigins.includes(origin) || !origin) {
+    if (!origin || origin === 'null' || allowOrigins.includes(origin)) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS.'))
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-VERIFY",
+    "X-MERCHANT-ID"
+  ],
 }
