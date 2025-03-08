@@ -1,6 +1,7 @@
 
 interface ISubscription {
   _id: string
+  merchantTransactionId:string
   subscriberUserId: string
   subscriberToUserId: string
   plan: 'monthly' | 'yearly' | 'lifetime'

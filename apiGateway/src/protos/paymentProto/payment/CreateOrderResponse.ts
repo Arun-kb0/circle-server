@@ -1,11 +1,13 @@
 // Original file: src/proto/payment.proto
 
-import type { Order as _payment_Order, Order__Output as _payment_Order__Output } from '../payment/Order';
+import type { CreateOrderOption as _payment_CreateOrderOption, CreateOrderOption__Output as _payment_CreateOrderOption__Output } from '../payment/CreateOrderOption';
 
 export interface CreateOrderResponse {
-  'order'?: (_payment_Order | null);
+  'option'?: (_payment_CreateOrderOption | null);
+  'orderId'?: (string);
 }
 
 export interface CreateOrderResponse__Output {
-  'order'?: (_payment_Order__Output);
+  'option'?: (_payment_CreateOrderOption__Output);
+  'orderId'?: (string);
 }

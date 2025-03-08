@@ -14,7 +14,7 @@ export const startGrpcServer = () => {
         console.log(error)
         return
       }
-      console.log(`chat service is running on ${IP_ADDRESS}`)
+      console.log(`payment service is running on ${IP_ADDRESS}`)
     }
   )
 }

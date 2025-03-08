@@ -29,8 +29,17 @@ const grpcConnect = () => {
     paymentProto.payment.PaymentService.service,
     {
       createOrder: logInterceptor(paymentController.createOrder),
+      createOrderStatusOption: logInterceptor(paymentController.createOrderStatusOption),
+      updateOrder: logInterceptor(paymentController.updateOrder),
+
       createPayment: logInterceptor(paymentController.createPayment),
-      getSubscriptions: logInterceptor(paymentController.getSubscriptions)
+
+      getUserSubscriptions: logInterceptor(paymentController.getUserSubscriptions),
+      createSubscription: logInterceptor(paymentController.createSubscription),
+
+      subscribeWithWallet: logInterceptor(paymentController.subscribeWithWallet),
+      getUserTransactions: logInterceptor(paymentController.getUserTransactions),
+      getUserWallet: logInterceptor(paymentController.getUserWallet),
     }
   )
 

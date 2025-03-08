@@ -1,7 +1,8 @@
 
 interface IOrder {
   _id: string
-  orderId: string
+  orderId: string,
+  merchantTransactionId:string
   userId: string
   amount: number
   orderType: 'user_subscription' | 'advertisement'

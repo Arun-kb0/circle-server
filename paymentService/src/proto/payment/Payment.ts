@@ -4,7 +4,7 @@ import type { _payment_PaymentEnum_Status, _payment_PaymentEnum_Status__Output }
 
 export interface Payment {
   '_id'?: (string);
-  'paymentId'?: (string);
+  'transactionId'?: (string);
   'orderId'?: (string);
   'method'?: (string);
   'amount'?: (number);
@@ -13,11 +13,15 @@ export interface Payment {
   'transactionDate'?: (string);
   'createdAt'?: (string);
   'updatedAt'?: (string);
+  'merchantTransactionId'?: (string);
+  'arn'?: (string);
+  'authRefId'?: (string);
+  'userId'?: (string);
 }
 
 export interface Payment__Output {
   '_id'?: (string);
-  'paymentId'?: (string);
+  'transactionId'?: (string);
   'orderId'?: (string);
   'method'?: (string);
   'amount'?: (number);
@@ -26,4 +30,8 @@ export interface Payment__Output {
   'transactionDate'?: (string);
   'createdAt'?: (string);
   'updatedAt'?: (string);
+  'merchantTransactionId'?: (string);
+  'arn'?: (string);
+  'authRefId'?: (string);
+  'userId'?: (string);
 }

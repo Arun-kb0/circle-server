@@ -6,13 +6,42 @@ import handleError from '../../util/handleError'
 
 class SubscriptionBaseRepo implements ISubscriptionBaseRepo {
 
-  async findSubscriptionsByUserId(userId: string): Promise<ISubscription[]> {
+
+  async findSubsByMerchantTransactionIdAndUpdate(merchantTransactionId: string, subscription: Partial<ISubscription>): Promise<ISubscription | null> {
+    try {
+      const convertedSub = convertISubscriptionToISubscriptionDb(subscription)
+      const updatedSub = await Subscription.findOneAndUpdate(
+        { merchantTransactionId },
+        { $set: convertedSub },
+        { new: true }
+      )
+      if (!updatedSub) return null
+      return convertISubscriptionDbToISubscription(updatedSub)
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+
+  async findSubscriptionsByUserId(userId: string, limit: number, startIndex: number): Promise<ISubscription[]> {
     try {
       const userObjId = convertToObjectId(userId)
-      const subscriptions = await Subscription.find({ subscriberUserId: userObjId })
-      if (!subscriptions) return []
+      const subscriptions = await Subscription.find({ subscriberUserId: userObjId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
       const convertedSubscriptions = subscriptions.map(item => convertISubscriptionDbToISubscription(item))
       return convertedSubscriptions
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+
+  async findSubscriptionsByUserIdCount(userId: string): Promise<number> {
+    try {
+      const userObjId = convertToObjectId(userId)
+      const count = await Subscription.countDocuments({ subscriberUserId: userObjId })
+      return count
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)

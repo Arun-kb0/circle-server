@@ -11,6 +11,7 @@ export interface Subscription {
   'status'?: (_payment_SubscriptionEnum_Status);
   'createdAt'?: (string);
   'updatedAt'?: (string);
+  'merchantTransactionId'?: (string);
 }
 
 export interface Subscription__Output {
@@ -21,4 +22,5 @@ export interface Subscription__Output {
   'status'?: (_payment_SubscriptionEnum_Status__Output);
   'createdAt'?: (string);
   'updatedAt'?: (string);
+  'merchantTransactionId'?: (string);
 }

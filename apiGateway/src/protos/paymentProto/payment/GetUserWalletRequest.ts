@@ -1,10 +1,10 @@
 // Original file: src/proto/payment.proto
 
 
-export interface GetSubscriptionsRequest {
+export interface GetUserWalletRequest {
   'userId'?: (string);
 }
 
-export interface GetSubscriptionsRequest__Output {
+export interface GetUserWalletRequest__Output {
   'userId'?: (string);
 }

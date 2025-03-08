@@ -7,6 +7,7 @@ import type { _payment_OrderEnum_State, _payment_OrderEnum_State__Output } from 
 export interface Order {
   '_id'?: (string);
   'orderId'?: (string);
+  'merchantTransactionId'?: (string);
   'userId'?: (string);
   'amount'?: (number);
   'orderType'?: (_payment_OrderEnum_OrderType);
@@ -19,6 +20,7 @@ export interface Order {
 export interface Order__Output {
   '_id'?: (string);
   'orderId'?: (string);
+  'merchantTransactionId'?: (string);
   'userId'?: (string);
   'amount'?: (number);
   'orderType'?: (_payment_OrderEnum_OrderType__Output);

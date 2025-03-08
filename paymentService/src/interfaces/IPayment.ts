@@ -1,7 +1,7 @@
 
 interface IPayment {
   _id: string
-  paymentId: string
+  transactionId: string
   orderId: string
   method: string
   amount: number
@@ -10,6 +10,10 @@ interface IPayment {
   transactionDate: string
   createdAt: string
   updatedAt: string
+  merchantTransactionId: string
+  arn: string
+  authRefId: string
+  userId:string
 }
 
 export default IPayment

@@ -2,6 +2,7 @@ import mongoose, { Schema, Types, Document, Date } from 'mongoose'
 
 export interface ISubscriptionDb extends Document {
   _id: Types.ObjectId
+  merchantTransactionId: string
   subscriberUserId: Types.ObjectId
   subscriberToUserId: Types.ObjectId
   plan: 'monthly' | 'yearly' | 'lifetime'
@@ -11,11 +12,15 @@ export interface ISubscriptionDb extends Document {
 }
 
 const SubscriptionSchema: Schema = new Schema({
-  subscriberUserId: { type: Types.ObjectId, required: true, ref: 'User' },
-  subscriberToUserId: { type: Types.ObjectId, required: true, ref: 'User' },
+  merchantTransactionId: { type: String, required: true, index: true },
+  subscriberUserId: { type: Types.ObjectId, required: true, ref: 'User', index: true },
+  subscriberToUserId: { type: Types.ObjectId, required: true, ref: 'User', index: true },
   plan: { type: String, enum: ['monthly', 'yearly', 'lifetime'], required: true },
   status: { type: String, enum: ['inactive', 'active', 'cancelled'], required: true },
-})
+},
+  { timestamps: true }
+);
+
 
 export const Subscription = mongoose.model<ISubscriptionDb>('Subscription', SubscriptionSchema);
 

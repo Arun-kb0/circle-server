@@ -1,6 +1,6 @@
 import UserGrpcClient from '../config/UserGrpcClient'
 import { User } from '../proto/userProto/user/User'
-import IMessage, { IMessageExt } from '../interfaces/IMessage'
+import ITransaction, { ITransactionExt } from '../interfaces/ITransaction'
 
 const client = UserGrpcClient.getClient()
 
@@ -40,34 +40,34 @@ const getUser = async (userId: string) => {
 }
 
 
-export const addUserToMessage = async (message: IMessage): Promise<IMessageExt> => {
+export const addUserToTransaction = async (transaction: ITransaction): Promise<ITransactionExt> => {
   try {
-    const user = await getUser(message.authorId)
+    const user = await getUser(transaction.senderId)
     return {
-      ...message,
-      authorName: user?.name || undefined,
-      authorImage: user?.image?.url || undefined,
+      ...transaction,
+      userName: user?.name || undefined,
+      userImage: user?.image?.url || undefined,
     }
   } catch (error) {
     console.log('users and posts merging failed')
     console.log(error)
-    return message
+    return transaction
   }
 }
 
-export const addUsersToMessages = async (messages: IMessage[]): Promise<IMessageExt[]> => {
+export const addUsersToTransactions = async (transactions: ITransaction[]): Promise<ITransactionExt[]> => {
   try {
-    const userIds = messages.map(msg => msg.authorId)
+    const userIds = transactions.map(msg => msg.senderId)
     const users = await getMultipleUsers(userIds)
-    const msgWithUsers = messages.map((msg): IMessageExt => {
-      const user = users.find((user) => user._id === msg.authorId);
+    const transactionsWithUser = transactions.map((transaction): ITransactionExt => {
+      const user = users.find((item) => item._id === transaction.senderId);
       return {
-        ...msg,
-        authorName: user?.name || undefined,
-        authorImage: user?.image?.url || undefined,
+        ...transaction,
+        userName: user?.name || undefined,
+        userImage: user?.image?.url || undefined,
       }
     })
-    return msgWithUsers
+    return transactionsWithUser
   } catch (error) {
     console.log('users and posts merging failed')
     console.log(error)

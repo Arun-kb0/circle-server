@@ -6,6 +6,16 @@ import handleError from '../../util/handleError'
 
 class OrderBaseRepo implements IOrderBaseRepo {
 
+  async findOrderByMerchantTransactionId(merchantTransactionId: string): Promise<IOrder | null> {
+    try {
+      const order = await Order.findOne({ merchantTransactionId })
+      return order ? convertIOrderDbToIOrder(order) : null
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async createOrder(order: Partial<IOrder>): Promise<IOrder> {
     try {
       const convertedOrder = convertIOrderToIOrderDb(order)
@@ -17,12 +27,11 @@ class OrderBaseRepo implements IOrderBaseRepo {
     }
   }
 
-  async updateOrder(orderId: string, order: Partial<IOrder>): Promise<IOrder> {
+  async findByOrderIdAndUpdate(orderId: string, order: Partial<IOrder>): Promise<IOrder> {
     try {
       const convertedOrder = convertIOrderToIOrderDb(order)
-      const orderObjId = convertToObjectId(orderId)
       const updatedOrder = await Order.findOneAndUpdate(
-        { _id: orderObjId },
+        { orderId },
         { $set: convertedOrder },
         { new: true }
       )
@@ -57,6 +66,7 @@ class OrderBaseRepo implements IOrderBaseRepo {
       throw new Error(err.message)
     }
   }
+
 
 }
 

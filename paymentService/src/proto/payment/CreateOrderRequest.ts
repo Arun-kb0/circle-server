@@ -1,11 +1,17 @@
 // Original file: src/proto/payment.proto
 
-import type { Order as _payment_Order, Order__Output as _payment_Order__Output } from '../payment/Order';
+import type { _payment_OrderEnum_OrderType, _payment_OrderEnum_OrderType__Output } from '../payment/OrderEnum';
 
 export interface CreateOrderRequest {
-  'order'?: (_payment_Order | null);
+  'subscriberUserId'?: (string);
+  'subscriberEmail'?: (string);
+  'amount'?: (number);
+  'orderType'?: (_payment_OrderEnum_OrderType);
 }
 
 export interface CreateOrderRequest__Output {
-  'order'?: (_payment_Order__Output);
+  'subscriberUserId'?: (string);
+  'subscriberEmail'?: (string);
+  'amount'?: (number);
+  'orderType'?: (_payment_OrderEnum_OrderType__Output);
 }

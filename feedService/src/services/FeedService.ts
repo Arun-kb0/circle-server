@@ -130,6 +130,7 @@ class FeedService implements IFeedService {
         currentPage: page,
         likes
       }
+      
       return { err: null, data }
     } catch (error) {
       const err = handleError(error)

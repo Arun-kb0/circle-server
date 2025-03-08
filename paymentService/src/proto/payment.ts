@@ -9,19 +9,37 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 
 export interface ProtoGrpcType {
   payment: {
+    CreateOrderOption: MessageTypeDefinition
     CreateOrderRequest: MessageTypeDefinition
     CreateOrderResponse: MessageTypeDefinition
+    CreateOrderStatusOptionRequest: MessageTypeDefinition
+    CreateOrderStatusOptionResponse: MessageTypeDefinition
     CreatePaymentRequest: MessageTypeDefinition
     CreatePaymentResponse: MessageTypeDefinition
-    GetSubscriptionsRequest: MessageTypeDefinition
-    GetSubscriptionsResponse: MessageTypeDefinition
+    CreateStatusOption: MessageTypeDefinition
+    CreateSubscriptionRequest: MessageTypeDefinition
+    CreateSubscriptionResponse: MessageTypeDefinition
+    GetUserSubscriptionsRequest: MessageTypeDefinition
+    GetUserSubscriptionsResponse: MessageTypeDefinition
+    GetUserTransactionsRequest: MessageTypeDefinition
+    GetUserTransactionsResponse: MessageTypeDefinition
+    GetUserWalletRequest: MessageTypeDefinition
+    GetUserWalletResponse: MessageTypeDefinition
     Order: MessageTypeDefinition
     OrderEnum: MessageTypeDefinition
     Payment: MessageTypeDefinition
     PaymentEnum: MessageTypeDefinition
     PaymentService: SubtypeConstructor<typeof grpc.Client, _payment_PaymentServiceClient> & { service: _payment_PaymentServiceDefinition }
+    SubscribeWithWalletRequest: MessageTypeDefinition
+    SubscribeWithWalletResponse: MessageTypeDefinition
     Subscription: MessageTypeDefinition
     SubscriptionEnum: MessageTypeDefinition
+    Transaction: MessageTypeDefinition
+    TransactionEnums: MessageTypeDefinition
+    TransactionExt: MessageTypeDefinition
+    UpdateOrderRequest: MessageTypeDefinition
+    UpdateOrderResponse: MessageTypeDefinition
+    Wallet: MessageTypeDefinition
   }
 }
 
