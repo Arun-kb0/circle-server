@@ -12,17 +12,8 @@ import handleError from '../../util/handleError'
 
 class WalletBaseRepo implements IWalletBaseRepo {
 
-  async createTransaction(userId: string, senderId: string, receiverId: string, amount: number, isCred: boolean, status: ITransaction['status']): Promise<ITransaction> {
+  async createTransaction(transaction: Partial<ITransaction>): Promise<ITransaction> {
     try {
-      const transaction: Partial<ITransaction> = {
-        userId,
-        senderId,
-        receiverId,
-        type: isCred ? 'credit' : 'debit',
-        amount,
-        currency: "INR",
-        status
-      }
       const convertedTransaction = convertITransactionToITransactionDb(transaction)
       const newTransaction = await Transaction.create(convertedTransaction)
       return convertITransactionDbToITransaction(newTransaction)

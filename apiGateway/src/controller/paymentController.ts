@@ -125,7 +125,7 @@ export const getStatus = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const subscribeWithWallet = async (req: Request, res: Response, next: NextFunction) => {
+export const subscribeWithWallet = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const {
       amount, subscriberUserId, subscriberEmail,
@@ -135,7 +135,7 @@ export const subscribeWithWallet = async (req: Request, res: Response, next: Nex
     const merchantTransactionId = uuid()
     const order: Order = {
       merchantTransactionId,
-      userId: '',
+      userId: subscriberUserId,
       amount,
       orderType: 'user_subscription',
       userSubscriptionDuration: 'lifetime',
@@ -150,7 +150,7 @@ export const subscribeWithWallet = async (req: Request, res: Response, next: Nex
     }
 
     paymentClient.subscribeWithWallet({ subscription, order }, (err, msg) => {
-      if (err) return next(new HttpError(httpStatus.BAD_REQUEST, err.message))
+      if (err) return next(new HttpError(httpStatus.BAD_REQUEST, err.details))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Payment with wallet failed failed.'))
       res.status(httpStatus.OK).json({ message: "Payment success", ...msg })
     })

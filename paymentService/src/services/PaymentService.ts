@@ -41,8 +41,20 @@ class PaymentService implements IPaymentService {
         currency: "INR",
       }
       await this.paymentRepo.createWallet(subscribeToWallet)
-      await this.paymentRepo.findWalletByUserIdAndUpdateAmount(newSub.subscriberUserId, newSub.subscriberToUserId, amount, true)
-      await this.paymentRepo.findWalletByUserIdAndUpdateAmount(newSub.subscriberToUserId, newSub.subscriberUserId, amount, false)
+      const w1 = await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+        userId: newSub.subscriberUserId,
+        senderId: newSub.subscriberUserId,
+        receiverId: newSub.subscriberToUserId,
+        amount: amount,
+        isInc: false
+      })
+      const w2 = await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+        userId: newSub.subscriberToUserId,
+        senderId: newSub.subscriberUserId,
+        receiverId: newSub.subscriberToUserId,
+        amount: amount,
+        isInc: true
+      })
 
       const updatedWallet = await this.paymentRepo.findWalletByUserId(userId)
       return { err: null, data: { wallet: updatedWallet as IWallet, subscription: newSub } }
@@ -163,7 +175,15 @@ class PaymentService implements IPaymentService {
       if (!subs) throw new Error('Subscription update failed')
       const isExists = await this.paymentRepo.findWalletByUserId(subs.subscriberToUserId)
       if (isExists) {
-        await this.paymentRepo.findWalletByUserIdAndUpdateAmount(subs.subscriberToUserId, subs.subscriberUserId, order.amount, true)
+        // *
+        // await this.paymentRepo.findWalletByUserIdAndUpdateAmount(subs.subscriberToUserId, subs.subscriberUserId, order.amount, true)
+        await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+          userId: subs.subscriberToUserId,
+          senderId: subs.subscriberUserId,
+          receiverId: subs.subscriberToUserId,
+          amount: order.amount,
+          isInc:true
+        })
       } else {
         const wallet: Partial<IWallet> = {
           userId: subs.subscriberToUserId,
@@ -171,7 +191,15 @@ class PaymentService implements IPaymentService {
           currency: newPaymentData.currency,
         }
         await this.paymentRepo.createWallet(wallet)
-        await this.paymentRepo.findWalletByUserIdAndUpdateAmount(subs.subscriberToUserId, subs.subscriberUserId, order.amount, true)
+        // *
+        // await this.paymentRepo.findWalletByUserIdAndUpdateAmount(subs.subscriberToUserId, subs.subscriberUserId, order.amount, true)
+        await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+          userId: subs.subscriberToUserId,
+          senderId: subs.subscriberUserId,
+          receiverId: subs.subscriberToUserId,
+          amount: order.amount,
+          isInc: true
+        })
         console.log(wallet)
       }
       return { err: null, data: newPaymentData }

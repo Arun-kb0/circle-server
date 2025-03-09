@@ -36,3 +36,11 @@ export type TransactionPagination = {
   numberOfPages: number
   transactions: ITransactionExt[]
 }
+
+export type findWalletByUserIdAndUpdateAmountArgs = {
+  userId: string,
+  senderId: string,
+  receiverId: string,
+  amount: number,
+  isInc: boolean
+}

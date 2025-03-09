@@ -12,7 +12,7 @@ router.post('/status', getStatus)
 router.use(authorize)
 
 router.post('/create-order', createOrder)
-router.post('/subscribe-using-wallet', subscribeWithWallet)
+router.post('/subscribe-wallet', subscribeWithWallet)
 
 router.get('/wallet', getUserWallet)
 router.get('/transactions', getUserTransactions)

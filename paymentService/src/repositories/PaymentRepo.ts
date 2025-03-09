@@ -8,8 +8,9 @@ import IPaymentBaseRepo from "../interfaces/IPaymentBaseRepo";
 import IOrderBaseRepo from "../interfaces/IOrderBaseRepo";
 import IWalletBaseRepo from '../interfaces/IWalletBaseRepo'
 import IWallet from "../interfaces/IWallet";
-import { SubscriptionPagination, TransactionPagination } from "../constants/types";
+import { findWalletByUserIdAndUpdateAmountArgs, SubscriptionPagination, TransactionPagination } from "../constants/types";
 import { addUsersToTransactions, addUserToTransaction } from '../util/userClientFunctions'
+import ITransaction from "../interfaces/ITransaction";
 
 const LIMIT = 10
 
@@ -21,6 +22,15 @@ class PaymentRepo implements IPaymentRepo {
     private subscriptionBaseRepo: ISubscriptionBaseRepo,
     private walletBaseRepo: IWalletBaseRepo,
   ) { }
+
+  // async sendMoneyThroughWallet(userId: string, senderId: string, receiverId: string, amount: number): Promise<IWallet | null> {
+  //  try {
+
+  //  } catch (error) {
+  //    const err = handleError(error)
+  //    throw new Error(err.message)
+  //  }
+  // }
 
   async getUserTransactions(userId: string, page: number): Promise<TransactionPagination> {
     try {
@@ -61,9 +71,30 @@ class PaymentRepo implements IPaymentRepo {
     }
   }
 
-  async findWalletByUserIdAndUpdateAmount(userId: string, subscriberId: string, amount: number, isInc: boolean): Promise<IWallet | null> {
+  // ! working code
+  // async findWalletByUserIdAndUpdateAmount(userId: string, senderId: string, amount: number, isInc: boolean): Promise<IWallet | null> {
+  //   try {
+  //     await this.walletBaseRepo.createTransaction(userId, senderId, userId, amount, isInc, 'completed')
+  //     const updatedWallet = await this.walletBaseRepo.findByUserIdAndUpdateAmount(userId, amount, isInc)
+  //     return updatedWallet
+  //   } catch (error) {
+  //     const err = handleError(error)
+  //     throw new Error(err.message)
+  //   }
+  // }
+
+  async findWalletByUserIdAndUpdateAmount({ userId, senderId, receiverId, amount, isInc }: findWalletByUserIdAndUpdateAmountArgs): Promise<IWallet | null> {
     try {
-      await this.walletBaseRepo.createTransaction(userId, subscriberId, userId, amount, isInc, 'completed')
+      const transaction: Partial<ITransaction> = {
+        userId,
+        senderId,
+        receiverId,
+        type: isInc ? 'credit' : 'debit',
+        amount,
+        currency: "INR",
+        status: 'completed'
+      }
+      await this.walletBaseRepo.createTransaction(transaction)
       const updatedWallet = await this.walletBaseRepo.findByUserIdAndUpdateAmount(userId, amount, isInc)
       return updatedWallet
     } catch (error) {

@@ -7,7 +7,7 @@ interface IWalletBaseRepo {
   findWalletByUserId(userId: string): Promise<IWallet | null>
   findByUserIdAndUpdateAmount(userId: string, amount: number, isInc: boolean): Promise<IWallet | null>
 
-  createTransaction(userId: string, senderId: string, receiverId: string,  amount: number, isCred: boolean,status: ITransaction['status']): Promise<ITransaction>
+  createTransaction(transaction: Partial<ITransaction>): Promise<ITransaction>
   findTransactionsByUserIdCount(userId: string): Promise<number>
   findTransactionsByUserId(userId: string, limit: number, startIndex: number): Promise<ITransaction[]>
 
