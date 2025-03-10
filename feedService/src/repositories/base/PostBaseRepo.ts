@@ -8,6 +8,17 @@ import { sortAndDeduplicateDiagnostics } from "typescript";
 
 class PostBaseRepo implements IPostBaseRepo {
 
+  async findMultiplePostsByPostIds(postIds: string[]): Promise<IPost[]> {
+    try {
+      const postObjIds = postIds.map(id => convertToObjectId(id))
+      const posts = await Post.find({ _id: { $in: postObjIds } })
+      return posts.map(post => convertIPostDbToIPost(post))
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async findPostCountByDate(startDate: string, endDate: string): Promise<{ date: string, count: number }[]> {
     try {
       const pipeline = [

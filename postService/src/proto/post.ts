@@ -26,6 +26,13 @@ export interface ProtoGrpcType {
     Media: EnumTypeDefinition
     Post: MessageTypeDefinition
     PostService: SubtypeConstructor<typeof grpc.Client, _post_PostServiceClient> & { service: _post_PostServiceDefinition }
+    Report: MessageTypeDefinition
+    ReportEnums: MessageTypeDefinition
+    ReportPostRequest: MessageTypeDefinition
+    ReportPostResponse: MessageTypeDefinition
+    SavePostRequest: MessageTypeDefinition
+    SavePostResponse: MessageTypeDefinition
+    Saved: MessageTypeDefinition
     Status: EnumTypeDefinition
     UnlikeRequest: MessageTypeDefinition
     UnlikeResponse: MessageTypeDefinition

@@ -30,6 +30,8 @@ interface IFeedRepo {
   getFeedCounts(): Promise<{ totalPostsCount: number, totalCommentsCount: number, totalLikesCount: number }>
   getPostsCountByDate(startDate: string, endDate: string): Promise<{ date: string, count: number }[]>
 
+  getUserSavedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[]>
+  getUserSavedPostsCount(userId: string): Promise<number>
 }
 
 export default IFeedRepo

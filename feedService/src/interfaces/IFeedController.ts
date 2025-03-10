@@ -27,6 +27,8 @@ import { GetPostsCountByDateRequest__Output } from '../proto/feed/GetPostsCountB
 import { GetPostsCountByDateResponse } from '../proto/feed/GetPostsCountByDateResponse'
 import { GetSingleCommentRequest__Output } from '../proto/feed/GetSingleCommentRequest'
 import { GetSingleCommentResponse } from '../proto/feed/GetSingleCommentResponse'
+import { GetUserSavedPostsRequest__Output } from '../proto/feed/GetUserSavedPostsRequest'
+import { GetUserSavedPostsResponse } from '../proto/feed/GetUserSavedPostsResponse'
 
 
 export type GetGlobalFeedHandler = grpc.handleUnaryCall<GetGlobalFeedRequest__Output, GetGlobalFeedResponse>
@@ -45,6 +47,8 @@ export type GetFeedCountsHandler = grpc.handleUnaryCall<GetFeedCountsRequest__Ou
 export type GetPostsCountByDateHandler = grpc.handleUnaryCall<GetPostsCountByDateRequest__Output, GetPostsCountByDateResponse>
 
 export type GetSingleCommentHandler = grpc.handleUnaryCall<GetSingleCommentRequest__Output, GetSingleCommentResponse>
+
+export type GetUserSavedPostsHandler = grpc.handleUnaryCall<GetUserSavedPostsRequest__Output , GetUserSavedPostsResponse>
 
 interface IFeedController {
 
@@ -65,6 +69,8 @@ interface IFeedController {
   getPostsCountByDate: GetPostsCountByDateHandler
 
   getSingleComment: GetSingleCommentHandler
+
+  getUserSavedPosts: GetUserSavedPostsHandler
 }
 
 export default IFeedController

@@ -12,7 +12,9 @@ interface IPostBaseRepo {
   findPostsByAuthorId(userId: string, limit: number, startIndex: number): Promise<IPost[] | null>
 
   findPopularPosts(limit: number): Promise<IPost[] | null>
-  findPostCountByDate(startDate:string,endDate:string): Promise<{date:string,count:number}[]>
+  findPostCountByDate(startDate: string, endDate: string): Promise<{ date: string, count: number }[]>
+
+  findMultiplePostsByPostIds(postIds: string[]): Promise<IPost[]>
 }
 
 export default IPostBaseRepo

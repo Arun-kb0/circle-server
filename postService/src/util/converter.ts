@@ -7,6 +7,10 @@ import ILike from '../interfaces/ILike'
 import { IPostDb } from "../model/postModel"
 import { ILikeDb } from "../model/likeModel"
 import { ICommentDb } from "../model/commentModel"
+import { ISavedDb } from "../model/savedModel"
+import { IReportDb } from "../model/reportModel"
+import ISaved from "../interfaces/ISaved"
+import IReport from "../interfaces/IReport"
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {
   return date ? date.toString() : ''
@@ -159,5 +163,69 @@ export const convertILIkeDbToILIke = (like: ILikeDb): ILike => {
     contentType: like.contentType,
     updatedAt: convertDbDateToIsoString(like.updatedAt),
     createdAt: convertDbDateToIsoString(like.createdAt)
+  }
+}
+
+// * saved
+export const convertISavedToISavedDb = (saved: Partial<ISaved>): Partial<ISavedDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    userId: convertToObjectId,
+    postId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
+  }
+  const savedDb: Partial<ISavedDb> = {}
+  Object.keys(saved).forEach((key) => {
+    const typedKey = key as keyof ISaved;
+    if (saved[typedKey] && conversionMap[typedKey]) {
+      savedDb[typedKey] = conversionMap[typedKey](saved[typedKey])
+    } else if (saved[typedKey]) {
+      savedDb[typedKey as keyof ISavedDb] = saved[typedKey] as any;
+    }
+  })
+  return savedDb
+}
+
+export const convertISavedDbToISaved = (saved: ISavedDb): ISaved => {
+  return {
+    _id: saved._id.toString(),
+    userId: saved.userId.toString(),
+    postId: saved.postId.toString(),
+    updatedAt: convertDbDateToIsoString(saved.updatedAt),
+    createdAt: convertDbDateToIsoString(saved.createdAt)
+  }
+}
+
+// * report
+export const convertIReportToIReportDb = (report: Partial<IReport>): Partial<IReportDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    userId: convertToObjectId,
+    contentId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
+  }
+  const reportDb: Partial<IReportDb> = {}
+  Object.keys(report).forEach((key) => {
+    const typedKey = key as keyof IReport;
+    if (report[typedKey] && conversionMap[typedKey]) {
+      reportDb[typedKey] = conversionMap[typedKey](report[typedKey])
+    } else if (report[typedKey]) {
+      reportDb[typedKey as keyof IReportDb] = report[typedKey] as any;
+    }
+  })
+  return reportDb
+}
+
+export const convertIReportDbToIReport = (report: IReportDb): IReport => {
+  return {
+    _id: report._id.toString(),
+    userId: report.userId.toString(),
+    contentId: report.contentId.toString(),
+    contentType: report.contentType as unknown as IReport['contentType'],
+    description: report.description,
+    updatedAt: convertDbDateToIsoString(report.updatedAt),
+    createdAt: convertDbDateToIsoString(report.createdAt)
   }
 }

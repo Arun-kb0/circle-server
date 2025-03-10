@@ -20,7 +20,8 @@ service FeedService {
   rpc GetPostsCountByDate(GetPostsCountByDateRequest) returns (GetPostsCountByDateResponse) {};
 
   rpc GetSingleComment(GetSingleCommentRequest) returns (GetSingleCommentResponse) {};
-
+  
+  rpc GetUserSavedPosts(GetUserSavedPostsRequest) returns (GetUserSavedPostsResponse) {};
 };
 
 
@@ -104,6 +105,32 @@ message Post  {
 };
 
 
+message Saved {
+  string _id = 1;
+  string userId = 2;
+  string postId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message ReportEnums  {
+  enum ContentType {
+    post = 0;
+    story = 1;
+    user = 2;
+    comment = 3;
+  }
+}
+
+message Report {
+  string _id = 1;
+  string userId = 2;
+  string contentId = 3;
+  ReportEnums.ContentType contentType = 4;
+  string description = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
 
 message GetGlobalFeedRequest {
   int32 page=1;
@@ -240,4 +267,15 @@ message GetSingleCommentRequest {
 
 message GetSingleCommentResponse {
   Comment comment =1; 
+}
+
+message GetUserSavedPostsRequest  {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetUserSavedPostsResponse {
+  repeated Post savedPosts=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
 }

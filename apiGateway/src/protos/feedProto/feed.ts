@@ -38,11 +38,16 @@ export interface ProtoGrpcType {
     GetUserCreatedPostsResponse: MessageTypeDefinition
     GetUserFeedRequest: MessageTypeDefinition
     GetUserFeedResponse: MessageTypeDefinition
+    GetUserSavedPostsRequest: MessageTypeDefinition
+    GetUserSavedPostsResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
     Like: MessageTypeDefinition
     Media: EnumTypeDefinition
     Post: MessageTypeDefinition
     PostsCountArray: MessageTypeDefinition
+    Report: MessageTypeDefinition
+    ReportEnums: MessageTypeDefinition
+    Saved: MessageTypeDefinition
     SearchPostRequest: MessageTypeDefinition
     SearchPostResponse: MessageTypeDefinition
     Status: EnumTypeDefinition

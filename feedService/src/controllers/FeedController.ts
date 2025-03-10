@@ -8,7 +8,8 @@ import IFeedController, {
   SearchPostHandler,
   GetFeedCountsHandler,
   GetPostsCountByDateHandler,
-  GetSingleCommentHandler
+  GetSingleCommentHandler,
+  GetUserSavedPostsHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -22,6 +23,19 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getUserSavedPosts: GetUserSavedPostsHandler = async (call, cb) => {
+    try {
+      const { userId, page } = call.request
+      validateRequest('userId and page are required.', userId, page )
+      const res = await this.feedService.getUserSavedPosts(userId as string,page as number)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getSingleComment: GetSingleCommentHandler = async (call, cb) => {
     try {

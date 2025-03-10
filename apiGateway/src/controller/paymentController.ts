@@ -152,7 +152,7 @@ export const subscribeWithWallet = async (req: AuthRequest, res: Response, next:
     paymentClient.subscribeWithWallet({ subscription, order }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.BAD_REQUEST, err.details))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Payment with wallet failed failed.'))
-      res.status(httpStatus.OK).json({ message: "Payment success", ...msg })
+      res.status(httpStatus.OK).json({ message: "Payment success", ...msg, url: SUCCESS_URL })
     })
   } catch (error) {
     next(error)

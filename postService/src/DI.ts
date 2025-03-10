@@ -10,11 +10,20 @@ import LikeController from './controllers/LikeController'
 import PostBaseRepo from './repositories/base/PostBaseRepo'
 import CommentBaseRepo from './repositories/base/CommentBaseRepo'
 import LikeBaseRepo from './repositories/base/LikeBaseRepo'
+import SavedBaseRepo from './repositories/base/SavedBaseRepo'
+import ReportBaseRepo from './repositories/base/ReportBaseRepo'
 
 const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || ""
 
 const postBaseRepo = new PostBaseRepo()
-const postRepo = new PostRepo(postBaseRepo)
+const reportBaseRepo = new ReportBaseRepo()
+const savedBaseRepo = new SavedBaseRepo()
+
+const postRepo = new PostRepo(
+  postBaseRepo,
+  reportBaseRepo,
+  savedBaseRepo
+)
 export const postService = new PostService(postRepo)
 export const postController = new PostController(postService)
 

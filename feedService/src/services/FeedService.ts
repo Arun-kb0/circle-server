@@ -1,4 +1,4 @@
-import { SvcReturnType, PaginationPost, PaginationComment } from '../constants/SvcTypes';
+import { SvcReturnType, PaginationPost, PaginationComment, PaginationSavedPost } from '../constants/SvcTypes';
 import IComment, { ICommentExt } from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo';
 import IFeedService from '../interfaces/IFeedService'
@@ -130,7 +130,7 @@ class FeedService implements IFeedService {
         currentPage: page,
         likes
       }
-      
+
       return { err: null, data }
     } catch (error) {
       const err = handleError(error)
@@ -234,6 +234,24 @@ class FeedService implements IFeedService {
         numberOfPages,
         currentPage: page,
         likes
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async getUserSavedPosts(userId: string, page: number): SvcReturnType<PaginationSavedPost> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.feedRepo.getUserSavedPostsCount(userId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const savedPosts = await this.feedRepo.getUserSavedPosts(userId, LIMIT, startIndex)
+      const data = {
+        savedPosts,
+        numberOfPages,
+        currentPage: page + 1
       }
       return { err: null, data }
     } catch (error) {

@@ -28,6 +28,8 @@ import type { GetUserCreatedPostsRequest as _feed_GetUserCreatedPostsRequest, Ge
 import type { GetUserCreatedPostsResponse as _feed_GetUserCreatedPostsResponse, GetUserCreatedPostsResponse__Output as _feed_GetUserCreatedPostsResponse__Output } from '../feed/GetUserCreatedPostsResponse';
 import type { GetUserFeedRequest as _feed_GetUserFeedRequest, GetUserFeedRequest__Output as _feed_GetUserFeedRequest__Output } from '../feed/GetUserFeedRequest';
 import type { GetUserFeedResponse as _feed_GetUserFeedResponse, GetUserFeedResponse__Output as _feed_GetUserFeedResponse__Output } from '../feed/GetUserFeedResponse';
+import type { GetUserSavedPostsRequest as _feed_GetUserSavedPostsRequest, GetUserSavedPostsRequest__Output as _feed_GetUserSavedPostsRequest__Output } from '../feed/GetUserSavedPostsRequest';
+import type { GetUserSavedPostsResponse as _feed_GetUserSavedPostsResponse, GetUserSavedPostsResponse__Output as _feed_GetUserSavedPostsResponse__Output } from '../feed/GetUserSavedPostsResponse';
 import type { SearchPostRequest as _feed_SearchPostRequest, SearchPostRequest__Output as _feed_SearchPostRequest__Output } from '../feed/SearchPostRequest';
 import type { SearchPostResponse as _feed_SearchPostResponse, SearchPostResponse__Output as _feed_SearchPostResponse__Output } from '../feed/SearchPostResponse';
 
@@ -149,6 +151,15 @@ export interface FeedServiceClient extends grpc.Client {
   getUserFeed(argument: _feed_GetUserFeedRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
   getUserFeed(argument: _feed_GetUserFeedRequest, callback: grpc.requestCallback<_feed_GetUserFeedResponse__Output>): grpc.ClientUnaryCall;
   
+  GetUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  GetUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  getUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  getUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  getUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  getUserSavedPosts(argument: _feed_GetUserSavedPostsRequest, callback: grpc.requestCallback<_feed_GetUserSavedPostsResponse__Output>): grpc.ClientUnaryCall;
+  
   SearchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
   SearchPost(argument: _feed_SearchPostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
   SearchPost(argument: _feed_SearchPostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_SearchPostResponse__Output>): grpc.ClientUnaryCall;
@@ -187,6 +198,8 @@ export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetUserFeed: grpc.handleUnaryCall<_feed_GetUserFeedRequest__Output, _feed_GetUserFeedResponse>;
   
+  GetUserSavedPosts: grpc.handleUnaryCall<_feed_GetUserSavedPostsRequest__Output, _feed_GetUserSavedPostsResponse>;
+  
   SearchPost: grpc.handleUnaryCall<_feed_SearchPostRequest__Output, _feed_SearchPostResponse>;
   
 }
@@ -205,5 +218,6 @@ export interface FeedServiceDefinition extends grpc.ServiceDefinition {
   GetTotalPostsCount: MethodDefinition<_feed_GetTotalPostsCountRequest, _feed_GetTotalPostsCountResponse, _feed_GetTotalPostsCountRequest__Output, _feed_GetTotalPostsCountResponse__Output>
   GetUserCreatedPosts: MethodDefinition<_feed_GetUserCreatedPostsRequest, _feed_GetUserCreatedPostsResponse, _feed_GetUserCreatedPostsRequest__Output, _feed_GetUserCreatedPostsResponse__Output>
   GetUserFeed: MethodDefinition<_feed_GetUserFeedRequest, _feed_GetUserFeedResponse, _feed_GetUserFeedRequest__Output, _feed_GetUserFeedResponse__Output>
+  GetUserSavedPosts: MethodDefinition<_feed_GetUserSavedPostsRequest, _feed_GetUserSavedPostsResponse, _feed_GetUserSavedPostsRequest__Output, _feed_GetUserSavedPostsResponse__Output>
   SearchPost: MethodDefinition<_feed_SearchPostRequest, _feed_SearchPostResponse, _feed_SearchPostRequest__Output, _feed_SearchPostResponse__Output>
 }

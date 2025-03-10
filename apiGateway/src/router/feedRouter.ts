@@ -3,6 +3,7 @@ import {
   getChildComments,
   getComments,
   getGlobalFeed, getPost, getPostLikedUsers,
+  getSavedPosts,
   getUseCreatedPosts, getUserFeed,
   searchPosts
 } from '../controller/feedController'
@@ -20,6 +21,8 @@ router.get('/user-created-posts', getUseCreatedPosts)
 // router.get('/comment', getComments)
 
 router.get('/liked-users', getPostLikedUsers)
+
+router.get('/saved', getSavedPosts)
 
 
 

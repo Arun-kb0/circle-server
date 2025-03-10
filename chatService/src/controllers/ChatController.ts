@@ -77,7 +77,7 @@ class ChatController implements IChatController {
       cb(err, null)
     }
   }
-
+1
   deleteMessage: DeleteMessageHandler = async (call, cb) => {
     try {
       const { messageId } = call.request

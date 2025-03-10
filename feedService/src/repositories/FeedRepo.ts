@@ -10,6 +10,8 @@ import ILike from '../interfaces/ILike';
 import IPostBaseRepo from '../interfaces/IPostBaseRepo'
 import ICommentBaseRepo from '../interfaces/ICommentBaseRepo'
 import ILikeBaseRepo from '../interfaces/ILikeBaseRepo'
+import ISavedBaseRepo from '../interfaces/ISavedBaseRepo'
+import IReportBaseRepo from '../interfaces/IReportBaseRepo'
 import handleError from '../util/handleError';
 
 
@@ -19,6 +21,8 @@ class FeedRepo implements IFeedRepo {
     private postBaseRepo: IPostBaseRepo,
     private commentBaseRepo: ICommentBaseRepo,
     private likeBaseRepo: ILikeBaseRepo,
+    private savedBaseRepo: ISavedBaseRepo,
+    private reportBaseRepo: IReportBaseRepo
   ) { }
 
   async getSingleComment(commentId: string): Promise<ICommentExt | null> {
@@ -197,6 +201,31 @@ class FeedRepo implements IFeedRepo {
     const updatedLikes = await addUserToLike(like)
     return updatedLikes
   }
+
+  async getUserSavedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[]> {
+    try {
+      const saved = await this.savedBaseRepo.findSavedPostsByUserId(userId, limit, startIndex)
+      if (saved.length === 0) return []
+      const postIds = saved.map(item => item.postId)
+      const posts = await this.postBaseRepo.findMultiplePostsByPostIds(postIds)
+      const updatedPosts = await addUserToPosts(posts)
+      return updatedPosts as IPostExt[]
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getUserSavedPostsCount(userId: string): Promise<number> {
+    try {
+      const count = await this.savedBaseRepo.findSavedPostsByUserIdCount(userId)
+      return count 
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
 
 }
 

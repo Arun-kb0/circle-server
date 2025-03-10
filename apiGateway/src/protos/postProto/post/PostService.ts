@@ -12,6 +12,10 @@ import type { DeletePostRequest as _post_DeletePostRequest, DeletePostRequest__O
 import type { DeletePostResponse as _post_DeletePostResponse, DeletePostResponse__Output as _post_DeletePostResponse__Output } from '../post/DeletePostResponse';
 import type { LikeRequest as _post_LikeRequest, LikeRequest__Output as _post_LikeRequest__Output } from '../post/LikeRequest';
 import type { LikeResponse as _post_LikeResponse, LikeResponse__Output as _post_LikeResponse__Output } from '../post/LikeResponse';
+import type { ReportPostRequest as _post_ReportPostRequest, ReportPostRequest__Output as _post_ReportPostRequest__Output } from '../post/ReportPostRequest';
+import type { ReportPostResponse as _post_ReportPostResponse, ReportPostResponse__Output as _post_ReportPostResponse__Output } from '../post/ReportPostResponse';
+import type { SavePostRequest as _post_SavePostRequest, SavePostRequest__Output as _post_SavePostRequest__Output } from '../post/SavePostRequest';
+import type { SavePostResponse as _post_SavePostResponse, SavePostResponse__Output as _post_SavePostResponse__Output } from '../post/SavePostResponse';
 import type { UnlikeRequest as _post_UnlikeRequest, UnlikeRequest__Output as _post_UnlikeRequest__Output } from '../post/UnlikeRequest';
 import type { UnlikeResponse as _post_UnlikeResponse, UnlikeResponse__Output as _post_UnlikeResponse__Output } from '../post/UnlikeResponse';
 import type { UpdateCommentRequest as _post_UpdateCommentRequest, UpdateCommentRequest__Output as _post_UpdateCommentRequest__Output } from '../post/UpdateCommentRequest';
@@ -65,6 +69,24 @@ export interface PostServiceClient extends grpc.Client {
   like(argument: _post_LikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
   like(argument: _post_LikeRequest, callback: grpc.requestCallback<_post_LikeResponse__Output>): grpc.ClientUnaryCall;
   
+  ReportPost(argument: _post_ReportPostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  ReportPost(argument: _post_ReportPostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  ReportPost(argument: _post_ReportPostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  ReportPost(argument: _post_ReportPostRequest, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  reportPost(argument: _post_ReportPostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  reportPost(argument: _post_ReportPostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  reportPost(argument: _post_ReportPostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  reportPost(argument: _post_ReportPostRequest, callback: grpc.requestCallback<_post_ReportPostResponse__Output>): grpc.ClientUnaryCall;
+  
+  SavePost(argument: _post_SavePostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  SavePost(argument: _post_SavePostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  SavePost(argument: _post_SavePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  SavePost(argument: _post_SavePostRequest, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  savePost(argument: _post_SavePostRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  savePost(argument: _post_SavePostRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  savePost(argument: _post_SavePostRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  savePost(argument: _post_SavePostRequest, callback: grpc.requestCallback<_post_SavePostResponse__Output>): grpc.ClientUnaryCall;
+  
   UnLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
   UnLike(argument: _post_UnlikeRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
   UnLike(argument: _post_UnlikeRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_post_UnlikeResponse__Output>): grpc.ClientUnaryCall;
@@ -105,6 +127,10 @@ export interface PostServiceHandlers extends grpc.UntypedServiceImplementation {
   
   Like: grpc.handleUnaryCall<_post_LikeRequest__Output, _post_LikeResponse>;
   
+  ReportPost: grpc.handleUnaryCall<_post_ReportPostRequest__Output, _post_ReportPostResponse>;
+  
+  SavePost: grpc.handleUnaryCall<_post_SavePostRequest__Output, _post_SavePostResponse>;
+  
   UnLike: grpc.handleUnaryCall<_post_UnlikeRequest__Output, _post_UnlikeResponse>;
   
   UpdateComment: grpc.handleUnaryCall<_post_UpdateCommentRequest__Output, _post_UpdateCommentResponse>;
@@ -119,6 +145,8 @@ export interface PostServiceDefinition extends grpc.ServiceDefinition {
   DeleteComment: MethodDefinition<_post_DeleteCommentRequest, _post_DeleteCommentResponse, _post_DeleteCommentRequest__Output, _post_DeleteCommentResponse__Output>
   DeletePost: MethodDefinition<_post_DeletePostRequest, _post_DeletePostResponse, _post_DeletePostRequest__Output, _post_DeletePostResponse__Output>
   Like: MethodDefinition<_post_LikeRequest, _post_LikeResponse, _post_LikeRequest__Output, _post_LikeResponse__Output>
+  ReportPost: MethodDefinition<_post_ReportPostRequest, _post_ReportPostResponse, _post_ReportPostRequest__Output, _post_ReportPostResponse__Output>
+  SavePost: MethodDefinition<_post_SavePostRequest, _post_SavePostResponse, _post_SavePostRequest__Output, _post_SavePostResponse__Output>
   UnLike: MethodDefinition<_post_UnlikeRequest, _post_UnlikeResponse, _post_UnlikeRequest__Output, _post_UnlikeResponse__Output>
   UpdateComment: MethodDefinition<_post_UpdateCommentRequest, _post_UpdateCommentResponse, _post_UpdateCommentRequest__Output, _post_UpdateCommentResponse__Output>
   UpdatePost: MethodDefinition<_post_UpdatePostRequest, _post_UpdatePostResponse, _post_UpdatePostRequest__Output, _post_UpdatePostResponse__Output>

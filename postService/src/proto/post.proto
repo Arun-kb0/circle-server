@@ -13,6 +13,9 @@ service PostService {
 
   rpc Like(LikeRequest) returns (LikeResponse) {};
   rpc UnLike(UnlikeRequest) returns (UnlikeResponse) {};
+
+  rpc ReportPost(ReportPostRequest) returns (ReportPostResponse) {};
+  rpc SavePost(SavePostRequest) returns (SavePostResponse) {};
 }
 
 
@@ -93,6 +96,33 @@ message Post  {
   string authorImage=15;
 };
 
+message Saved {
+  string _id = 1;
+  string userId = 2;
+  string postId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message ReportEnums  {
+  enum ContentType {
+    post = 0;
+    story = 1;
+    user = 2;
+    comment = 3;
+  }
+}
+
+message Report {
+  string _id = 1;
+  string userId = 2;
+  string contentId = 3;
+  ReportEnums.ContentType contentType = 4;
+  string description = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
+
 
 
 message CreatePostRequest {
@@ -164,4 +194,24 @@ message DeleteCommentRequest {
 
 message DeleteCommentResponse {
   string commentId=1;
+}
+
+message ReportPostRequest {
+  string contentId=1;
+  string userId =2;
+  ReportEnums.ContentType contentType = 3;
+}
+
+message ReportPostResponse {
+  Report reportData=1;
+}
+
+message SavePostRequest {
+  string postId =1;
+  string userId =2;
+}
+
+message SavePostResponse {
+  Saved savedData=1;
+  Post savedPost=2;
 }
