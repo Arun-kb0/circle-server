@@ -17,4 +17,13 @@ export interface ITransactionExt extends ITransaction {
   userImage?: string
 }
 
+export interface ITransactionAdmin extends ITransaction {
+  senderName?: string;
+  senderImage?: string;
+  senderEmail?: string;
+  receiverImage?: string;
+  receiverName?: string;
+  receiverEmail?: string;
+}
+
 export default ITransaction

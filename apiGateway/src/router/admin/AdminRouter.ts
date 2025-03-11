@@ -3,7 +3,8 @@ import {
   updatePost, searchPosts, deletePost,
   getPopularPosts, getFeedCounts, getPostCountByDate,
   getFilteredReports,
-  getFilteredSubscriptions
+  getFilteredSubscriptions,
+  getFilteredTransactions
 } from '../../controller/admin/postAdminController'
 import {
   getAllUsers, blockUser, unblockUser,
@@ -35,6 +36,7 @@ router.route('/post/:postId')
 
 router.get('/report/filtered', getFilteredReports)
 router.get('/subscriptions/filtered', getFilteredSubscriptions) 
+router.get('/transactions/filtered', getFilteredTransactions) 
 
 export default router
 

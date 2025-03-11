@@ -2,15 +2,72 @@ import ITransaction from "../../interfaces/ITransaction";
 import IWallet from "../../interfaces/IWallet";
 import IWalletBaseRepo from "../../interfaces/IWalletBaseRepo";
 import { Wallet } from '../../model/walletModel'
-import { Transaction } from '../../model/transactionModel'
+import { ITransactionDb, Transaction } from '../../model/transactionModel'
 import {
   convertIWalletDbToIWallet, convertIWalletToIWalletDb,
   convertITransactionDbToITransaction, convertITransactionToITransactionDb,
   convertToObjectId
 } from '../../util/converter'
 import handleError from '../../util/handleError'
+import { FilterQuery } from "mongoose";
 
 class WalletBaseRepo implements IWalletBaseRepo {
+
+  async filteredTransactionsByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number> {
+    try {
+      let query: FilterQuery<ITransactionDb> = {}
+      if (searchText.trim() !== '') {
+        const searchNumber = parseFloat(searchText);
+        query.$or = [
+          { currency: { $regex: searchText, $options: 'i' } },
+          { type: { $regex: searchText, $options: 'i' } }
+        ]
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = startDate
+        }
+        if (endDate) {
+          query.createdAt.$lte = endDate
+        }
+      }
+      const count = await Transaction.countDocuments(query)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async filteredTransactionsByDateAndText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ITransaction[]> {
+    try {
+      let query: FilterQuery<ITransactionDb> = {}
+      if (searchText.trim() !== '') {
+        query.$or = [
+          { currency: { $regex: searchText, $options: 'i' } },
+          { type: { $regex: searchText, $options: 'i' } }
+        ]
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = startDate
+        }
+        if (endDate) {
+          query.createdAt.$lte = endDate
+        }
+      }
+      console.log(query)
+      const transaction = await Transaction.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+      console.log('transaction length', transaction.length)
+      const convertedData = transaction.map(item => convertITransactionDbToITransaction(item))
+      return convertedData
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async createTransaction(transaction: Partial<ITransaction>): Promise<ITransaction> {
     try {

@@ -9,8 +9,8 @@ import IOrderBaseRepo from "../interfaces/IOrderBaseRepo";
 import IWalletBaseRepo from '../interfaces/IWalletBaseRepo'
 import IWallet from "../interfaces/IWallet";
 import { findWalletByUserIdAndUpdateAmountArgs, SubscriptionPagination, TransactionPagination } from "../constants/types";
-import { addUsersToSubscriptions, addUsersToTransactions, addUserToTransaction } from '../util/userClientFunctions'
-import ITransaction from "../interfaces/ITransaction";
+import { addSenderAndReceiverDataToTransactions, addUsersToSubscriptions, addUsersToTransactions, addUserToTransaction } from '../util/userClientFunctions'
+import ITransaction, { ITransactionAdmin, ITransactionExt } from "../interfaces/ITransaction";
 
 const LIMIT = 10
 
@@ -22,6 +22,28 @@ class PaymentRepo implements IPaymentRepo {
     private subscriptionBaseRepo: ISubscriptionBaseRepo,
     private walletBaseRepo: IWalletBaseRepo,
   ) { }
+
+
+  async getAllTransactions(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ITransactionAdmin[]> {
+    try {
+      const transactions = await this.walletBaseRepo.filteredTransactionsByDateAndText(searchText, limit, startIndex, startDate, endDate)
+      const transactionWithUserDetails = await addSenderAndReceiverDataToTransactions(transactions)
+      return transactionWithUserDetails 
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getAllTransactionsCount(searchText: string, startDate?: string, endDate?: string): Promise<number> {
+    try {
+      const count = await this.walletBaseRepo.filteredTransactionsByDateAndTextCount(searchText, startDate, endDate)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
 
   async getAllSubscriptions(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ISubscriptionsExt[]> {

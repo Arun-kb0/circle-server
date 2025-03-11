@@ -1,6 +1,6 @@
 import { error } from "console";
 import { SvcReturnType } from "../constants/SvcReturnType";
-import { OrderOptionType, OrderStatusOptionType, SubscriptionAdminPagination, SubscriptionPagination, TransactionPagination } from "../constants/types";
+import { OrderOptionType, OrderStatusOptionType, SubscriptionAdminPagination, SubscriptionPagination, TransactionAdminPagination, TransactionPagination } from "../constants/types";
 import IOrder from "../interfaces/IOrder";
 import IPayment from "../interfaces/IPayment";
 import IPaymentRepo from "../interfaces/IPaymentRepo";
@@ -24,6 +24,25 @@ class PaymentService implements IPaymentService {
   constructor(
     private paymentRepo: IPaymentRepo
   ) { }
+
+  async getAllTransactions(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<TransactionAdminPagination> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.paymentRepo.getAllTransactionsCount(searchText, startDate, endDate)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const transactions = await this.paymentRepo.getAllTransactions(searchText, LIMIT, startIndex, startDate, endDate)
+      if (!transactions) return { err: httpStatus.NOT_FOUND, errMsg: 'No transactions found', data: null }
+      const data = {
+        transactions,
+        numberOfPages,
+        currentPage: page,
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
 
   async getAllSubscriptions(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<SubscriptionAdminPagination> {
     try {

@@ -21,6 +21,8 @@ export interface ProtoGrpcType {
     CreateSubscriptionResponse: MessageTypeDefinition
     GetAllSubscriptionsRequest: MessageTypeDefinition
     GetAllSubscriptionsResponse: MessageTypeDefinition
+    GetAllTransactionsRequest: MessageTypeDefinition
+    GetAllTransactionsResponse: MessageTypeDefinition
     GetUserSubscriptionsRequest: MessageTypeDefinition
     GetUserSubscriptionsResponse: MessageTypeDefinition
     GetUserTransactionsRequest: MessageTypeDefinition
@@ -38,6 +40,7 @@ export interface ProtoGrpcType {
     SubscriptionEnum: MessageTypeDefinition
     SubscriptionExt: MessageTypeDefinition
     Transaction: MessageTypeDefinition
+    TransactionAdmin: MessageTypeDefinition
     TransactionEnums: MessageTypeDefinition
     TransactionExt: MessageTypeDefinition
     UpdateOrderRequest: MessageTypeDefinition

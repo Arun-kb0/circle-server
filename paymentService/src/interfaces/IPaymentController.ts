@@ -19,6 +19,8 @@ import { GetUserWalletRequest__Output } from '../proto/payment/GetUserWalletRequ
 import { GetUserWalletResponse } from '../proto/payment/GetUserWalletResponse'
 import { GetAllSubscriptionsRequest__Output } from '../proto/payment/GetAllSubscriptionsRequest'
 import { GetAllSubscriptionsResponse } from '../proto/payment/GetAllSubscriptionsResponse'
+import { GetAllTransactionsRequest__Output } from '../proto/payment/GetAllTransactionsRequest'
+import { GetAllTransactionsResponse } from '../proto/payment/GetAllTransactionsResponse'
 
 export type CreateOrderHandler = grpc.handleUnaryCall<CreateOrderRequest__Output, CreateOrderResponse>
 export type UpdateOrderHandler = grpc.handleUnaryCall<UpdateOrderRequest__Output, UpdateOrderResponse>
@@ -30,6 +32,7 @@ export type SubscribeWithWalletHandler = grpc.handleUnaryCall<SubscribeWithWalle
 export type GetUserTransactionsHandler = grpc.handleUnaryCall<GetUserTransactionsRequest__Output, GetUserTransactionsResponse>
 export type GetUserWalletHandler = grpc.handleUnaryCall<GetUserWalletRequest__Output, GetUserWalletResponse>
 export type GetAllSubscriptionsHandler = grpc.handleUnaryCall<GetAllSubscriptionsRequest__Output, GetAllSubscriptionsResponse>
+export type GetAllTransactionsHandler = grpc.handleUnaryCall<GetAllTransactionsRequest__Output, GetAllTransactionsResponse>
 
 interface IPaymentController {
   createOrder: CreateOrderHandler
@@ -45,6 +48,7 @@ interface IPaymentController {
   subscribeWithWallet: SubscribeWithWalletHandler
   getUserTransactions: GetUserTransactionsHandler
   getUserWallet: GetUserWalletHandler
+  getAllTransactions: GetAllTransactionsHandler
 }
 
 export default IPaymentController

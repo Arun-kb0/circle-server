@@ -133,3 +133,19 @@ export const getFilteredSubscriptions = async (req: Request, res: Response, next
     next(error)
   }
 }
+
+export const getFilteredTransactions = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { searchText, page, startDate, endDate } = req.query
+    if (typeof searchText !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'postId and page required')
+    const start = startDate as any
+    const end = endDate as any
+    paymentClient.getAllTransactions({ searchText, page: Number(page), startDate: start, endDate: end }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get all transactions  failed.'))
+      res.status(httpStatus.OK).json({ message: "get all transactions  success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}

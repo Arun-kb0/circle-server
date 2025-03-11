@@ -11,6 +11,9 @@ interface IWalletBaseRepo {
   findTransactionsByUserIdCount(userId: string): Promise<number>
   findTransactionsByUserId(userId: string, limit: number, startIndex: number): Promise<ITransaction[]>
 
+
+  filteredTransactionsByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
+  filteredTransactionsByDateAndText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ITransaction[]>
 }
 
 export default IWalletBaseRepo

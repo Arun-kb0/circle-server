@@ -1,5 +1,5 @@
 import ISubscription, { ISubscriptionsExt } from "../interfaces/ISubscription";
-import ITransaction, { ITransactionExt } from "../interfaces/ITransaction";
+import ITransaction, { ITransactionAdmin, ITransactionExt } from "../interfaces/ITransaction";
 
 export type OrderOptionType = {
   method: string;
@@ -50,4 +50,10 @@ export type SubscriptionAdminPagination = {
   currentPage: number
   numberOfPages: number
   subscriptions: ISubscriptionsExt[]
+}
+
+export type TransactionAdminPagination = {
+  currentPage: number
+  numberOfPages: number
+  transactions: ITransactionAdmin[]
 }
