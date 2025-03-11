@@ -1,7 +1,7 @@
 import { findWalletByUserIdAndUpdateAmountArgs, SubscriptionPagination, TransactionPagination } from '../constants/types'
 import IOrder from './IOrder'
 import IPayment from './IPayment'
-import ISubscription from './ISubscription'
+import ISubscription, { ISubscriptionsExt } from './ISubscription'
 import IWallet from './IWallet'
 
 interface IPaymentRepo {
@@ -21,6 +21,8 @@ interface IPaymentRepo {
   getSubscriptionById(subscriptionId: string): Promise<ISubscription | null>
   getUserSubscriptions(userId: string, page: number): Promise<SubscriptionPagination>
   getSubsByMerchantTransactionIdAndUpdate(merchantTransactionId: string, subscription: Partial<ISubscription>): Promise<ISubscription | null>
+  getAllSubscriptions(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ISubscriptionsExt[]>
+  getAllSubscriptionsCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
 
   getUserTransactions(userId: string, page: number): Promise<TransactionPagination>
 }

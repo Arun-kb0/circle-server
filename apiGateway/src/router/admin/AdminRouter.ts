@@ -2,7 +2,8 @@ import express from 'express'
 import {
   updatePost, searchPosts, deletePost,
   getPopularPosts, getFeedCounts, getPostCountByDate,
-  getFilteredReports
+  getFilteredReports,
+  getFilteredSubscriptions
 } from '../../controller/admin/postAdminController'
 import {
   getAllUsers, blockUser, unblockUser,
@@ -33,6 +34,7 @@ router.route('/post/:postId')
   .delete(deletePost)
 
 router.get('/report/filtered', getFilteredReports)
+router.get('/subscriptions/filtered', getFilteredSubscriptions) 
 
 export default router
 

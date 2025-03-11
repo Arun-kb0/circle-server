@@ -1,4 +1,4 @@
-import ISubscription from "../interfaces/ISubscription";
+import ISubscription, { ISubscriptionsExt } from "../interfaces/ISubscription";
 import ITransaction, { ITransactionExt } from "../interfaces/ITransaction";
 
 export type OrderOptionType = {
@@ -43,4 +43,11 @@ export type findWalletByUserIdAndUpdateAmountArgs = {
   receiverId: string,
   amount: number,
   isInc: boolean
+}
+
+
+export type SubscriptionAdminPagination = {
+  currentPage: number
+  numberOfPages: number
+  subscriptions: ISubscriptionsExt[]
 }

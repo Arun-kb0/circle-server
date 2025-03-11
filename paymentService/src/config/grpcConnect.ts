@@ -36,6 +36,7 @@ const grpcConnect = () => {
 
       getUserSubscriptions: logInterceptor(paymentController.getUserSubscriptions),
       createSubscription: logInterceptor(paymentController.createSubscription),
+      getAllSubscriptions: logInterceptor(paymentController.getAllSubscriptions),
 
       subscribeWithWallet: logInterceptor(paymentController.subscribeWithWallet),
       getUserTransactions: logInterceptor(paymentController.getUserTransactions),

@@ -19,6 +19,8 @@ export interface ProtoGrpcType {
     CreateStatusOption: MessageTypeDefinition
     CreateSubscriptionRequest: MessageTypeDefinition
     CreateSubscriptionResponse: MessageTypeDefinition
+    GetAllSubscriptionsRequest: MessageTypeDefinition
+    GetAllSubscriptionsResponse: MessageTypeDefinition
     GetUserSubscriptionsRequest: MessageTypeDefinition
     GetUserSubscriptionsResponse: MessageTypeDefinition
     GetUserTransactionsRequest: MessageTypeDefinition
@@ -34,6 +36,7 @@ export interface ProtoGrpcType {
     SubscribeWithWalletResponse: MessageTypeDefinition
     Subscription: MessageTypeDefinition
     SubscriptionEnum: MessageTypeDefinition
+    SubscriptionExt: MessageTypeDefinition
     Transaction: MessageTypeDefinition
     TransactionEnums: MessageTypeDefinition
     TransactionExt: MessageTypeDefinition

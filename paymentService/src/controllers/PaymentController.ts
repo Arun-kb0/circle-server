@@ -2,7 +2,7 @@ import IOrder from "../interfaces/IOrder";
 import IPayment from "../interfaces/IPayment";
 import IPaymentController, {
   CreateOrderHandler, CreateOrderStatusOptionHandler,
-  CreatePaymentHandler, CreateSubscriptionHandler, GetUserSubscriptionsHandler,
+  CreatePaymentHandler, CreateSubscriptionHandler, GetAllSubscriptionsHandler, GetUserSubscriptionsHandler,
   GetUserTransactionsHandler,
   GetUserWalletHandler,
   SubscribeWithWalletHandler,
@@ -18,6 +18,20 @@ class PaymentController implements IPaymentController {
   constructor(
     private paymentService: IPaymentService
   ) { }
+
+  getAllSubscriptions: GetAllSubscriptionsHandler = async (call, cb) => {
+    try {
+      const { searchText, page, startDate, endDate } = call.request
+      validateRequest('page is required', page)
+      const res = await this.paymentService.getAllSubscriptions(searchText as string, page as number, startDate, endDate)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
 
   subscribeWithWallet: SubscribeWithWalletHandler = async (call, cb) => {
     try {

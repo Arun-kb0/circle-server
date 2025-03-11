@@ -10,4 +10,11 @@ interface ISubscription {
   updatedAt: string
 }
 
+export interface ISubscriptionsExt extends ISubscription {
+  subscriberUserName?: string
+  subscriberUserImage?: string
+  subscriberToUserName?: string
+  subscriberToUserImage?: string
+}
+
 export default ISubscription

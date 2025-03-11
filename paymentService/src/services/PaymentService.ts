@@ -1,6 +1,6 @@
 import { error } from "console";
 import { SvcReturnType } from "../constants/SvcReturnType";
-import { OrderOptionType, OrderStatusOptionType, SubscriptionPagination, TransactionPagination } from "../constants/types";
+import { OrderOptionType, OrderStatusOptionType, SubscriptionAdminPagination, SubscriptionPagination, TransactionPagination } from "../constants/types";
 import IOrder from "../interfaces/IOrder";
 import IPayment from "../interfaces/IPayment";
 import IPaymentRepo from "../interfaces/IPaymentRepo";
@@ -17,13 +17,32 @@ const MERCHANT_KEY = process.env.PP_MERCHANT_KEY || ""
 const REDIRECT_URL = process.env.PP_REDIRECT_URL || ""
 const MERCHANT_BASE_URL = process.env.PP_MERCHANT_BASE_URL || ""
 const MERCHANT_STATUS_URL = process.env.PP_MERCHANT_STATUS_URL || ""
-
+const LIMIT =10
 
 class PaymentService implements IPaymentService {
 
   constructor(
     private paymentRepo: IPaymentRepo
   ) { }
+
+  async getAllSubscriptions(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<SubscriptionAdminPagination> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.paymentRepo.getAllSubscriptionsCount(searchText, startDate, endDate)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const subs = await this.paymentRepo.getAllSubscriptions(searchText, LIMIT, startIndex, startDate, endDate)
+      if (!subs) return { err: httpStatus.NOT_FOUND, errMsg: 'No subscriptions found', data: null }
+      const data = {
+        subscriptions: subs,
+        numberOfPages,
+        currentPage: page,
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
 
   async subscribeWithWallet(subscription: Partial<ISubscription>, order: Partial<IOrder>): SvcReturnType<{ wallet: IWallet; subscription: ISubscription; }> {
     try {

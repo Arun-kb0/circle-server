@@ -10,6 +10,8 @@ import type { CreatePaymentRequest as _payment_CreatePaymentRequest, CreatePayme
 import type { CreatePaymentResponse as _payment_CreatePaymentResponse, CreatePaymentResponse__Output as _payment_CreatePaymentResponse__Output } from '../payment/CreatePaymentResponse';
 import type { CreateSubscriptionRequest as _payment_CreateSubscriptionRequest, CreateSubscriptionRequest__Output as _payment_CreateSubscriptionRequest__Output } from '../payment/CreateSubscriptionRequest';
 import type { CreateSubscriptionResponse as _payment_CreateSubscriptionResponse, CreateSubscriptionResponse__Output as _payment_CreateSubscriptionResponse__Output } from '../payment/CreateSubscriptionResponse';
+import type { GetAllSubscriptionsRequest as _payment_GetAllSubscriptionsRequest, GetAllSubscriptionsRequest__Output as _payment_GetAllSubscriptionsRequest__Output } from '../payment/GetAllSubscriptionsRequest';
+import type { GetAllSubscriptionsResponse as _payment_GetAllSubscriptionsResponse, GetAllSubscriptionsResponse__Output as _payment_GetAllSubscriptionsResponse__Output } from '../payment/GetAllSubscriptionsResponse';
 import type { GetUserSubscriptionsRequest as _payment_GetUserSubscriptionsRequest, GetUserSubscriptionsRequest__Output as _payment_GetUserSubscriptionsRequest__Output } from '../payment/GetUserSubscriptionsRequest';
 import type { GetUserSubscriptionsResponse as _payment_GetUserSubscriptionsResponse, GetUserSubscriptionsResponse__Output as _payment_GetUserSubscriptionsResponse__Output } from '../payment/GetUserSubscriptionsResponse';
 import type { GetUserTransactionsRequest as _payment_GetUserTransactionsRequest, GetUserTransactionsRequest__Output as _payment_GetUserTransactionsRequest__Output } from '../payment/GetUserTransactionsRequest';
@@ -57,6 +59,15 @@ export interface PaymentServiceClient extends grpc.Client {
   createSubscription(argument: _payment_CreateSubscriptionRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_payment_CreateSubscriptionResponse__Output>): grpc.ClientUnaryCall;
   createSubscription(argument: _payment_CreateSubscriptionRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_CreateSubscriptionResponse__Output>): grpc.ClientUnaryCall;
   createSubscription(argument: _payment_CreateSubscriptionRequest, callback: grpc.requestCallback<_payment_CreateSubscriptionResponse__Output>): grpc.ClientUnaryCall;
+  
+  GetAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  getAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  getAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  getAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
+  getAllSubscriptions(argument: _payment_GetAllSubscriptionsRequest, callback: grpc.requestCallback<_payment_GetAllSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
   
   GetUserSubscriptions(argument: _payment_GetUserSubscriptionsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_payment_GetUserSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
   GetUserSubscriptions(argument: _payment_GetUserSubscriptionsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_payment_GetUserSubscriptionsResponse__Output>): grpc.ClientUnaryCall;
@@ -114,6 +125,8 @@ export interface PaymentServiceHandlers extends grpc.UntypedServiceImplementatio
   
   CreateSubscription: grpc.handleUnaryCall<_payment_CreateSubscriptionRequest__Output, _payment_CreateSubscriptionResponse>;
   
+  GetAllSubscriptions: grpc.handleUnaryCall<_payment_GetAllSubscriptionsRequest__Output, _payment_GetAllSubscriptionsResponse>;
+  
   GetUserSubscriptions: grpc.handleUnaryCall<_payment_GetUserSubscriptionsRequest__Output, _payment_GetUserSubscriptionsResponse>;
   
   GetUserTransactions: grpc.handleUnaryCall<_payment_GetUserTransactionsRequest__Output, _payment_GetUserTransactionsResponse>;
@@ -131,6 +144,7 @@ export interface PaymentServiceDefinition extends grpc.ServiceDefinition {
   CreateOrderStatusOption: MethodDefinition<_payment_CreateOrderStatusOptionRequest, _payment_CreateOrderStatusOptionResponse, _payment_CreateOrderStatusOptionRequest__Output, _payment_CreateOrderStatusOptionResponse__Output>
   CreatePayment: MethodDefinition<_payment_CreatePaymentRequest, _payment_CreatePaymentResponse, _payment_CreatePaymentRequest__Output, _payment_CreatePaymentResponse__Output>
   CreateSubscription: MethodDefinition<_payment_CreateSubscriptionRequest, _payment_CreateSubscriptionResponse, _payment_CreateSubscriptionRequest__Output, _payment_CreateSubscriptionResponse__Output>
+  GetAllSubscriptions: MethodDefinition<_payment_GetAllSubscriptionsRequest, _payment_GetAllSubscriptionsResponse, _payment_GetAllSubscriptionsRequest__Output, _payment_GetAllSubscriptionsResponse__Output>
   GetUserSubscriptions: MethodDefinition<_payment_GetUserSubscriptionsRequest, _payment_GetUserSubscriptionsResponse, _payment_GetUserSubscriptionsRequest__Output, _payment_GetUserSubscriptionsResponse__Output>
   GetUserTransactions: MethodDefinition<_payment_GetUserTransactionsRequest, _payment_GetUserTransactionsResponse, _payment_GetUserTransactionsRequest__Output, _payment_GetUserTransactionsResponse__Output>
   GetUserWallet: MethodDefinition<_payment_GetUserWalletRequest, _payment_GetUserWalletResponse, _payment_GetUserWalletRequest__Output, _payment_GetUserWalletResponse__Output>

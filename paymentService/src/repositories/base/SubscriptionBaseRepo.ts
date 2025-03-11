@@ -1,10 +1,66 @@
+import { FilterQuery } from 'mongoose'
 import ISubscription from '../../interfaces/ISubscription'
 import ISubscriptionBaseRepo from '../../interfaces/ISubscriptionBaseRepo'
-import { Subscription } from '../../model/subscriptionModel'
+import { ISubscriptionDb, Subscription } from '../../model/subscriptionModel'
 import { convertISubscriptionDbToISubscription, convertISubscriptionToISubscriptionDb, convertToObjectId } from '../../util/converter'
 import handleError from '../../util/handleError'
 
 class SubscriptionBaseRepo implements ISubscriptionBaseRepo {
+
+  async filteredSubscriptionsByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number> {
+    try {
+      let query: FilterQuery<ISubscriptionDb> = {}
+      if (searchText.trim() !== '') {
+        query.$or = [
+          { plan: { $regex: searchText, $options: 'i' } },
+          { status: { $regex: searchText, $options: 'i' } }
+        ]
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = startDate
+        }
+        if (endDate) {
+          query.createdAt.$lte = endDate
+        }
+      }
+      const count = await Subscription.countDocuments(query)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async filteredSubscriptionsByDateAndText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ISubscription[]> {
+    try {
+      let query: FilterQuery<ISubscriptionDb> = {}
+      if (searchText.trim() !== '') {
+        query.$or = [
+          { plan: { $regex: searchText, $options: 'i' } },
+          { status: { $regex: searchText, $options: 'i' } }
+        ]
+      }
+      if (startDate || endDate) {
+        query.createdAt = {} as Record<string, Date>;
+        if (startDate) {
+          query.createdAt.$gte = startDate
+        }
+        if (endDate) {
+          query.createdAt.$lte = endDate
+        }
+      }
+      console.log(query)
+      const subscriptions = await Subscription.find(query).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
+      console.log('subscriptions length', subscriptions.length)
+      const convertedSubs = subscriptions.map(item => convertISubscriptionDbToISubscription(item))
+      return convertedSubs
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
 
   async findSubsByMerchantTransactionIdAndUpdate(merchantTransactionId: string, subscription: Partial<ISubscription>): Promise<ISubscription | null> {

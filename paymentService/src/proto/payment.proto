@@ -12,10 +12,12 @@ service PaymentService {
   
   rpc GetUserSubscriptions (GetUserSubscriptionsRequest) returns (GetUserSubscriptionsResponse) {};
   rpc CreateSubscription (CreateSubscriptionRequest) returns (CreateSubscriptionResponse) {};
+  rpc GetAllSubscriptions(GetAllSubscriptionsRequest) returns (GetAllSubscriptionsResponse){};
 
   rpc GetUserWallet (GetUserWalletRequest) returns (GetUserWalletResponse) {};
   rpc SubscribeWithWallet(SubscribeWithWalletRequest) returns (SubscribeWithWalletResponse) {};
   rpc GetUserTransactions(GetUserTransactionsRequest) returns (GetUserTransactionsResponse) {};
+
 }
 
 message OrderEnum {
@@ -99,6 +101,21 @@ message Subscription {
   string createdAt=6;
   string updatedAt=7;
   string merchantTransactionId=8;
+}
+
+message SubscriptionExt {
+  string _id=1;
+  string subscriberUserId=2;
+  string subscriberToUserId=3;
+  SubscriptionEnum.Plan plan=4;
+  SubscriptionEnum.Status status=5;
+  string createdAt=6;
+  string updatedAt=7;
+  string merchantTransactionId=8;
+  string subscriberUserName = 9;
+  string subscriberUserImage = 10;
+  string subscriberToUserName = 11;
+  string subscriberToUserImage = 12;
 }
 
 message Wallet {
@@ -252,4 +269,17 @@ message GetUserWalletRequest {
 
 message GetUserWalletResponse {
   Wallet wallet =1;
+}
+
+message GetAllSubscriptionsRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message GetAllSubscriptionsResponse {
+  repeated SubscriptionExt subscriptions=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
 }

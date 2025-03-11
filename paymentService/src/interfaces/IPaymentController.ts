@@ -13,10 +13,12 @@ import { CreateSubscriptionRequest__Output } from '../proto/payment/CreateSubscr
 import { CreateSubscriptionResponse } from '../proto/payment/CreateSubscriptionResponse'
 import { SubscribeWithWalletRequest__Output } from '../proto/payment/SubscribeWithWalletRequest'
 import { SubscribeWithWalletResponse } from '../proto/payment/SubscribeWithWalletResponse'
-import { GetUserTransactionsRequest__Output} from '../proto/payment/GetUserTransactionsRequest'
-import { GetUserTransactionsResponse} from '../proto/payment/GetUserTransactionsResponse'
-import { GetUserWalletRequest__Output} from '../proto/payment/GetUserWalletRequest'
-import { GetUserWalletResponse} from '../proto/payment/GetUserWalletResponse'
+import { GetUserTransactionsRequest__Output } from '../proto/payment/GetUserTransactionsRequest'
+import { GetUserTransactionsResponse } from '../proto/payment/GetUserTransactionsResponse'
+import { GetUserWalletRequest__Output } from '../proto/payment/GetUserWalletRequest'
+import { GetUserWalletResponse } from '../proto/payment/GetUserWalletResponse'
+import { GetAllSubscriptionsRequest__Output } from '../proto/payment/GetAllSubscriptionsRequest'
+import { GetAllSubscriptionsResponse } from '../proto/payment/GetAllSubscriptionsResponse'
 
 export type CreateOrderHandler = grpc.handleUnaryCall<CreateOrderRequest__Output, CreateOrderResponse>
 export type UpdateOrderHandler = grpc.handleUnaryCall<UpdateOrderRequest__Output, UpdateOrderResponse>
@@ -26,7 +28,8 @@ export type CreateOrderStatusOptionHandler = grpc.handleUnaryCall<CreateOrderSta
 export type CreateSubscriptionHandler = grpc.handleUnaryCall<CreateSubscriptionRequest__Output, CreateSubscriptionResponse>
 export type SubscribeWithWalletHandler = grpc.handleUnaryCall<SubscribeWithWalletRequest__Output, SubscribeWithWalletResponse>
 export type GetUserTransactionsHandler = grpc.handleUnaryCall<GetUserTransactionsRequest__Output, GetUserTransactionsResponse>
-export type GetUserWalletHandler = grpc.handleUnaryCall<GetUserWalletRequest__Output,GetUserWalletResponse>
+export type GetUserWalletHandler = grpc.handleUnaryCall<GetUserWalletRequest__Output, GetUserWalletResponse>
+export type GetAllSubscriptionsHandler = grpc.handleUnaryCall<GetAllSubscriptionsRequest__Output, GetAllSubscriptionsResponse>
 
 interface IPaymentController {
   createOrder: CreateOrderHandler
@@ -37,6 +40,7 @@ interface IPaymentController {
 
   getUserSubscriptions: GetUserSubscriptionsHandler
   createSubscription: CreateSubscriptionHandler
+  getAllSubscriptions: GetAllSubscriptionsHandler
 
   subscribeWithWallet: SubscribeWithWalletHandler
   getUserTransactions: GetUserTransactionsHandler

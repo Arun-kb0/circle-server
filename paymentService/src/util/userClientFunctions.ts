@@ -1,6 +1,7 @@
 import UserGrpcClient from '../config/UserGrpcClient'
 import { User } from '../proto/userProto/user/User'
 import ITransaction, { ITransactionExt } from '../interfaces/ITransaction'
+import ISubscription, { ISubscriptionsExt } from '../interfaces/ISubscription'
 
 const client = UserGrpcClient.getClient()
 
@@ -70,6 +71,32 @@ export const addUsersToTransactions = async (transactions: ITransaction[]): Prom
     return transactionsWithUser
   } catch (error) {
     console.log('users and posts merging failed')
+    console.log(error)
+    return []
+  }
+}
+
+// * admin
+// * subscriptions 
+export const addUsersToSubscriptions = async (subscriptions: ISubscription[]): Promise<ISubscriptionsExt[]> => {
+  try {
+    const subsUserIds = subscriptions.map(item => item.subscriberUserId)
+    const subsToUserIds = subscriptions.map(item => item.subscriberToUserId)
+    const users = await getMultipleUsers([...subsToUserIds, ...subsUserIds])
+    const subscriptionsWithUser = subscriptions.map((subscription): ISubscriptionsExt => {
+      const subscriberUser = users.find((user) => user._id === subscription.subscriberUserId);
+      const subscriberToUser = users.find((user) => user._id === subscription.subscriberToUserId);
+      return {
+        ...subscription,
+        subscriberUserName: subscriberUser?.name || undefined,
+        subscriberUserImage: subscriberUser?.image?.url || undefined,
+        subscriberToUserName: subscriberToUser?.name || undefined,
+        subscriberToUserImage: subscriberToUser?.image?.url || undefined,
+      }
+    })
+    return subscriptionsWithUser
+  } catch (error) {
+    console.log('users and subscriptions merging failed')
     console.log(error)
     return []
   }

@@ -10,6 +10,9 @@ interface ISubscriptionBaseRepo {
 
   findSubscriptionsByUserId(userId: string, limit: number, startIndex: number): Promise<ISubscription[]>
   findSubscriptionsByUserIdCount(userId: string): Promise<number>
+
+  filteredSubscriptionsByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
+  filteredSubscriptionsByDateAndText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ISubscription[]>
 }
 
 export default ISubscriptionBaseRepo
