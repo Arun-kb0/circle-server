@@ -157,8 +157,6 @@ class PostBaseRepo implements IPostBaseRepo {
 
   async findPostsBySearchText(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IPost[] | null> {
     try {
-      console.log('\n findPostsBySearchText')
-      console.log(startDate, endDate, searchText)
       let query: FilterQuery<IPostDb> = {}
       if (searchText.trim() !== '') {
         query.$or = [

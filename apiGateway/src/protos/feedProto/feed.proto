@@ -22,6 +22,7 @@ service FeedService {
   rpc GetSingleComment(GetSingleCommentRequest) returns (GetSingleCommentResponse) {};
   
   rpc GetUserSavedPosts(GetUserSavedPostsRequest) returns (GetUserSavedPostsResponse) {};
+  rpc GetAllReports(GetAllReportsRequest) returns (GetAllReportsResponse) {};
 };
 
 
@@ -130,6 +131,9 @@ message Report {
   string description = 5;
   string createdAt = 6;
   string updatedAt = 7;
+  string userName=8;
+  string userImage=9;
+  Post post=10;
 }
 
 message GetGlobalFeedRequest {
@@ -276,6 +280,19 @@ message GetUserSavedPostsRequest  {
 
 message GetUserSavedPostsResponse {
   repeated Post savedPosts=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetAllReportsRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message GetAllReportsResponse {
+  repeated Report reports=1;
   int32 numberOfPages=2;
   int32 currentPage=3;
 }

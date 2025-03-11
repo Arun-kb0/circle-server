@@ -1,7 +1,8 @@
-import { PaginationComment, PaginationPost, PaginationSavedPost, SvcReturnType } from '../constants/SvcTypes'
+import { PaginationComment, PaginationPost, PaginationReports, PaginationSavedPost, SvcReturnType } from '../constants/SvcTypes'
 import { ICommentExt } from './IComment'
 import ILike from './ILike'
 import { IPostExt } from './IPost'
+import { IReportExt } from './IReport'
 
 interface IFeedService {
   getSingleComment(commentId: string): SvcReturnType<ICommentExt | null>
@@ -24,6 +25,7 @@ interface IFeedService {
   getPostsCountByDate(startDate: string, endDate: string): SvcReturnType<{ date: string, count: number }[]>
 
   getUserSavedPosts(userId: string, page: number): SvcReturnType<PaginationSavedPost>
+  getAllReports(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationReports>
 }
 
 export default IFeedService

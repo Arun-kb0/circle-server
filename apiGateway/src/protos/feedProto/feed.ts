@@ -12,6 +12,8 @@ export interface ProtoGrpcType {
     Comment: MessageTypeDefinition
     CommentEnums: MessageTypeDefinition
     FeedService: SubtypeConstructor<typeof grpc.Client, _feed_FeedServiceClient> & { service: _feed_FeedServiceDefinition }
+    GetAllReportsRequest: MessageTypeDefinition
+    GetAllReportsResponse: MessageTypeDefinition
     GetCommentChildrenRequest: MessageTypeDefinition
     GetCommentChildrenResponse: MessageTypeDefinition
     GetCommentRequest: MessageTypeDefinition

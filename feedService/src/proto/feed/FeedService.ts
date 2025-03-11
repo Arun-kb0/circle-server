@@ -2,6 +2,8 @@
 
 import type * as grpc from '@grpc/grpc-js'
 import type { MethodDefinition } from '@grpc/proto-loader'
+import type { GetAllReportsRequest as _feed_GetAllReportsRequest, GetAllReportsRequest__Output as _feed_GetAllReportsRequest__Output } from '../feed/GetAllReportsRequest';
+import type { GetAllReportsResponse as _feed_GetAllReportsResponse, GetAllReportsResponse__Output as _feed_GetAllReportsResponse__Output } from '../feed/GetAllReportsResponse';
 import type { GetCommentChildrenRequest as _feed_GetCommentChildrenRequest, GetCommentChildrenRequest__Output as _feed_GetCommentChildrenRequest__Output } from '../feed/GetCommentChildrenRequest';
 import type { GetCommentChildrenResponse as _feed_GetCommentChildrenResponse, GetCommentChildrenResponse__Output as _feed_GetCommentChildrenResponse__Output } from '../feed/GetCommentChildrenResponse';
 import type { GetCommentRequest as _feed_GetCommentRequest, GetCommentRequest__Output as _feed_GetCommentRequest__Output } from '../feed/GetCommentRequest';
@@ -34,6 +36,15 @@ import type { SearchPostRequest as _feed_SearchPostRequest, SearchPostRequest__O
 import type { SearchPostResponse as _feed_SearchPostResponse, SearchPostResponse__Output as _feed_SearchPostResponse__Output } from '../feed/SearchPostResponse';
 
 export interface FeedServiceClient extends grpc.Client {
+  GetAllReports(argument: _feed_GetAllReportsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllReports(argument: _feed_GetAllReportsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllReports(argument: _feed_GetAllReportsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  GetAllReports(argument: _feed_GetAllReportsRequest, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  getAllReports(argument: _feed_GetAllReportsRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  getAllReports(argument: _feed_GetAllReportsRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  getAllReports(argument: _feed_GetAllReportsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  getAllReports(argument: _feed_GetAllReportsRequest, callback: grpc.requestCallback<_feed_GetAllReportsResponse__Output>): grpc.ClientUnaryCall;
+  
   GetComment(argument: _feed_GetCommentRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
   GetComment(argument: _feed_GetCommentRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
   GetComment(argument: _feed_GetCommentRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_feed_GetCommentResponse__Output>): grpc.ClientUnaryCall;
@@ -172,6 +183,8 @@ export interface FeedServiceClient extends grpc.Client {
 }
 
 export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
+  GetAllReports: grpc.handleUnaryCall<_feed_GetAllReportsRequest__Output, _feed_GetAllReportsResponse>;
+  
   GetComment: grpc.handleUnaryCall<_feed_GetCommentRequest__Output, _feed_GetCommentResponse>;
   
   GetCommentChildren: grpc.handleUnaryCall<_feed_GetCommentChildrenRequest__Output, _feed_GetCommentChildrenResponse>;
@@ -205,6 +218,7 @@ export interface FeedServiceHandlers extends grpc.UntypedServiceImplementation {
 }
 
 export interface FeedServiceDefinition extends grpc.ServiceDefinition {
+  GetAllReports: MethodDefinition<_feed_GetAllReportsRequest, _feed_GetAllReportsResponse, _feed_GetAllReportsRequest__Output, _feed_GetAllReportsResponse__Output>
   GetComment: MethodDefinition<_feed_GetCommentRequest, _feed_GetCommentResponse, _feed_GetCommentRequest__Output, _feed_GetCommentResponse__Output>
   GetCommentChildren: MethodDefinition<_feed_GetCommentChildrenRequest, _feed_GetCommentChildrenResponse, _feed_GetCommentChildrenRequest__Output, _feed_GetCommentChildrenResponse__Output>
   GetFeedCounts: MethodDefinition<_feed_GetFeedCountsRequest, _feed_GetFeedCountsResponse, _feed_GetFeedCountsRequest__Output, _feed_GetFeedCountsResponse__Output>

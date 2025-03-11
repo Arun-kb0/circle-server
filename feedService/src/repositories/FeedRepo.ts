@@ -4,7 +4,10 @@ import { IPostExt } from '../interfaces/IPost';
 import { Post } from '../model/postModel'
 import { Comment } from '../model/commentModel'
 import { getCachedPostCount, getPopularPostsFromCache } from '../util/redisCache'
-import { addUserToPosts, addUserToPost, addUserToComments, addUserToLikes, addUserToLike } from '../util/userClientFunctions'
+import {
+  addUserToPosts, addUserToPost, addUserToComments,
+  addUserToLikes, addUserToLike, addUserToIReport
+} from '../util/userClientFunctions'
 import { Like } from '../model/likeModel'
 import ILike from '../interfaces/ILike';
 import IPostBaseRepo from '../interfaces/IPostBaseRepo'
@@ -13,6 +16,7 @@ import ILikeBaseRepo from '../interfaces/ILikeBaseRepo'
 import ISavedBaseRepo from '../interfaces/ISavedBaseRepo'
 import IReportBaseRepo from '../interfaces/IReportBaseRepo'
 import handleError from '../util/handleError';
+import { IReportExt } from '../interfaces/IReport';
 
 
 class FeedRepo implements IFeedRepo {
@@ -24,6 +28,39 @@ class FeedRepo implements IFeedRepo {
     private savedBaseRepo: ISavedBaseRepo,
     private reportBaseRepo: IReportBaseRepo
   ) { }
+
+  async filteredReportByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number> {
+    try {
+      const count = await this.reportBaseRepo.filteredReportByDateAndTextCount(searchText, startDate, endDate)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getAllReports(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IReportExt[]> {
+    try {
+      const reports = await this.reportBaseRepo.filteredReportByDateAndText(searchText, limit, startIndex, startDate, endDate)
+      const postIds = reports.map(item => {
+        if (item.contentType === 'post') return item.contentId
+      }) as string[]
+      const reportWithUsers = await addUserToIReport(reports)
+      const posts = await this.postBaseRepo.findMultiplePostsByPostIds(postIds)
+      const postWithUsers = await addUserToPosts(posts)
+      const reportWithPost = postWithUsers.map((post) => {
+        const report = reportWithUsers.find((report) => report.contentId === post._id);
+        return {
+          ...report,
+          post
+        }
+      })
+      return reportWithPost as IReportExt[]
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async getSingleComment(commentId: string): Promise<ICommentExt | null> {
     try {
@@ -219,7 +256,7 @@ class FeedRepo implements IFeedRepo {
   async getUserSavedPostsCount(userId: string): Promise<number> {
     try {
       const count = await this.savedBaseRepo.findSavedPostsByUserIdCount(userId)
-      return count 
+      return count
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)

@@ -1,6 +1,7 @@
 import { IPostExt } from '../interfaces/IPost'
 import { ICommentExt } from '../interfaces/IComment'
 import ILike, { ILikeExt } from './ILike'
+import { IReportExt } from './IReport'
 
 interface IFeedRepo {
   getSingleComment(commentId: string): Promise<ICommentExt | null>
@@ -32,6 +33,9 @@ interface IFeedRepo {
 
   getUserSavedPosts(userId: string, limit: number, startIndex: number): Promise<IPostExt[]>
   getUserSavedPostsCount(userId: string): Promise<number>
+
+  filteredReportByDateAndTextCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
+  getAllReports(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<IReportExt[]>
 }
 
 export default IFeedRepo

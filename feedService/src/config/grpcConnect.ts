@@ -46,7 +46,8 @@ const grpcConnect = () => {
 
       getSingleComment: logInterceptor(feedController.getSingleComment),
 
-      getUserSavedPosts: logInterceptor(feedController.getUserSavedPosts)
+      getUserSavedPosts: logInterceptor(feedController.getUserSavedPosts),
+      getAllReports : logInterceptor(feedController.getAllReports),
     }
   )
 

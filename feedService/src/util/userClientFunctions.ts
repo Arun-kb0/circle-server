@@ -2,6 +2,7 @@ import UserGrpcClient from '../config/UserGrpcClient'
 import IComment, { ICommentExt } from '../interfaces/IComment'
 import ILike, { ILikeExt } from '../interfaces/ILike'
 import IPost, { IPostExt } from '../interfaces/IPost'
+import IReport, { IReportExt, IReportWithUsers } from '../interfaces/IReport'
 import { User } from '../proto/userProto/user/User'
 
 const client = UserGrpcClient.getClient()
@@ -134,3 +135,24 @@ export const addUserToLike = async (like: ILike): Promise<ILikeExt | null> => {
   }
 }
 
+
+// * reports
+export const addUserToIReport = async (reports: IReport[]): Promise<IReportWithUsers[]> => {
+  try {
+    const userIds = reports.map(item => item.userId)
+    const users = await getMultipleUsers(userIds)
+    const reportWithUsers = reports.map((report) => {
+      const user = users.find((user) => user._id === report.userId);
+      return {
+        ...report,
+        useName: user?.name || undefined,
+        userImage: user?.image?.url || undefined,
+      }
+    })
+    return reportWithUsers
+  } catch (error) {
+    console.log('like and user merging failed')
+    console.log(error)
+    return []
+  }
+}

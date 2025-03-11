@@ -15,7 +15,7 @@ export const searchPosts = async (req: Request, res: Response, next: NextFunctio
     if (typeof searchText !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'postId and page required')
     // if (typeof startDate !== 'string' || typeof endDate !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'startDate and end date are required')
     const start = startDate as any
-    const end = startDate as any
+    const end = endDate as any
     feedClient.searchPost({ searchText, page: Number(page), startDate: start, endDate: end }, (err, msg) => {
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'search post failed'))
@@ -95,6 +95,22 @@ export const getPostCountByDate = async (req: Request, res: Response, next: Next
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get post counts by date failed.'))
       res.status(httpStatus.OK).json({ message: "get post counts by date success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getFilteredReports = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { searchText, page, startDate, endDate } = req.query
+    if (typeof searchText !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'postId and page required')
+    const start = startDate as any
+    const end = endDate as any
+    feedClient.getAllReports({ searchText, page: Number(page), startDate: start, endDate: end }, (err, msg) => {
+      if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get filtered reports failed.'))
+      res.status(httpStatus.OK).json({ message: "get filtered reports success", ...msg })
     })
   } catch (error) {
     next(error)
