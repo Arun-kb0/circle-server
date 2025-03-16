@@ -11,19 +11,40 @@ import crypto from 'crypto'
 import IWallet from "../interfaces/IWallet";
 import httpStatus from '../constants/httpStatus'
 import { Wallet } from "../proto/payment/Wallet";
+import IUserSubscriptionPlan from "../interfaces/IUserSubscriptionPlan";
 
 const MERCHANT_ID = process.env.PP_MERCHANT_ID || ""
 const MERCHANT_KEY = process.env.PP_MERCHANT_KEY || ""
 const REDIRECT_URL = process.env.PP_REDIRECT_URL || ""
 const MERCHANT_BASE_URL = process.env.PP_MERCHANT_BASE_URL || ""
 const MERCHANT_STATUS_URL = process.env.PP_MERCHANT_STATUS_URL || ""
-const LIMIT =10
+const LIMIT = 10
 
 class PaymentService implements IPaymentService {
 
   constructor(
     private paymentRepo: IPaymentRepo
   ) { }
+
+ async createUserSubscriptionPlan(plan: Partial<IUserSubscriptionPlan>): SvcReturnType<IUserSubscriptionPlan> {
+    try {
+      const newPlan = await this.paymentRepo.createUserSubscriptionPlan(plan)
+      return { err: null, data: newPlan }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+ async getUserSubscriptionPlan(userId: string): SvcReturnType<IUserSubscriptionPlan | null> {
+    try {
+      const foundPlan = await this.paymentRepo.getUserSubscriptionPlan(userId)
+      return { err: null, data: foundPlan }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
 
   async getAllTransactions(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<TransactionAdminPagination> {
     try {
@@ -79,14 +100,14 @@ class PaymentService implements IPaymentService {
         currency: "INR",
       }
       await this.paymentRepo.createWallet(subscribeToWallet)
-      const w1 = await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+      await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
         userId: newSub.subscriberUserId,
         senderId: newSub.subscriberUserId,
         receiverId: newSub.subscriberToUserId,
         amount: amount,
         isInc: false
       })
-      const w2 = await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
+      await this.paymentRepo.findWalletByUserIdAndUpdateAmount({
         userId: newSub.subscriberToUserId,
         senderId: newSub.subscriberUserId,
         receiverId: newSub.subscriberToUserId,
@@ -220,7 +241,7 @@ class PaymentService implements IPaymentService {
           senderId: subs.subscriberUserId,
           receiverId: subs.subscriberToUserId,
           amount: order.amount,
-          isInc:true
+          isInc: true
         })
       } else {
         const wallet: Partial<IWallet> = {

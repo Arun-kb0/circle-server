@@ -3,6 +3,7 @@ import IOrder from './IOrder'
 import IPayment from './IPayment'
 import ISubscription, { ISubscriptionsExt } from './ISubscription'
 import ITransaction from './ITransaction'
+import IUserSubscriptionPlan from './IUserSubscriptionPlan'
 import IWallet from './IWallet'
 
 interface IPaymentRepo {
@@ -28,6 +29,9 @@ interface IPaymentRepo {
   getUserTransactions(userId: string, page: number): Promise<TransactionPagination>
   getAllTransactions(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ITransaction[]>
   getAllTransactionsCount(searchText: string, startDate?: string, endDate?: string): Promise<number>
+
+  createUserSubscriptionPlan(plan:Partial<IUserSubscriptionPlan>): Promise<IUserSubscriptionPlan>
+  getUserSubscriptionPlan(userId:string): Promise<IUserSubscriptionPlan | null>
 
 }
 

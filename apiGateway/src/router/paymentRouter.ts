@@ -1,6 +1,6 @@
 import express from 'express'
 import {
-  createOrder, getStatus, getUserSubscriptions,
+  createOrder, createUserSubscriptionPlan, getStatus, getUserSubscriptionPlan, getUserSubscriptions,
   getUserTransactions, getUserWallet, subscribeWithWallet
 } from '../controller/paymentController'
 import authorize from '../middleware/authorize'
@@ -13,6 +13,9 @@ router.use(authorize)
 
 router.post('/create-order', createOrder)
 router.post('/subscribe-wallet', subscribeWithWallet)
+
+router.post('/user-plan', createUserSubscriptionPlan)
+router.get('/user-plan', getUserSubscriptionPlan)
 
 router.get('/wallet', getUserWallet)
 router.get('/transactions', getUserTransactions)

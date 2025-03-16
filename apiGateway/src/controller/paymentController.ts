@@ -77,7 +77,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     console.log('get phone pay create order')
     const {
       amount, subscriberUserId, subscriberEmail,
-      orderType, subscribedToUserId, subscriberName, subscribedToUserName
+      orderType, subscribedToUserId, plan,
+      subscriberName, subscribedToUserName
     } = req.body
 
     paymentClient.createOrder({ subscriberUserId, subscriberEmail, amount, orderType }, async (err, msg) => {
@@ -128,8 +129,8 @@ export const getStatus = async (req: Request, res: Response, next: NextFunction)
 export const subscribeWithWallet = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const {
-      amount, subscriberUserId, subscriberEmail,
-      orderType, subscribedToUserId, subscriberName, subscribedToUserName
+      amount, subscriberUserId, plan, subscribedToUserId,
+      subscriberEmail, orderType, subscriberName, subscribedToUserName
     } = req.body
 
     const merchantTransactionId = uuid()
@@ -138,14 +139,14 @@ export const subscribeWithWallet = async (req: AuthRequest, res: Response, next:
       userId: subscriberUserId,
       amount,
       orderType: 'user_subscription',
-      userSubscriptionDuration: 'lifetime',
+      userSubscriptionDuration: plan,
       state: 'pending'
     }
     const subscription: Subscription = {
       merchantTransactionId,
       subscriberToUserId: subscribedToUserId,
       subscriberUserId,
-      plan: 'lifetime',
+      plan: plan,
       status: 'active'
     }
 
@@ -197,6 +198,37 @@ export const getUserSubscriptions = async (req: AuthRequest, res: Response, next
       if (err) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
       if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get subscriptions failed failed.')
       res.status(httpStatus.OK).json({ message: 'get subscriptions success', ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createUserSubscriptionPlan = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req
+    const { monthly, yearly, lifetime } = req.body
+    if (isNaN(Number(monthly)) || isNaN(Number(yearly)) || isNaN(Number(lifetime))) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'monthly, yearly and lifetime are required')
+    }
+    paymentClient.createUserSubscriptionPlan({ monthly, yearly, lifetime, userId }, (err, msg) => {
+      if (err) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
+      if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'create user subscription plan failed failed.')
+      res.status(httpStatus.OK).json({ message: 'create user subscription plan success', ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserSubscriptionPlan = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.query
+    if (typeof userId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'userId is required required')
+    paymentClient.getUserSubscriptionPlan({ userId }, (err, msg) => {
+      if (err) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
+      if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get user subscription plan failed failed.')
+      res.status(httpStatus.OK).json({ message: 'get user subscription plan success', ...msg })
     })
   } catch (error) {
     next(error)

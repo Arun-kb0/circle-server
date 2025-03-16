@@ -19,10 +19,14 @@ export interface ProtoGrpcType {
     CreateStatusOption: MessageTypeDefinition
     CreateSubscriptionRequest: MessageTypeDefinition
     CreateSubscriptionResponse: MessageTypeDefinition
+    CreateUserSubscriptionPlanRequest: MessageTypeDefinition
+    CreateUserSubscriptionPlanResponse: MessageTypeDefinition
     GetAllSubscriptionsRequest: MessageTypeDefinition
     GetAllSubscriptionsResponse: MessageTypeDefinition
     GetAllTransactionsRequest: MessageTypeDefinition
     GetAllTransactionsResponse: MessageTypeDefinition
+    GetUserSubscriptionPlanRequest: MessageTypeDefinition
+    GetUserSubscriptionPlanResponse: MessageTypeDefinition
     GetUserSubscriptionsRequest: MessageTypeDefinition
     GetUserSubscriptionsResponse: MessageTypeDefinition
     GetUserTransactionsRequest: MessageTypeDefinition
@@ -45,6 +49,7 @@ export interface ProtoGrpcType {
     TransactionExt: MessageTypeDefinition
     UpdateOrderRequest: MessageTypeDefinition
     UpdateOrderResponse: MessageTypeDefinition
+    UserSubscriptionPlan: MessageTypeDefinition
     Wallet: MessageTypeDefinition
   }
 }

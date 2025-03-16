@@ -5,6 +5,7 @@ import ISubscription from "./ISubscription"
 import { OrderOptionType, OrderStatusOptionType, SubscriptionAdminPagination, SubscriptionPagination, TransactionAdminPagination, TransactionPagination } from '../constants/types'
 import IWallet from "./IWallet"
 import { Wallet } from "../proto/payment/Wallet"
+import IUserSubscriptionPlan from "./IUserSubscriptionPlan"
 
 interface IPaymentService {
   createOrder(subscriberUserId: string, subscriberEmail: string, amount: number, orderType: IOrder['orderType']): SvcReturnType<{ option: OrderOptionType, orderId: string }>
@@ -22,6 +23,9 @@ interface IPaymentService {
   getUserTransactions(userId: string, page: number): SvcReturnType<TransactionPagination>
   getAllTransactions(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<TransactionAdminPagination>
 
+
+  createUserSubscriptionPlan(plan: Partial<IUserSubscriptionPlan>): SvcReturnType<IUserSubscriptionPlan>
+  getUserSubscriptionPlan(userId: string): SvcReturnType<IUserSubscriptionPlan | null>
 }
 
 export default IPaymentService

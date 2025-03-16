@@ -9,6 +9,8 @@ import ISubscription from "../interfaces/ISubscription"
 import { ISubscriptionDb } from "../model/subscriptionModel"
 import { ITransactionDb } from "../model/transactionModel"
 import { IWalletDb } from "../model/walletModel"
+import { IUserSubscriptionPlanDb } from "../model/userSubscriptionPlanModel"
+import IUserSubscriptionPlan from "../interfaces/IUserSubscriptionPlan"
 
 export const stringToDate = (str: string) => {
   return new Date(str) as unknown as Schema.Types.Date
@@ -164,7 +166,7 @@ export const convertIWalletDbToIWallet = (wallet: IWalletDb): IWallet => {
     _id: wallet._id.toString(),
     userId: wallet.userId.toString(),
     balance: wallet.balance,
-    currency  : wallet.currency,
+    currency: wallet.currency,
     createdAt: convertDbDateToIsoString(wallet.createdAt),
     updatedAt: convertDbDateToIsoString(wallet.updatedAt)
   }
@@ -199,11 +201,44 @@ export const convertITransactionDbToITransaction = (transaction: ITransactionDb)
     userId: transaction.userId.toString(),
     senderId: transaction.senderId.toString(),
     receiverId: transaction.receiverId.toString(),
-    amount  : transaction.amount,
+    amount: transaction.amount,
     currency: transaction.currency,
     type: transaction.type,
-    status : transaction.status,
+    status: transaction.status,
     createdAt: convertDbDateToIsoString(transaction.createdAt),
     updatedAt: convertDbDateToIsoString(transaction.updatedAt)
+  }
+}
+
+export const convertIUserSubscriptionPlanToIUserSubscriptionPlanDb = (userSubscriptionPlan: Partial<IUserSubscriptionPlan>): Partial<IUserSubscriptionPlanDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    userId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
+  }
+
+  const userSubscriptionPlanDb: Partial<IUserSubscriptionPlanDb> = {}
+  Object.keys(userSubscriptionPlan).forEach((key) => {
+    const typedKey = key as keyof IUserSubscriptionPlan;
+    if (userSubscriptionPlan[typedKey] && conversionMap[typedKey]) {
+      userSubscriptionPlanDb[typedKey] = conversionMap[typedKey](userSubscriptionPlan[typedKey])
+    } else if (userSubscriptionPlan[typedKey]) {
+      userSubscriptionPlanDb[typedKey as keyof IUserSubscriptionPlanDb] = userSubscriptionPlan[typedKey] as any;
+    }
+  })
+  return userSubscriptionPlanDb
+}
+
+
+export const convertIUserSubscriptionPlanDbToIUserSubscriptionPlan = (userSubsPlan: IUserSubscriptionPlanDb): IUserSubscriptionPlan => {
+  return {
+    _id: userSubsPlan._id.toString(),
+    userId: userSubsPlan.userId.toString(),
+    monthly: userSubsPlan.monthly,
+    yearly: userSubsPlan.yearly,
+    lifetime: userSubsPlan.lifetime,
+    createdAt: convertDbDateToIsoString(userSubsPlan.createdAt),
+    updatedAt: convertDbDateToIsoString(userSubsPlan.updatedAt)
   }
 }

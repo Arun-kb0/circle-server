@@ -11,6 +11,8 @@ import IWallet from "../interfaces/IWallet";
 import { findWalletByUserIdAndUpdateAmountArgs, SubscriptionPagination, TransactionPagination } from "../constants/types";
 import { addSenderAndReceiverDataToTransactions, addUsersToSubscriptions, addUsersToTransactions, addUserToTransaction } from '../util/userClientFunctions'
 import ITransaction, { ITransactionAdmin, ITransactionExt } from "../interfaces/ITransaction";
+import IUserSubscriptionPlanBaseRepo from './base/UserSubscriptionPlanBaseRepo'
+import IUserSubscriptionPlan from "../interfaces/IUserSubscriptionPlan";
 
 const LIMIT = 10
 
@@ -21,14 +23,40 @@ class PaymentRepo implements IPaymentRepo {
     private paymentBaseRepo: IPaymentBaseRepo,
     private subscriptionBaseRepo: ISubscriptionBaseRepo,
     private walletBaseRepo: IWalletBaseRepo,
+    private userSubscriptionPlanBaseRepo: IUserSubscriptionPlanBaseRepo
   ) { }
+
+  async createUserSubscriptionPlan(plan: Partial<IUserSubscriptionPlan>): Promise<IUserSubscriptionPlan> {
+    try {
+      const isExits = await this.userSubscriptionPlanBaseRepo.doesPlanExits(plan.userId as string)
+      if (isExits) {
+        const updatedPlan = await this.userSubscriptionPlanBaseRepo.findByUserIdAndUpdatePlan(plan.userId as string, plan)
+        return updatedPlan as IUserSubscriptionPlan
+      }
+      const newPlan = await this.userSubscriptionPlanBaseRepo.createPlan(plan)
+      return newPlan
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getUserSubscriptionPlan(userId: string): Promise<IUserSubscriptionPlan | null> {
+    try {
+      const plan = await this.userSubscriptionPlanBaseRepo.findPlanByUserId(userId)
+      return plan
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
 
   async getAllTransactions(searchText: string, limit: number, startIndex: number, startDate?: string, endDate?: string): Promise<ITransactionAdmin[]> {
     try {
       const transactions = await this.walletBaseRepo.filteredTransactionsByDateAndText(searchText, limit, startIndex, startDate, endDate)
       const transactionWithUserDetails = await addSenderAndReceiverDataToTransactions(transactions)
-      return transactionWithUserDetails 
+      return transactionWithUserDetails
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
@@ -50,7 +78,7 @@ class PaymentRepo implements IPaymentRepo {
     try {
       const reports = await this.subscriptionBaseRepo.filteredSubscriptionsByDateAndText(searchText, limit, startIndex, startDate, endDate)
       const subsWithUser = await addUsersToSubscriptions(reports)
-      return subsWithUser 
+      return subsWithUser
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)
@@ -66,7 +94,7 @@ class PaymentRepo implements IPaymentRepo {
       throw new Error(err.message)
     }
   }
-  
+
 
 
   async getUserTransactions(userId: string, page: number): Promise<TransactionPagination> {
@@ -101,6 +129,9 @@ class PaymentRepo implements IPaymentRepo {
   async findWalletByUserId(userId: string): Promise<IWallet | null> {
     try {
       const foundWallet = await this.walletBaseRepo.findWalletByUserId(userId)
+      console.log('findWalletByUserId in payment repo')
+      console.log('userId', userId)
+      console.log(foundWallet)
       return foundWallet
     } catch (error) {
       const err = handleError(error)

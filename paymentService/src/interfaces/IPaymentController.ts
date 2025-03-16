@@ -21,6 +21,10 @@ import { GetAllSubscriptionsRequest__Output } from '../proto/payment/GetAllSubsc
 import { GetAllSubscriptionsResponse } from '../proto/payment/GetAllSubscriptionsResponse'
 import { GetAllTransactionsRequest__Output } from '../proto/payment/GetAllTransactionsRequest'
 import { GetAllTransactionsResponse } from '../proto/payment/GetAllTransactionsResponse'
+import { CreateUserSubscriptionPlanRequest__Output } from '../proto/payment/CreateUserSubscriptionPlanRequest'
+import { CreateUserSubscriptionPlanResponse } from '../proto/payment/CreateUserSubscriptionPlanResponse'
+import { GetUserSubscriptionPlanRequest__Output } from '../proto/payment/GetUserSubscriptionPlanRequest'
+import { GetUserSubscriptionPlanResponse } from '../proto/payment/GetUserSubscriptionPlanResponse'
 
 export type CreateOrderHandler = grpc.handleUnaryCall<CreateOrderRequest__Output, CreateOrderResponse>
 export type UpdateOrderHandler = grpc.handleUnaryCall<UpdateOrderRequest__Output, UpdateOrderResponse>
@@ -33,6 +37,8 @@ export type GetUserTransactionsHandler = grpc.handleUnaryCall<GetUserTransaction
 export type GetUserWalletHandler = grpc.handleUnaryCall<GetUserWalletRequest__Output, GetUserWalletResponse>
 export type GetAllSubscriptionsHandler = grpc.handleUnaryCall<GetAllSubscriptionsRequest__Output, GetAllSubscriptionsResponse>
 export type GetAllTransactionsHandler = grpc.handleUnaryCall<GetAllTransactionsRequest__Output, GetAllTransactionsResponse>
+export type CreateUserSubscriptionPlanHandler = grpc.handleUnaryCall<CreateUserSubscriptionPlanRequest__Output,CreateUserSubscriptionPlanResponse>
+export type GetUserSubscriptionPlanHandler = grpc.handleUnaryCall<GetUserSubscriptionPlanRequest__Output, GetUserSubscriptionPlanResponse>
 
 interface IPaymentController {
   createOrder: CreateOrderHandler
@@ -49,6 +55,9 @@ interface IPaymentController {
   getUserTransactions: GetUserTransactionsHandler
   getUserWallet: GetUserWalletHandler
   getAllTransactions: GetAllTransactionsHandler
+
+  createUserSubscriptionPlan: CreateUserSubscriptionPlanHandler
+  getUserSubscriptionPlan: GetUserSubscriptionPlanHandler
 }
 
 export default IPaymentController

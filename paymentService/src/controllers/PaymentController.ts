@@ -2,7 +2,7 @@ import IOrder from "../interfaces/IOrder";
 import IPayment from "../interfaces/IPayment";
 import IPaymentController, {
   CreateOrderHandler, CreateOrderStatusOptionHandler,
-  CreatePaymentHandler, CreateSubscriptionHandler, GetAllSubscriptionsHandler, GetAllTransactionsHandler, GetUserSubscriptionsHandler,
+  CreatePaymentHandler, CreateSubscriptionHandler, CreateUserSubscriptionPlanHandler, GetAllSubscriptionsHandler, GetAllTransactionsHandler, GetUserSubscriptionPlanHandler, GetUserSubscriptionsHandler,
   GetUserTransactionsHandler,
   GetUserWalletHandler,
   SubscribeWithWalletHandler,
@@ -10,6 +10,7 @@ import IPaymentController, {
 } from "../interfaces/IPaymentController";
 import IPaymentService from "../interfaces/IPaymentService";
 import ISubscription from "../interfaces/ISubscription";
+import IUserSubscriptionPlan from "../interfaces/IUserSubscriptionPlan";
 import handleError from "../util/handleError";
 import { validateRequest, validateResponse } from '../util/validations'
 
@@ -19,18 +20,44 @@ class PaymentController implements IPaymentController {
     private paymentService: IPaymentService
   ) { }
 
-  getAllTransactions: GetAllTransactionsHandler = async(call, cb) => {
-  try {
-    const { searchText, page, startDate, endDate } = call.request
-    validateRequest('page is required', page)
-    const res = await this.paymentService.getAllTransactions(searchText as string, page as number, startDate, endDate)
-    validateResponse(res)
-    cb(null, res.data)
-  } catch (error) {
-    const err = handleError(error)
-    cb(err, null)
+  createUserSubscriptionPlan: CreateUserSubscriptionPlanHandler = async (call, cb) => {
+    try {
+      const { monthly, yearly, lifetime, userId } = call.request
+      validateRequest('monthly, yearly, lifetime and userId are required', monthly, yearly, lifetime, userId)
+      const res = await this.paymentService.createUserSubscriptionPlan({ monthly, yearly, lifetime, userId } as Partial<IUserSubscriptionPlan>)
+      validateResponse(res)
+      cb(null, { userSubscriptionPlan: res.data })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
   }
-}
+
+  getUserSubscriptionPlan: GetUserSubscriptionPlanHandler = async (call, cb) => {
+    try {
+      const { userId } = call.request
+      validateRequest('userId is required', userId)
+      const res = await this.paymentService.getUserSubscriptionPlan(userId as string)
+      validateResponse(res)
+      cb(null, { userSubscriptionPlan: res.data })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  getAllTransactions: GetAllTransactionsHandler = async (call, cb) => {
+    try {
+      const { searchText, page, startDate, endDate } = call.request
+      validateRequest('page is required', page)
+      const res = await this.paymentService.getAllTransactions(searchText as string, page as number, startDate, endDate)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   getAllSubscriptions: GetAllSubscriptionsHandler = async (call, cb) => {
     try {

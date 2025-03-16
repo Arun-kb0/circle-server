@@ -18,6 +18,9 @@ service PaymentService {
   rpc SubscribeWithWallet(SubscribeWithWalletRequest) returns (SubscribeWithWalletResponse) {};
   rpc GetUserTransactions(GetUserTransactionsRequest) returns (GetUserTransactionsResponse) {};
   rpc GetAllTransactions(GetAllTransactionsRequest) returns (GetAllTransactionsResponse) {};
+
+  rpc CreateUserSubscriptionPlan (CreateUserSubscriptionPlanRequest) returns (CreateUserSubscriptionPlanResponse) {};
+  rpc GetUserSubscriptionPlan (GetUserSubscriptionPlanRequest) returns (GetUserSubscriptionPlanResponse) {};
 }
 
 message OrderEnum {
@@ -186,6 +189,16 @@ message TransactionAdmin {
   string receiverEmail=16;
 }
 
+message UserSubscriptionPlan {
+    string _id = 1;
+    string userId = 2;
+    int32 monthly = 3;
+    int32 yearly = 4;
+    int32 lifetime = 5;
+    string createdAt = 6;
+    string updatedAt = 7;
+}
+
 message CreateStatusOption {
   string method = 1;
   string url = 2;
@@ -201,6 +214,8 @@ message CreateOrderOption {
     string request = 1;
   }
 }
+
+
 
 
 message CreateOrderRequest {
@@ -314,4 +329,23 @@ message GetAllTransactionsResponse {
   repeated TransactionAdmin transactions=1;
   int32 numberOfPages=2;
   int32 currentPage=3;
+}
+
+message CreateUserSubscriptionPlanRequest {
+    int32 monthly = 1;
+    int32 yearly = 2;
+    int32 lifetime = 3;
+    string userId =4;
+}
+
+message CreateUserSubscriptionPlanResponse {
+  UserSubscriptionPlan userSubscriptionPlan=1;
+}
+
+message GetUserSubscriptionPlanRequest {
+  string userId=1;
+}
+
+message GetUserSubscriptionPlanResponse {
+  UserSubscriptionPlan userSubscriptionPlan=1;
 }
