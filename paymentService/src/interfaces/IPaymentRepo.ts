@@ -9,8 +9,6 @@ import IWallet from './IWallet'
 interface IPaymentRepo {
   createWallet(wallet: Partial<IWallet>): Promise<IWallet | null>
   findWalletByUserId(userId: string): Promise<IWallet | null>
-  // ! working type
-  // findWalletByUserIdAndUpdateAmount(userId: string, senderId: string, amount: number, isInc: boolean): Promise<IWallet | null>
   findWalletByUserIdAndUpdateAmount({ userId, senderId, receiverId, amount, isInc }: findWalletByUserIdAndUpdateAmountArgs): Promise<IWallet | null>
 
   createOrder(order: Partial<IOrder>): Promise<IOrder>

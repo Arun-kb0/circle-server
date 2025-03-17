@@ -88,10 +88,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       const response = await axios.request(msg.option)
       const responseUrl = response.data.data.instrumentResponse.redirectInfo.url
       const { merchantTransactionId } = response.data.data
-      console.log('create order')
-      console.log(response.data)
       await updateOder(msg.orderId, { merchantTransactionId, state: 'pending', userSubscriptionDuration: 'lifetime' })
-      await createSubscription(subscriberUserId, subscribedToUserId, merchantTransactionId, 'lifetime')
+      await createSubscription(subscriberUserId, subscribedToUserId, merchantTransactionId, plan)
       res.status(httpStatus.OK).json({ message: 'create order success', url: responseUrl })
     })
   } catch (error) {
