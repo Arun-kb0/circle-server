@@ -7,6 +7,7 @@ export const _chat_MessageEnums_MediaType = {
   text: 0,
   audio: 1,
   photo: 2,
+  gif: 3,
 } as const;
 
 export type _chat_MessageEnums_MediaType =
@@ -16,6 +17,8 @@ export type _chat_MessageEnums_MediaType =
   | 1
   | 'photo'
   | 2
+  | 'gif'
+  | 3
 
 export type _chat_MessageEnums_MediaType__Output = typeof _chat_MessageEnums_MediaType[keyof typeof _chat_MessageEnums_MediaType]
 

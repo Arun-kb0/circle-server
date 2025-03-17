@@ -7,7 +7,10 @@ import IFeedController, {
   GetTotalPostsCountHandler, GetUserCreatedPostsHandler, GetUserFeedHandler,
   SearchPostHandler,
   GetFeedCountsHandler,
-  GetPostsCountByDateHandler
+  GetPostsCountByDateHandler,
+  GetSingleCommentHandler,
+  GetUserSavedPostsHandler,
+  GetAllReportsHandler
 } from "../interfaces/IFeedController";
 import IFeedService from "../interfaces/IFeedService";
 import ILike from "../interfaces/ILike";
@@ -21,6 +24,46 @@ class FeedController implements IFeedController {
   constructor(
     private feedService: IFeedService
   ) { }
+
+  getAllReports: GetAllReportsHandler = async (call, cb) => {
+    try {
+      const { searchText, page, startDate, endDate } = call.request
+      validateRequest('page is required.', page)
+      const res = await this.feedService.getAllReports(searchText as string, page as number, startDate, endDate)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getUserSavedPosts: GetUserSavedPostsHandler = async (call, cb) => {
+    try {
+      const { userId, page } = call.request
+      validateRequest('userId and page are required.', userId, page )
+      const res = await this.feedService.getUserSavedPosts(userId as string,page as number)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
+
+  getSingleComment: GetSingleCommentHandler = async (call, cb) => {
+    try {
+      const { commentId } = call.request
+      validateRequest('commentId is required.', commentId)
+      const res = await this.feedService.getSingleComment(commentId as string)
+      validateResponse(res)
+      console.log(res.data)
+      cb(null, { comment: res.data })
+    } catch (error) {
+      const { message, code } = handleError(error)
+      cb({ message, code }, null)
+    }
+  }
 
   getPostsCountByDate: GetPostsCountByDateHandler = async (call, cb) => {
     try {

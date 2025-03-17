@@ -1,0 +1,46 @@
+syntax = "proto3";
+package notification;
+
+service NotificationService {
+  rpc GetNotifications  (GetNotificationsRequest) returns (GetNotificationsResponse);
+  rpc ReadNotifications  (ReadNotificationsRequest) returns (ReadNotificationsResponse);
+}
+
+enum NotificationType {
+  call = 0;
+  message = 1;
+  follow = 2;
+  like = 3;
+  comment = 4;
+  replay = 5;
+}
+
+message Notification {
+  string _id = 1;
+  string authorId = 2;
+  string receiverId = 3;
+  NotificationType type=4;
+  string message = 5;
+  bool read = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+message GetNotificationsRequest {
+  int32 page=1;
+  string receiverId=2;
+}
+
+message GetNotificationsResponse {
+  int32 numberOfPages=1;
+  int32 currentPage=2;
+  repeated Notification notifications=3;
+}
+
+message ReadNotificationsRequest {
+  repeated string notificationIds=1;
+}
+
+message ReadNotificationsResponse {
+  repeated string notificationIds=1;
+}

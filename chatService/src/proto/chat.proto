@@ -23,6 +23,7 @@ message MessageEnums {
     text=0;
     audio=1;
     photo=2;
+    gif=3;
   }
 
   enum Status {

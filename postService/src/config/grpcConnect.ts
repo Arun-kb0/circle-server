@@ -31,6 +31,8 @@ const grpcConnect = () => {
       createPost: logInterceptor(postController.createPost),
       updatePost: logInterceptor(postController.updatePost),
       deletePost: logInterceptor(postController.deletePost),
+      ReportPost: logInterceptor(postController.reportPost),
+      savePost: logInterceptor(postController.savePost),
 
       createComment: logInterceptor(commentController.createComment),
       updateComment: logInterceptor(commentController.updateComment),

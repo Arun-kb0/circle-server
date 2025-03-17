@@ -5,12 +5,34 @@ import IPostService from '../interfaces/IPostService'
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
 import SvcFuncReturnType from '../constants/SvcReturnType';
+import IReport from '../interfaces/IReport';
+import ISaved from '../interfaces/ISaved';
 
 class PostService implements IPostService {
 
   constructor(
     private postRepo: IPostRepo
   ) { }
+
+  async reportPost(userId: string, contentId: string, contentType: IReport['contentType']): SvcFuncReturnType<IReport | null> {
+    try {
+      const reportData = await this.postRepo.reportPost(userId, contentId, contentType)
+      return { err: null, data: reportData }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
+
+  async savePost(userId: string, postId: string): SvcFuncReturnType<{ savedData: ISaved | null, savedPost: IPostExt | null }> {
+    try {
+      const savedData = await this.postRepo.savePost(userId, postId)
+      return { err: null, data: savedData }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
 
   async createPost(post: Partial<IPost>): SvcFuncReturnType<IPostExt> {
     try {

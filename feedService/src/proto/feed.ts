@@ -12,6 +12,8 @@ export interface ProtoGrpcType {
     Comment: MessageTypeDefinition
     CommentEnums: MessageTypeDefinition
     FeedService: SubtypeConstructor<typeof grpc.Client, _feed_FeedServiceClient> & { service: _feed_FeedServiceDefinition }
+    GetAllReportsRequest: MessageTypeDefinition
+    GetAllReportsResponse: MessageTypeDefinition
     GetCommentChildrenRequest: MessageTypeDefinition
     GetCommentChildrenResponse: MessageTypeDefinition
     GetCommentRequest: MessageTypeDefinition
@@ -26,6 +28,8 @@ export interface ProtoGrpcType {
     GetPostResponse: MessageTypeDefinition
     GetPostsCountByDateRequest: MessageTypeDefinition
     GetPostsCountByDateResponse: MessageTypeDefinition
+    GetSingleCommentRequest: MessageTypeDefinition
+    GetSingleCommentResponse: MessageTypeDefinition
     GetTotalCommentsCountRequest: MessageTypeDefinition
     GetTotalCommentsCountResponse: MessageTypeDefinition
     GetTotalLikesCountRequest: MessageTypeDefinition
@@ -36,11 +40,16 @@ export interface ProtoGrpcType {
     GetUserCreatedPostsResponse: MessageTypeDefinition
     GetUserFeedRequest: MessageTypeDefinition
     GetUserFeedResponse: MessageTypeDefinition
+    GetUserSavedPostsRequest: MessageTypeDefinition
+    GetUserSavedPostsResponse: MessageTypeDefinition
     Image: MessageTypeDefinition
     Like: MessageTypeDefinition
     Media: EnumTypeDefinition
     Post: MessageTypeDefinition
     PostsCountArray: MessageTypeDefinition
+    Report: MessageTypeDefinition
+    ReportEnums: MessageTypeDefinition
+    Saved: MessageTypeDefinition
     SearchPostRequest: MessageTypeDefinition
     SearchPostResponse: MessageTypeDefinition
     Status: EnumTypeDefinition

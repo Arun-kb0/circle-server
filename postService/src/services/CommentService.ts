@@ -4,11 +4,14 @@ import ICommentRepo from "../interfaces/ICommentRepo";
 import ICommentService from "../interfaces/ICommentService";
 import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
+import { QueueNotificationDataType } from "../constants/types";
+import { publishMessage } from "../util/rabbitmq";
 
 class CommentService implements ICommentService {
 
   constructor(
-    private commentRepo: ICommentRepo
+    private commentRepo: ICommentRepo,
+    private QUEUE_NAME : string
   ) { }
 
 
@@ -20,6 +23,25 @@ class CommentService implements ICommentService {
         contentType
       }
       const newComment = await this.commentRepo.create(commentDetails)
+      if (!newComment) return { err: null, data: null }
+
+      const notificationData: QueueNotificationDataType = {
+        _id: '',
+        authorId: newComment?.authorId,
+        receiverId: '',
+        type: 'comment',
+        message: 'user commented post',
+        read: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        data: {
+          id: newComment.contentId,
+          contentType: newComment.contentType,
+          authorName: newComment?.authorName,
+          parentId: newComment.parentId
+        }
+      }
+      publishMessage(this.QUEUE_NAME, JSON.stringify(notificationData))
       return { err: null, data: newComment }
     } catch (error) {
       const { code, message } = handleError(error)

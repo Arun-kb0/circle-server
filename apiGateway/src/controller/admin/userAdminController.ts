@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import HttpError from '../../util/HttpError'
 import httpStatus from '../../constants/httpStatus'
 import * as grpc from '@grpc/grpc-js'
+import blockedUsersSet from '../../util/blockedUsersSet'
 
 const userClient = UserGrpcClient.getClient()
 
@@ -33,6 +34,7 @@ export const blockUser = async (req: Request, res: Response, next: NextFunction)
     userClient.blockUser({ userId }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
       if (!msg || !msg.userId) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      blockedUsersSet.add(msg.userId)
       res.status(httpStatus.OK).json({ message: "block user success", userId: msg.userId })
     })
   } catch (error) {
@@ -47,6 +49,7 @@ export const unblockUser = async (req: Request, res: Response, next: NextFunctio
     userClient.unblockUser({ userId }, (err, msg) => {
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err?.message))
       if (!msg || !msg.userId) return next(new HttpError(httpStatus.NOT_FOUND, 'no user found'))
+      blockedUsersSet.delete(msg.userId)
       res.status(httpStatus.OK).json({ message: "block user success", userId: msg.userId })
     })
   } catch (error) {

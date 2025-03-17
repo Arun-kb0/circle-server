@@ -14,6 +14,7 @@ services:
       - post-cache
       - rabbitmq
       - feed-service
+      - chat-service
       # - post-service
     environment:
       - LOGGER_DB=${GT_LOGGER_DB}
@@ -27,6 +28,21 @@ services:
       - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
       - CHAT_SERVICE_HOST=host.docker.internal
       - CHAT_SERVICE_PORT=50055
+      - NOTIFICATION_SERVICE_HOST=host.docker.internal
+      - NOTIFICATION_SERVICE_PORT=50056
+      - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
+      - POST_CACHE_PORT=${GT_POST_CACHE_PORT}
+      - POST_RABBITMQ_USER=${RABBITMQ_USER}
+      - POST_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+      - PP_MERCHANT_KEY=${PP_MERCHANT_KEY}
+      - PP_MERCHANT_ID=${PP_MERCHANT_ID}
+      - PP_MERCHANT_BASE_URL=${PP_MERCHANT_BASE_URL}
+      - PP_MERCHANT_STATUS_URL=${PP_MERCHANT_STATUS_URL}
+      - PP_REDIRECT_URL=${PP_REDIRECT_URL}
+      - PP_SUCCESS_URL=${PP_SUCCESS_URL}
+      - PP_FAILURE_URL=${PP_FAILURE_URL}
 
   auth-service:
     build: ./auth
@@ -62,6 +78,8 @@ services:
     volumes:
       - ./userService:/app
       - ./userService/node_modules:/app/node_modules
+    depends_on:
+      - rabbitmq
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/health" ]
       interval: 30s
@@ -74,6 +92,11 @@ services:
       - HEALTH_CHECK_PORT=${USER_HEALTH_CHECK_PORT}
       - USER_DB_URI=${USER_DB_URI}
       - LOGGER_DB=${USER_LOGGER_DB}
+      - POST_RABBITMQ_USER=${RABBITMQ_USER}
+      - POST_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -117,12 +140,40 @@ services:
       - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
       - FEED_HEALTH_CHECK_PORT=${FEED_HEALTH_CHECK_PORT}
       - POST_DB_URI=${POST_DB_URI}
-      - POST_RABBITMQ_USER=${RABBITMQ_USER}
-      - POST_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - POST_CACHE_HOST=${POST_CACHE_HOST}
       - POST_CACHE_PORT=${POST_CACHE_PORT}
       - USER_SERVICE_HOST=${USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+
+  chat-service:
+    build: './chatService'
+    container_name: chat-service
+    ports:
+      - 50055:50055
+      - 8085:8085
+    volumes: 
+      - ./chatService:/app
+      - ./chatService/node_modules:/app/node_modules
+    depends_on:
+      - user-service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/health" ]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - CHAT_SERVICE_HOST=${CHAT_SERVICE_HOST}
+      - CHAT_SERVICE_PORT=${CHAT_SERVICE_PORT}
+      - CHAT_DB_URI=${CHAT_DB_URI}
+      - CHAT_HEALTH_CHECK_PORT=${CHAT_HEALTH_CHECK_PORT}
+      - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+    
   # post-service:
   #   build: ./postService
   #   container_name: post-service

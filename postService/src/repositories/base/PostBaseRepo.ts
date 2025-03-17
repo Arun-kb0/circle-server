@@ -6,6 +6,33 @@ import { convertIPostDbToIPost, convertIPostToIPostDb, convertToObjectId } from 
 
 class PostBaseRepo implements IPostBaseRepo {
 
+  async findPostByPostId(postId: string): Promise<IPost | null> {
+    try {
+      const postObjId = convertToObjectId(postId)
+      const updatedPost = await Post.findOne({ _id: postObjId })
+      return updatedPost ? convertIPostDbToIPost(updatedPost) : null
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async handleReportCount(postId: string, isInc: boolean): Promise<IPost | null> {
+    try {
+      const count = isInc ? 1 : -1
+      const postObjId = convertToObjectId(postId)
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postObjId },
+        { $inc: { reportsCount: count } },
+        { new: true }
+      )
+      return updatedPost ? convertIPostDbToIPost(updatedPost) : null
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async createPost(post: Partial<IPost>): Promise<IPost | null> {
     try {
       const newPost = await Post.create(post)
@@ -19,11 +46,7 @@ class PostBaseRepo implements IPostBaseRepo {
   async updatePost(postId: string, post: Partial<IPost>): Promise<IPost | null> {
     try {
       const postIdObj = convertToObjectId(postId)
-      console.log(post)
       const convertedPost = convertIPostToIPostDb(post)
-      console.log("convertedPost = ")
-      console.log(convertedPost)
-
       const updatedPost = await Post.findOneAndUpdate(
         { _id: postIdObj },
         { $set: convertedPost },
@@ -46,6 +69,7 @@ class PostBaseRepo implements IPostBaseRepo {
       throw new Error(err.message)
     }
   }
+
 
 
 }

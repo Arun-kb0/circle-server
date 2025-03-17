@@ -3,12 +3,14 @@ import ChatGrpcClient from '../config/ChatGrpcClient'
 import socketErrorHandler from '../middleware/socketErrorHandler'
 import HttpError from "../util/HttpError";
 import httpStatus from "../constants/httpStatus";
-import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
+import { AnswerCallEventDataType, CallUserEventDataType, IceCandidateDataType, JoinCallRoomDataType, MessageType, QueueNotificationDataType, SignalDataType, UserRoomNotificationType } from "../constants/types";
 import { SocketEvents } from "../constants/enums";
-import onlineUsersMap from "../util/onlineUsersMap";
+import { publishMessage } from '../util/rabbitmq'
+import { getSingleOnlineUser } from "../util/onlineUsersCache";
 
 const chatClient = ChatGrpcClient.getClient()
 ChatGrpcClient.IsClientConnected()
+const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || 'notification-queue'
 
 
 export const joinUserRoom = (socket: Socket, friendsRoomId: string) => {
@@ -30,6 +32,26 @@ export const sendMessage = (socket: Socket, message: any) => {
     chatClient.createMessage({ message }, (err, msg) => {
       if (err) return socketErrorHandler(err)
       if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Send message failed.')
+    })
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const messageDeleted = async (socket: Socket, message: MessageType) => {
+  try {
+    socket.to(message.roomId).emit(SocketEvents.messageDeleted, message)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const editMessage = async (socket: Socket, message: any) => {
+  try {
+    chatClient.updateMessage({ messageId: message.id, message }, (err, msg) => {
+      if (err) return socketErrorHandler(err)
+      if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'update message failed.')
+      socket.to(message.roomId).emit(SocketEvents.editMessage, message)
     })
   } catch (error) {
     socketErrorHandler(error)
@@ -81,12 +103,24 @@ export const handleSignal = (socket: Socket, data: SignalDataType) => {
 // * new socket events
 export const callUser = (socket: Socket, data: CallUserEventDataType) => {
   try {
-    const { signal, from, name, userToCall } = data
+    const { signal, from, name, userToCall, extraData } = data
     socket.to(userToCall).emit(SocketEvents.callUser, {
       signal: signal,
       from: from,
       name: name
     })
+    const notificationData: QueueNotificationDataType = {
+      _id: '',
+      authorId: extraData.authorId,
+      receiverId: extraData.receiverId,
+      type: 'call',
+      message: 'incoming call',
+      read: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      data: { ...extraData, roomId: from, signal }
+    }
+    publishMessage(QUEUE_NAME, JSON.stringify(notificationData))
   } catch (error) {
     socketErrorHandler(error)
   }

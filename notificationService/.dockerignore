@@ -1,0 +1,5 @@
+
+# notification service
+notificationService/node_modules
+notificationService/.env
+notificationService/logs

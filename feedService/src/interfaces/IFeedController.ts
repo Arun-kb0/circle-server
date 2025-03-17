@@ -25,6 +25,13 @@ import { GetFeedCountsRequest__Output } from '../proto/feed/GetFeedCountsRequest
 import { GetFeedCountsResponse } from '../proto/feed/GetFeedCountsResponse'
 import { GetPostsCountByDateRequest__Output } from '../proto/feed/GetPostsCountByDateRequest'
 import { GetPostsCountByDateResponse } from '../proto/feed/GetPostsCountByDateResponse'
+import { GetSingleCommentRequest__Output } from '../proto/feed/GetSingleCommentRequest'
+import { GetSingleCommentResponse } from '../proto/feed/GetSingleCommentResponse'
+import { GetUserSavedPostsRequest__Output } from '../proto/feed/GetUserSavedPostsRequest'
+import { GetUserSavedPostsResponse } from '../proto/feed/GetUserSavedPostsResponse'
+import { GetAllReportsRequest__Output } from '../proto/feed/GetAllReportsRequest'
+import { GetAllReportsResponse } from '../proto/feed/GetAllReportsResponse'
+
 
 export type GetGlobalFeedHandler = grpc.handleUnaryCall<GetGlobalFeedRequest__Output, GetGlobalFeedResponse>
 export type GetUserFeedHandler = grpc.handleUnaryCall<GetUserFeedRequest__Output, GetUserFeedResponse>
@@ -41,6 +48,10 @@ export type GetTotalLikesCountHandler = grpc.handleUnaryCall<GetTotalLikesCountR
 export type GetFeedCountsHandler = grpc.handleUnaryCall<GetFeedCountsRequest__Output, GetFeedCountsResponse>
 export type GetPostsCountByDateHandler = grpc.handleUnaryCall<GetPostsCountByDateRequest__Output, GetPostsCountByDateResponse>
 
+export type GetSingleCommentHandler = grpc.handleUnaryCall<GetSingleCommentRequest__Output, GetSingleCommentResponse>
+
+export type GetUserSavedPostsHandler = grpc.handleUnaryCall<GetUserSavedPostsRequest__Output, GetUserSavedPostsResponse>
+export type GetAllReportsHandler = grpc.handleUnaryCall<GetAllReportsRequest__Output, GetAllReportsResponse>
 
 interface IFeedController {
 
@@ -59,6 +70,11 @@ interface IFeedController {
   getTotalLikesCount: GetTotalLikesCountHandler
   getFeedCounts: GetFeedCountsHandler
   getPostsCountByDate: GetPostsCountByDateHandler
+
+  getSingleComment: GetSingleCommentHandler
+
+  getUserSavedPosts: GetUserSavedPostsHandler
+  getAllReports: GetAllReportsHandler
 }
 
 export default IFeedController

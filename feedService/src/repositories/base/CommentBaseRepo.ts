@@ -8,9 +8,21 @@ import { FilterQuery } from 'mongoose';
 
 class CommentBaseRepo implements ICommentBaseRepo {
 
+  async findCommentByCommentId(commentId: string): Promise<IComment | null> {
+    try {
+      const commentObjId = convertToObjectId(commentId)
+      const commentData = await Comment.findById(commentObjId)
+      if(!commentData) return null
+      return convertICommentDbToIComment(commentData)
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async totalCommentsCount(): Promise<number> {
     try {
-      const count = await Comment.countDocuments()      
+      const count = await Comment.countDocuments()
       return count
     } catch (error) {
       const err = handleError(error)
@@ -67,7 +79,7 @@ class CommentBaseRepo implements ICommentBaseRepo {
         contentId: convertToObjectId(contentId)
       }
       if (parentId) query.parentId = convertToObjectId(parentId)
-     
+
       const count = await Comment.countDocuments(query)
       return count
     } catch (error) {

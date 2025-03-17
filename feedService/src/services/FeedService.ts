@@ -1,4 +1,4 @@
-import { SvcReturnType, PaginationPost, PaginationComment } from '../constants/SvcTypes';
+import { SvcReturnType, PaginationPost, PaginationComment, PaginationSavedPost, PaginationReports } from '../constants/SvcTypes';
 import IComment, { ICommentExt } from '../interfaces/IComment';
 import IFeedRepo from '../interfaces/IFeedRepo';
 import IFeedService from '../interfaces/IFeedService'
@@ -7,6 +7,7 @@ import handleError from '../util/handleError'
 import httpStatus from '../constants/httpStatus'
 import ILike from '../interfaces/ILike';
 import { validateResponse } from '../util/validations';
+import { IReportExt } from '../interfaces/IReport';
 
 const LIMIT = Number(process.env.PAGINATION_LIMIT) || 10
 
@@ -15,7 +16,36 @@ class FeedService implements IFeedService {
   constructor(
     private feedRepo: IFeedRepo
   ) { }
- 
+
+  async getAllReports(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationReports> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.feedRepo.filteredReportByDateAndTextCount(searchText, startDate, endDate)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const reports = await this.feedRepo.getAllReports(searchText, LIMIT, startIndex, startDate, endDate)
+      if (!reports) return { err: httpStatus.NOT_FOUND, errMsg: 'no posts found', data: null }
+      const data = {
+        reports,
+        numberOfPages,
+        currentPage: page,
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async getSingleComment(commentId: string): SvcReturnType<ICommentExt | null> {
+    try {
+      const commentData = await this.feedRepo.getSingleComment(commentId)
+      return { err: null, data: commentData }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
   async getPostsCountByDate(startDate: string, endDate: string): SvcReturnType<{ date: string; count: number; }[]> {
     try {
       const postData = await this.feedRepo.getPostsCountByDate(startDate, endDate)
@@ -120,6 +150,7 @@ class FeedService implements IFeedService {
         currentPage: page,
         likes
       }
+
       return { err: null, data }
     } catch (error) {
       const err = handleError(error)
@@ -223,6 +254,24 @@ class FeedService implements IFeedService {
         numberOfPages,
         currentPage: page,
         likes
+      }
+      return { err: null, data }
+    } catch (error) {
+      const err = handleError(error)
+      return { err: err.code, errMsg: err.message, data: null }
+    }
+  }
+
+  async getUserSavedPosts(userId: string, page: number): SvcReturnType<PaginationSavedPost> {
+    try {
+      const startIndex = (page - 1) * LIMIT
+      const total = await this.feedRepo.getUserSavedPostsCount(userId)
+      const numberOfPages = Math.ceil(total / LIMIT)
+      const savedPosts = await this.feedRepo.getUserSavedPosts(userId, LIMIT, startIndex)
+      const data = {
+        savedPosts,
+        numberOfPages,
+        currentPage: page + 1
       }
       return { err: null, data }
     } catch (error) {

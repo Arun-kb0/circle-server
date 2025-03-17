@@ -1,7 +1,10 @@
 import express from 'express'
 import {
   updatePost, searchPosts, deletePost,
-  getPopularPosts, getFeedCounts, getPostCountByDate
+  getPopularPosts, getFeedCounts, getPostCountByDate,
+  getFilteredReports,
+  getFilteredSubscriptions,
+  getFilteredTransactions
 } from '../../controller/admin/postAdminController'
 import {
   getAllUsers, blockUser, unblockUser,
@@ -31,6 +34,9 @@ router.route('/post/:postId')
   .patch(updatePost)
   .delete(deletePost)
 
-
+router.get('/report/filtered', getFilteredReports)
+router.get('/subscriptions/filtered', getFilteredSubscriptions) 
+router.get('/transactions/filtered', getFilteredTransactions) 
+ 
 export default router
 

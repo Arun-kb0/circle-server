@@ -18,6 +18,11 @@ service FeedService {
   rpc GetTotalLikesCount(GetTotalLikesCountRequest) returns (GetTotalLikesCountResponse) {};
   rpc GetFeedCounts(GetFeedCountsRequest) returns (GetFeedCountsResponse) {};
   rpc GetPostsCountByDate(GetPostsCountByDateRequest) returns (GetPostsCountByDateResponse) {};
+
+  rpc GetSingleComment(GetSingleCommentRequest) returns (GetSingleCommentResponse) {};
+  
+  rpc GetUserSavedPosts(GetUserSavedPostsRequest) returns (GetUserSavedPostsResponse) {};
+  rpc GetAllReports(GetAllReportsRequest) returns (GetAllReportsResponse) {};
 };
 
 
@@ -101,6 +106,35 @@ message Post  {
 };
 
 
+message Saved {
+  string _id = 1;
+  string userId = 2;
+  string postId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message ReportEnums  {
+  enum ContentType {
+    post = 0;
+    story = 1;
+    user = 2;
+    comment = 3;
+  }
+}
+
+message Report {
+  string _id = 1;
+  string userId = 2;
+  string contentId = 3;
+  ReportEnums.ContentType contentType = 4;
+  string description = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  string userName=8;
+  string userImage=9;
+  Post post=10;
+}
 
 message GetGlobalFeedRequest {
   int32 page=1;
@@ -229,4 +263,36 @@ message PostsCountArray {
 }
 message GetPostsCountByDateResponse {
   repeated PostsCountArray postsCountArray=1;
+}
+
+message GetSingleCommentRequest {
+  string commentId=1;
+}
+
+message GetSingleCommentResponse {
+  Comment comment =1; 
+}
+
+message GetUserSavedPostsRequest  {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetUserSavedPostsResponse {
+  repeated Post savedPosts=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetAllReportsRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message GetAllReportsResponse {
+  repeated Report reports=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
 }

@@ -24,7 +24,7 @@ class LikeRepo implements ILikeRepo {
     await this.handleCount(newLike?.contentType, newLike?.contentId, true)
     const updatedLike = await addUserToLike(newLike)
     return updatedLike
-}
+  }
 
   async unlike(authorId: string, contentId: string): Promise<ILike | null> {
     const deletedLike = await this.likeBaseRepo.unlike(authorId, contentId)

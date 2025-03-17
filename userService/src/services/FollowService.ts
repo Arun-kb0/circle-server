@@ -1,16 +1,19 @@
 import httpStatus from '../constants/httpStatus';
 import { FuncReturnType, PaginationUsers } from '../constants/svcTypes';
+import { QueueNotificationDataType } from '../constants/types';
 import IFollowRepo from '../interfaces/IFollowRepo';
 import IFollowService from '../interfaces/IFollowService'
-import IUser  from '../interfaces/IUser';
+import IUser from '../interfaces/IUser';
 import handleError from '../util/handeError';
+import { publishMessage } from '../util/rabbitmq'
 
 const LIMIT = 10
 
 class FollowService implements IFollowService {
 
   constructor(
-    private followRepo: IFollowRepo
+    private followRepo: IFollowRepo,
+    private QUEUE_NAME: string
   ) { }
 
   async getFollowers(userId: string, page: number): FuncReturnType<PaginationUsers> {
@@ -57,13 +60,26 @@ class FollowService implements IFollowService {
       const isExits = await this.followRepo.isFollowing(userId, targetId)
       if (isExits) return { err: httpStatus.CONFLICT, errMsg: 'already following.', data: null }
       const user = await this.followRepo.followUser(userId, targetId)
+      if (!user) throw new Error('follow user failed')
+      const notificationData: QueueNotificationDataType = {
+        _id: '',
+        authorId: userId,
+        receiverId: targetId,
+        type: 'follow',
+        message: 'user following',
+        read: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        data: {}
+      }
+      publishMessage(this.QUEUE_NAME, JSON.stringify(notificationData))
       return { err: null, data: user }
     } catch (error) {
       const { code, message } = handleError(error)
       return { err: code as number, errMsg: message, data: null }
     }
   }
-  
+
   async unFollowUser(userId: string, targetId: string): FuncReturnType<IUser> {
     try {
       const isExits = await this.followRepo.isFollowing(userId, targetId)

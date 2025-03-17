@@ -1,0 +1,351 @@
+syntax = "proto3";
+
+package payment;
+
+
+service PaymentService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse) {};
+  rpc CreateOrderStatusOption (CreateOrderStatusOptionRequest) returns (CreateOrderStatusOptionResponse) {};
+ 
+  rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentResponse) {};
+  
+  rpc GetUserSubscriptions (GetUserSubscriptionsRequest) returns (GetUserSubscriptionsResponse) {};
+  rpc CreateSubscription (CreateSubscriptionRequest) returns (CreateSubscriptionResponse) {};
+  rpc GetAllSubscriptions(GetAllSubscriptionsRequest) returns (GetAllSubscriptionsResponse){};
+
+  rpc GetUserWallet (GetUserWalletRequest) returns (GetUserWalletResponse) {};
+  rpc SubscribeWithWallet(SubscribeWithWalletRequest) returns (SubscribeWithWalletResponse) {};
+  rpc GetUserTransactions(GetUserTransactionsRequest) returns (GetUserTransactionsResponse) {};
+  rpc GetAllTransactions(GetAllTransactionsRequest) returns (GetAllTransactionsResponse) {};
+
+  rpc CreateUserSubscriptionPlan (CreateUserSubscriptionPlanRequest) returns (CreateUserSubscriptionPlanResponse) {};
+  rpc GetUserSubscriptionPlan (GetUserSubscriptionPlanRequest) returns (GetUserSubscriptionPlanResponse) {};
+}
+
+message OrderEnum {
+  enum OrderType {
+    user_subscription=0;
+    advertisement=1;
+  }
+
+  enum UserSubscriptionDuration {
+    monthly=0;
+    yearly=1;
+    lifetime=2;
+  }
+
+  enum State {
+    pending=0;
+    completed=1;
+    failed=2;
+  }
+}
+
+message Order {
+  string _id=1;
+  string orderId=2;
+  string merchantTransactionId=3;
+  string userId=4;
+  int32 amount=5;
+  OrderEnum.OrderType orderType=6; 
+  OrderEnum.UserSubscriptionDuration userSubscriptionDuration=7;   
+  OrderEnum.State state=8;
+  string createdAt=9;
+  string updatedAt=10;
+}
+
+message PaymentEnum {
+  enum Status {
+    initiated=0;
+    successful=1;
+    failed=2;
+  }
+}
+
+message Payment {
+  string _id=1;
+  string transactionId=2;
+  string orderId=3;
+  string method=4;
+  int32 amount=5;
+  string currency=6;
+  PaymentEnum.Status status=7;
+  string transactionDate=8;
+  string createdAt=9;
+  string updatedAt=10;
+  string merchantTransactionId=11;
+  string arn=12;
+  string authRefId=13;
+  string userId=14;
+}
+
+
+message SubscriptionEnum {
+  enum Plan {
+    monthly=0;
+    yearly=1;
+    lifetime=2;
+  }
+
+  enum Status {
+    inactive=0;
+    active=1;
+    cancelled=2;
+  }
+}
+
+message Subscription {
+  string _id=1;
+  string subscriberUserId=2;
+  string subscriberToUserId=3;
+  SubscriptionEnum.Plan plan=4;
+  SubscriptionEnum.Status status=5;
+  string createdAt=6;
+  string updatedAt=7;
+  string merchantTransactionId=8;
+}
+
+message SubscriptionExt {
+  string _id=1;
+  string subscriberUserId=2;
+  string subscriberToUserId=3;
+  SubscriptionEnum.Plan plan=4;
+  SubscriptionEnum.Status status=5;
+  string createdAt=6;
+  string updatedAt=7;
+  string merchantTransactionId=8;
+  string subscriberUserName = 9;
+  string subscriberUserImage = 10;
+  string subscriberToUserName = 11;
+  string subscriberToUserImage = 12;
+}
+
+message Wallet {
+  string _id = 1;
+  string userId = 2;
+  double balance = 3;
+  string currency = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+}
+message TransactionEnums {
+  enum Type {
+    credit = 0;
+    debit = 1;
+  }
+
+  enum Status {
+    pending = 0;
+    completed = 1;
+    failed = 2;
+  }
+}
+
+message Transaction {
+  string _id = 1;
+  string userId = 2;
+  TransactionEnums.Type type = 3;
+  int32 amount = 4;
+  string currency = 5;
+  TransactionEnums.Status status = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+  string senderId=9;
+  string receiverId=10;
+}
+
+message TransactionExt {
+  string _id = 1;
+  string userId = 2;
+  TransactionEnums.Type type = 3;
+  int32 amount = 4;
+  string currency = 5;
+  TransactionEnums.Status status = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+   string senderId=9;
+  string receiverId=10;
+  string userName=11;
+  string userImage=12;
+}
+
+message TransactionAdmin {
+  string _id = 1;
+  string userId = 2;
+  TransactionEnums.Type type = 3;
+  int32 amount = 4;
+  string currency = 5;
+  TransactionEnums.Status status = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+   string senderId=9;
+  string receiverId=10;
+  string senderName=11;
+  string senderImage=12;
+  string senderEmail=13;
+  string receiverImage=14;
+  string receiverName=15;
+  string receiverEmail=16;
+}
+
+message UserSubscriptionPlan {
+    string _id = 1;
+    string userId = 2;
+    int32 monthly = 3;
+    int32 yearly = 4;
+    int32 lifetime = 5;
+    string createdAt = 6;
+    string updatedAt = 7;
+}
+
+message CreateStatusOption {
+  string method = 1;
+  string url = 2;
+  map<string, string> headers = 3;
+}
+
+message CreateOrderOption {
+  string method = 1;
+  string url = 2;
+  map<string, string> headers = 3;
+  Data data = 4;
+  message Data {
+    string request = 1;
+  }
+}
+
+
+
+
+message CreateOrderRequest {
+  string subscriberUserId = 1;
+  string subscriberEmail = 2;
+  int32 amount = 3;
+  OrderEnum.OrderType orderType = 4;
+}
+
+message CreateOrderResponse {
+  CreateOrderOption option=1;
+  string orderId=2;
+}
+
+message UpdateOrderRequest {
+  string orderId=1;
+  Order order=2;
+}
+
+message UpdateOrderResponse {
+  Order order=2;
+}
+
+message CreateOrderStatusOptionRequest {
+  string merchantTransactionId=1;
+}
+
+message CreateOrderStatusOptionResponse {
+  string transactionId=1;
+  CreateStatusOption option=2;
+}
+
+
+message CreatePaymentRequest {
+  Payment paymentData=1;
+}
+
+message CreatePaymentResponse  {
+  Payment paymentData=1;
+}
+
+message GetUserSubscriptionsRequest {
+  string userId =1;
+  int32 page=2;
+}
+
+message GetUserSubscriptionsResponse {
+  repeated Subscription subscriptions=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message CreateSubscriptionRequest {
+  Subscription subscription=1;
+}
+
+message CreateSubscriptionResponse{
+  Subscription subscription=1;
+}
+
+message SubscribeWithWalletRequest {
+  Order order=1;
+  Subscription subscription=2;
+}
+
+message SubscribeWithWalletResponse {
+  Wallet wallet=1;
+  Subscription subscription=2;
+}
+
+message GetUserTransactionsRequest {
+  string userId=1;
+  int32 page=2;
+}
+
+message GetUserTransactionsResponse {
+  repeated TransactionExt transactions=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetUserWalletRequest {
+  string userId =1;
+}
+
+message GetUserWalletResponse {
+  Wallet wallet =1;
+}
+
+message GetAllSubscriptionsRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message GetAllSubscriptionsResponse {
+  repeated SubscriptionExt subscriptions=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message GetAllTransactionsRequest {
+  string searchText=1;
+  int32 page=2;
+  string startDate=3;
+  string endDate=4;
+}
+
+message GetAllTransactionsResponse {
+  repeated TransactionAdmin transactions=1;
+  int32 numberOfPages=2;
+  int32 currentPage=3;
+}
+
+message CreateUserSubscriptionPlanRequest {
+    int32 monthly = 1;
+    int32 yearly = 2;
+    int32 lifetime = 3;
+    string userId =4;
+}
+
+message CreateUserSubscriptionPlanResponse {
+  UserSubscriptionPlan userSubscriptionPlan=1;
+}
+
+message GetUserSubscriptionPlanRequest {
+  string userId=1;
+}
+
+message GetUserSubscriptionPlanResponse {
+  UserSubscriptionPlan userSubscriptionPlan=1;
+}

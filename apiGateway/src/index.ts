@@ -22,11 +22,11 @@ import chatSocketRouter from './router/chatSocketRouter'
 import liveSocketRouter from './router/liveSocketRouter'
 import adminRouter from './router/admin/AdminRouter'
 import chatRouter from './router/chatRouter'
-import PeerServerClient from './config/peerServer'
-import { Socket } from 'socket.io'
-import onlineUsersMap from './util/onlineUsersMap'
 import { SocketEvents } from './constants/enums'
 import socketLogger from './middleware/socketLogger'
+import { getOnlineUserKeys, removeSingleOnlineUser, setOnlineUser } from './util/onlineUsersCache'
+import notificationRouter from './router/notificationRoutes'
+import paymentRouter from './router/paymentRouter'
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -47,19 +47,22 @@ app.use('/comment', authorize, commentRouter)
 app.use('/like', authorize, likeRouter)
 app.use('/feed', authorize, feedRouter)
 app.use('/chat', authorize, chatRouter)
+app.use('/notification', authorize, notificationRouter)
+app.use('/payment', paymentRouter)
 
 app.use('/admin', authorize, adminRouter)
 
 // * socket io
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log('\n_____ ___ __ __ socket connection ______ ____ ____ ___')
   console.log(`user connected ${socket.id}`)
 
   const userId = socket.handshake.query.userId
   if (typeof userId !== 'string') throw new Error('invalid userId on socket connection')
-  if (userId) onlineUsersMap.set(userId, socket.id)
-  socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
-  socket.emit(SocketEvents.me, { userSocketId: onlineUsersMap.get(userId) })
+  if (userId) await setOnlineUser(userId, socket.id)
+  const onlineUsers = await getOnlineUserKeys()
+  io.emit(SocketEvents.getOnlineUsers, { onlineUsers })
+  socket.emit(SocketEvents.me, { userSocketId: socket.id })
 
   // * socket logger 
   socket.use(socketLogger)
@@ -68,16 +71,14 @@ io.on("connection", (socket) => {
   chatSocketRouter(socket)
   liveSocketRouter(socket)
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log('user disconnected - ', socket.id)
-    onlineUsersMap.delete(userId)
-    socket.emit(SocketEvents.getOnlineUsers, { onlineUsers: [...onlineUsersMap.keys()] })
+    await removeSingleOnlineUser(userId)
+    const onlineUsers = await getOnlineUserKeys()
+    io.emit(SocketEvents.getOnlineUsers, { onlineUsers })
   })
 
 })
-
-PeerServerClient.getInstance()
-
 
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

@@ -6,6 +6,8 @@ import { ProtoGrpcType } from "../protos/auth";
 import httpStatus from "../constants/httpStatus";
 import HttpError from "../util/HttpError";
 import connectUserSockets from '../util/connectUserSockets'
+import { AuthRequest } from "../constants/types";
+import blockedUsersSet from "../util/blockedUsersSet";
 
 const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000
 const PROTO_PATH = path.join(__dirname, '..', 'protos', 'auth.proto')
@@ -121,7 +123,7 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     // * get userId from user obj from token
     const cookies = req.cookies
@@ -149,7 +151,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
   try {
     const cookies = req.cookies
     if (!cookies?.jwt) {
-      throw new HttpError(httpStatus.BAD_REQUEST, 'no cookie found logout success.')
+      throw new HttpError(httpStatus.BAD_REQUEST, 'No cookie found logout success.')
     }
     const refreshToken = cookies.jwt
 
@@ -158,6 +160,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       else if (err) return new HttpError(httpStatus.UNAUTHORIZED, err.message)
       if (!msg) return new Error('grpc response is empty')
       const friendsRoomId = await connectUserSockets(msg.user?._id as string)
+      if (blockedUsersSet.has(msg.user?._id as string)) return new HttpError(httpStatus.FORBIDDEN, 'This account is blocked')
       console.log("refresh user name = ",msg.user?.name)
       res.status(httpStatus.OK)
         .json({
