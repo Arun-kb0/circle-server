@@ -49,10 +49,12 @@ export interface ProtoGrpcType {
     PostsCountArray: MessageTypeDefinition
     Report: MessageTypeDefinition
     ReportEnums: MessageTypeDefinition
+    Role: EnumTypeDefinition
     Saved: MessageTypeDefinition
     SearchPostRequest: MessageTypeDefinition
     SearchPostResponse: MessageTypeDefinition
     Status: EnumTypeDefinition
+    User: MessageTypeDefinition
   }
 }
 

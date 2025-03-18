@@ -1,6 +1,7 @@
 import ILike from "../interfaces/ILike";
 import { IPostExt } from "../interfaces/IPost";
 import { IReportExt } from "../interfaces/IReport";
+import { User } from "../proto/feed/User";
 
 export type SvcReturnType<T> = Promise<{
   err: number | null;
@@ -32,4 +33,13 @@ export type PaginationReports = {
   reports: IReportExt[];
   numberOfPages: number;
   currentPage: number;
+}
+
+
+export type PaginationSearchPost = {
+  posts: IPostExt[];
+  numberOfPages: number;
+  currentPage: number;
+  likes: ILike[]
+  users: User[]
 }
