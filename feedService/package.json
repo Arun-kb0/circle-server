@@ -2,7 +2,7 @@
   "name": "feedservice",
   "version": "1.0.0",
   "main": "index.js",
-   "scripts": {
+  "scripts": {
     "proto:gen": "bash ./proto-gen.sh ",
     "start": "node ./build/index.js",
     "build": "tsc -p .",
@@ -14,10 +14,12 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.12.2",
     "@grpc/proto-loader": "^0.7.13",
+    "@types/node-cron": "^3.0.11",
     "amqplib": "^0.10.5",
     "dotenv": "^16.4.7",
     "ioredis": "^5.4.2",
     "mongoose": "^8.9.2",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
