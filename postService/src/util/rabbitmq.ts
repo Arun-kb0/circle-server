@@ -2,7 +2,9 @@ import amqp, { ConsumeMessage } from 'amqplib'
 
 const USER = process.env.POST_RABBITMQ_USER
 const PASSWORD = process.env.POST_RABBITMQ_PASSWORD
-const RABBITMQ_URL = `amqp://${USER}:${PASSWORD}@localhost:5672`
+const HOST = process.env.GT_QUEUE_HOST || 'localhost'
+const PORT = process.env.GT_QUEUE_PORT || 5672
+const RABBITMQ_URL = `amqp://${USER}:${PASSWORD}@${HOST}:${PORT}`
 
 
 export const publishMessage = async (queue: string, message: string) => {

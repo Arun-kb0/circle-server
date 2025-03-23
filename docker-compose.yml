@@ -17,6 +17,7 @@ services:
       - chat-service
       - post-service
       - payment-service
+      - notification-service
     environment:
       - LOGGER_DB=${GT_LOGGER_DB}
       - AUTH_SERVICE_HOST=${GT_AUTH_SERVICE_HOST}
@@ -27,10 +28,10 @@ services:
       - POST_SERVICE_PORT=${POST_SERVICE_PORT}
       - FEED_SERVICE_HOST=${GT_FEED_SERVICE_HOST}
       - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
-      - CHAT_SERVICE_HOST=host.docker.internal
-      - CHAT_SERVICE_PORT=50055
-      - NOTIFICATION_SERVICE_HOST=host.docker.internal
-      - NOTIFICATION_SERVICE_PORT=50056
+      - CHAT_SERVICE_HOST=${GT_CHAT_SERVICE_HOST}
+      - CHAT_SERVICE_PORT=${CHAT_SERVICE_PORT}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
       - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
       - POST_CACHE_PORT=${GT_POST_CACHE_PORT}
       - POST_RABBITMQ_USER=${RABBITMQ_USER}
@@ -100,6 +101,8 @@ services:
       - GT_QUEUE_HOST=${GT_QUEUE_HOST}
       - GT_QUEUE_PORT=${GT_QUEUE_PORT}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -178,6 +181,8 @@ services:
       - GT_QUEUE_HOST=${GT_QUEUE_HOST}
       - GT_QUEUE_PORT=${GT_QUEUE_PORT}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
 
   payment-service:
     build: './paymentService'
@@ -211,6 +216,8 @@ services:
       - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
 
   post-service:
     build: ./postService
@@ -236,6 +243,8 @@ services:
       - POST_SERVICE_HOST=${POST_SERVICE_HOST}
       - POST_HEALTH_CHECK_PORT=${POST_HEALTH_CHECK_PORT}
       - POST_DB_URI=${POST_DB_URI}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
       - POST_RABBITMQ_USER=${RABBITMQ_USER}
       - POST_RABBITMQ_PASSWORD=${RABBITMQ_USER}
       - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
@@ -243,39 +252,46 @@ services:
       - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
 
-  # notification-service:
-  #   build: ./notificationService
-  #   container_name: notification-service
-  #   ports: 
-  #     - 50056:50056
-  #     - 8086:8086
-  #   volumes:
-  #     - ./notificationService:/app
-  #     - ./notificationService/node_modules:/app/node_modules
-  #   depends_on:
-  #     - post-cache
-  #     - rabbitmq
-  #     - user-service
-  #     - feed-service
-  #   healthcheck:
-  #     test: ["CMD", "curl" , "-f", "http://localhost:8086/health"]
-  #     interval: 30s
-  #     timeout: 30s
-  #     retries: 5
-  #     start_period: 30s
-  #   environment:
-  #     - POST_SERVICE_PORT=${POST_SERVICE_PORT}
-  #     - POST_SERVICE_HOST=${POST_SERVICE_HOST}
-  #     - POST_HEALTH_CHECK_PORT=${POST_HEALTH_CHECK_PORT}
-  #     - POST_DB_URI=${POST_DB_URI}
-  #     - POST_RABBITMQ_USER=${RABBITMQ_USER}
-  #     - POST_RABBITMQ_PASSWORD=${RABBITMQ_USER}
-  #     - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
-  #     - POST_CACHE_PORT=${POST_CACHE_PORT}
-  #     - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
-  #     - USER_SERVICE_PORT=${USER_SERVICE_PORT}
-  #     - CORN_EXPRESSION=${CORN_EXPRESSION}
+  notification-service:
+    build: ./notificationService
+    container_name: notification-service
+    ports: 
+      - 50056:50056
+      - 8086:8086
+    volumes:
+      - ./notificationService:/app
+      - ./notificationService/node_modules:/app/node_modules
+    depends_on:
+      - post-cache
+      - rabbitmq
+      - user-service
+      - feed-service
+    healthcheck:
+      test: ["CMD", "curl" , "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - NOTIFICATION_DB_URI=${NOTIFICATION_DB_URI}
+      - NOTIFICATION_SERVICE_HOST=${NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+      - NOTIFICATION_HEALTH_CHECK_PORT=${NOTIFICATION_HEALTH_CHECK_PORT}
+      - NOTIFICATION_QUEUE_NAME=${NOTIFICATION_QUEUE_NAME}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+      - RABIT_MQ_USER=${RABBITMQ_USER}
+      - RABIT_MQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - FEED_SERVICE_HOST=${GT_FEED_SERVICE_HOST}
+      - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
+      - GT_USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
+      - POST_CACHE_PORT=${GT_POST_CACHE_PORT}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
 
 volumes:
   node_modules:
