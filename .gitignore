@@ -5,38 +5,46 @@
 apiGateway/node_modules
 apiGateway/logs
 apiGateway/.env
+apiGateway/build
 
 # auth service
 auth/node_modules
 auth/.env
 auth/logs
+auth/build
 
 # user service
 userService/node_modules
 userService/.env
 userService/logs
+userService/build
 
 # post service
 postService/node_modules
 postService/.env
 postService/logs
+postService/build
 
 # feed service
 feedService/node_modules
 feedService/.env
 feedService/logs
+feedService/build
 
 # feed service
 chatService/node_modules
 chatService/.env
 chatService/logs
+chatService/build
 
 # notification service
 notificationService/node_modules
 notificationService/.env
 notificationService/logs
+notificationService/build
 
 # payment service
 paymentService/node_modules
 paymentService/.env
 paymentService/logs
+paymentService/build
