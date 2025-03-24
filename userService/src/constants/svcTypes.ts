@@ -1,4 +1,4 @@
-import { IUser } from "../model/UserModel";
+import IUser  from "../interfaces/IUser";
 
 export type PaginationUsers = {
   users: IUser[];

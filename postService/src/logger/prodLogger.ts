@@ -5,7 +5,7 @@ export const prodLogger = () => {
 
   return winston.createLogger({
     level: "http",
-    defaultMeta: { service: 'user-service' },
+    defaultMeta: { service: 'post-service' },
 
     format: format.combine(
       format.timestamp(),
