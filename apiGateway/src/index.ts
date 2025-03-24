@@ -31,7 +31,8 @@ import paymentRouter from './router/paymentRouter'
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
 const io = UseSocketIo.getInstance()
-const PORT = 5001
+const PORT = process.env.API_GATEWAY_PORT || 5001
+const HOST = process.env.API_GATEWAY_HOST || 'localhost'
 
 
 app.use(express.json())

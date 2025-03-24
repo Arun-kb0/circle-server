@@ -9,7 +9,7 @@ const HOST = process.env.GT_QUEUE_HOST || 'localhost'
 const PORT = process.env.GT_QUEUE_PORT || 5672
 const RABBITMQ_URL = `amqp://${USER}:${PASSWORD}@${HOST}:${PORT}`
 const QUEUE_NAME = process.env.NOTIFICATION_QUEUE_NAME || ''
-
+console.log(RABBITMQ_URL)
 
 class QueueBaseRepo implements IQueueBaseRepo {
   protected connection: Connection | null = null

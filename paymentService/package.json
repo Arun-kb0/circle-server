@@ -5,7 +5,7 @@
   "scripts": {
     "proto:gen": "bash ./proto-gen.sh ",
     "start": "node ./build/index.js",
-    "build": "tsc -p .",
+    "build": "tsc -p . && copyfiles -u 2 \"./src/proto/**/*.proto\" ./build/proto",
     "dev": "nodemon -L ./src/index.ts"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
   "devDependencies": {
     "@types/amqplib": "^0.10.6",
     "@types/node": "^22.10.2",
+    "copyfiles": "^2.4.1",
     "grpc_tools_node_protoc_ts": "^5.3.3"
   }
 }

@@ -79,6 +79,9 @@ services:
     ports:
       - 50052:50052
       - 8082:8082
+    volumes:
+      - ./userService:/app
+      - ./userService/node_modules:/app/node_modules
     depends_on:
       - rabbitmq
     healthcheck:
@@ -107,12 +110,6 @@ services:
     ports:
       - "5672:5672" # RabbitMQ broker port
       - "15672:15672" # Management UI port
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
@@ -132,6 +129,9 @@ services:
     ports:
       - 50054:50054
       - 8084:8084
+    volumes:
+      - ./feedService:/app
+      - ./feedService/node_modules:/app/node_modules
     depends_on:
       - post-cache
       - user-service
@@ -160,6 +160,9 @@ services:
     ports:
       - 50055:50055
       - 8085:8085
+    volumes: 
+      - ./chatService:/app
+      - ./chatService/node_modules:/app/node_modules
     depends_on:
       - user-service
     healthcheck:
@@ -187,6 +190,9 @@ services:
     ports:
       - 50057:50057
       - 8087:8087
+    volumes: 
+      - ./paymentService:/app
+      - ./paymentService/node_modules:/app/node_modules
     depends_on:
       - user-service
     healthcheck:
@@ -219,6 +225,9 @@ services:
     ports: 
       - 50053:50053
       - 8083:8083
+    volumes:
+      - ./postService:/app
+      - ./postService/node_modules:/app/node_modules
     depends_on:
       - post-cache
       - rabbitmq
@@ -256,6 +265,9 @@ services:
     ports: 
       - 50056:50056
       - 8086:8086
+    volumes:
+      - ./notificationService:/app
+      - ./notificationService/node_modules:/app/node_modules
     depends_on:
       - post-cache
       - rabbitmq

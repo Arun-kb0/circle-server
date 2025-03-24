@@ -63,6 +63,8 @@ const createPayment = async (paymentResponse: PaymentResponseType) => {
     paymentClient.createPayment({ paymentData }, (err, msg) => {
       if (err) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
       if (!msg) return new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Update order failed.')
+      console.log('cerate payment return')
+      console.log(msg)
       return msg.paymentData
     })
   } catch (error) {
@@ -85,11 +87,14 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Create order failed.'))
       if (!msg.option || !msg.orderId) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Option or orderId is not found in message.'))
+      console.log('request option')
+      console.log(msg.option)
       const response = await axios.request(msg.option)
       const responseUrl = response.data.data.instrumentResponse.redirectInfo.url
       const { merchantTransactionId } = response.data.data
       await updateOder(msg.orderId, { merchantTransactionId, state: 'pending', userSubscriptionDuration: 'lifetime' })
       await createSubscription(subscriberUserId, subscribedToUserId, merchantTransactionId, plan)
+
       res.status(httpStatus.OK).json({ message: 'create order success', url: responseUrl })
     })
   } catch (error) {
@@ -107,11 +112,11 @@ export const getStatus = async (req: Request, res: Response, next: NextFunction)
       if (err) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, err.message))
       if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Create order status option failed.'))
       if (!msg.option) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'Option not found in message.'))
-      console.log(msg.option)
-      console.log(msg.transactionId)
       const response = await axios.request(msg.option)
+      console.log('response form phone pay')
       console.log(response.data)
-      if (response.data.success === true) {
+
+      if (response.data.success === true && response.data.data.state === 'COMPLETED') {
         await createPayment(response.data)
         return res.redirect(SUCCESS_URL)
       } else {
