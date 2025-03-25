@@ -1,6 +1,7 @@
 services:
   api-gateway:
     build: ./apiGateway
+    image: ${DOCKER_USERNAME}/circle-api-gateway:${DOCKER_IMAGE_TAG:-latest}
     container_name: api-gateway
     ports:
       - 5001:5001
@@ -46,6 +47,7 @@ services:
 
   auth-service:
     build: ./auth
+    image: ${DOCKER_USERNAME}/circle-auth-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: auth-service
     ports:
       - 50051:50051
@@ -69,6 +71,7 @@ services:
 
   user-service:
     build: ./userService
+    image: ${DOCKER_USERNAME}/circle-user-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: user-service
     ports:
       - 50052:50052
@@ -122,6 +125,7 @@ services:
 
   feed-service:
     build: ./feedService
+    image: ${DOCKER_USERNAME}/circle-feed-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: feed-service
     ports:
       - 50054:50054
@@ -150,6 +154,7 @@ services:
 
   chat-service:
     build: './chatService'
+    image: ${DOCKER_USERNAME}/circle-chat-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: chat-service
     ports:
       - 50055:50055
@@ -177,6 +182,7 @@ services:
 
   payment-service:
     build: './paymentService'
+    image: ${DOCKER_USERNAME}/circle-payment-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: payment-service
     ports:
       - 50057:50057
@@ -209,6 +215,7 @@ services:
 
   post-service:
     build: ./postService
+    image: ${DOCKER_USERNAME}/circle-post-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: post-service
     ports: 
       - 50053:50053
@@ -246,6 +253,7 @@ services:
 
   notification-service:
     build: ./notificationService
+    image: ${DOCKER_USERNAME}/circle-notification-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: notification-service
     ports: 
       - 50056:50056

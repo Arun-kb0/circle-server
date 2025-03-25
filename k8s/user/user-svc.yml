@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-svc
+  labels:
+    name: user-svc
+    app: user
+  namespace: circle
+spec:
+  type: ClusterIP
+  selector: 
+    name: user-pod
+    app: user
+  ports:
+    - name: grpc
+      port: 50052
+      targetPort: 50052
+    - name: http
+      port: 8082
+      targetPort: 8082

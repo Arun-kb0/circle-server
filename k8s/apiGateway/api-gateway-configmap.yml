@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-configmap
+  labels:
+    name: api-gateway-configmap
+    app: api-gateway
+  namespace: circle
+data:
+  CORN_EXPRESSION: "0 0 * * *"
+  DOCKER_IMAGE_TAG: "1.0.0"
+  DOCKER_USERNAME: "arun0kb"
+
+  API_GATEWAY_PORT: "5001"
+  API_GATEWAY_HOST: "localhost"
+
+  AUTH_SERVICE_HOST: "auth-svc"
+  AUTH_SERVICE_PORT: "50051"
+  USER_SERVICE_HOST: "user-svc"
+  USER_SERVICE_PORT: "50052"
+  POST_SERVICE_HOST: ""
+  POST_SERVICE_PORT: ""
+  FEED_SERVICE_HOST: ""
+  FEED_SERVICE_PORT: ""
+  CHAT_SERVICE_HOST: ""
+  CHAT_SERVICE_PORT: ""
+  NOTIFICATION_SERVICE_HOST: ""
+  NOTIFICATION_SERVICE_PORT: ""
+  POST_CACHE_HOST: ""
+  POST_CACHE_PORT: ""
+  GT_QUEUE_HOST: "rabbitmq-svc"
+  GT_QUEUE_PORT: "5672"
+  PP_MERCHANT_KEY: ""
+  PP_MERCHANT_ID: ""
+  PP_MERCHANT_BASE_URL: ""
+  PP_MERCHANT_STATUS_URL: ""
+  PP_REDIRECT_URL: ""
+  PP_SUCCESS_URL: ""
+  PP_FAILURE_URL: ""
