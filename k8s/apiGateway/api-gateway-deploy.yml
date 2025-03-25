@@ -44,6 +44,18 @@ spec:
             sleep 2
           done;
           echo "user-svc is up!"
+      - name: wait-for-cache
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for cache service to be available..."
+          until nslookup cache-svc.circle.svc.cluster.local; do
+            echo "cache-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "cache-svc is up!"
       - name: wait-for-rabbitmq
         image: busybox
         command: 
@@ -56,6 +68,18 @@ spec:
             sleep 2
           done;
           echo "rabbitmq-svc is up!"
+      - name: wait-for-feed
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for feed service to be available..."
+          until nslookup feed-svc.circle.svc.cluster.local; do
+            echo "feed-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "feed-svc is up!"
 
       containers:
       - name: api-gateway

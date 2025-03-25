@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed-svc
+  labels:
+    name: feed-svc
+    app: feed
+  namespace: circle
+spec:
+  type: ClusterIP
+  selector: 
+    name: feed-pod
+    app: feed
+  ports:
+    - name: grpc
+      port: 50054
+      targetPort: 50054
+    - name: http
+      port: 8084
+      targetPort: 8084
