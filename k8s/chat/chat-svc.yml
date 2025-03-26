@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-svc
+  labels:
+    name: chat-svc
+    app: chat
+  namespace: circle
+spec:
+  type: ClusterIP
+  selector: 
+    name: chat-pod
+    app: chat
+  ports:
+    - name: grpc
+      port: 50055
+      targetPort: 50055
+    - name: http
+      port: 8085
+      targetPort: 8085

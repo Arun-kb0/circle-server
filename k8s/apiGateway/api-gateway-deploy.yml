@@ -80,6 +80,42 @@ spec:
             sleep 2
           done;
           echo "feed-svc is up!"
+      - name: wait-for-notification
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for notification service to be available..."
+          until nslookup notification-svc.circle.svc.cluster.local; do
+            echo "notification-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "notification-svc is up!"
+      - name: wait-for-chat
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for chat service to be available..."
+          until nslookup chat-svc.circle.svc.cluster.local; do
+            echo "chat-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "chat-svc is up!"
+      - name: wait-for-payment
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for payment service to be available..."
+          until nslookup payment-svc.circle.svc.cluster.local; do
+            echo "payment-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "payment-svc is up!"
 
       containers:
       - name: api-gateway
