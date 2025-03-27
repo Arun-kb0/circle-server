@@ -10,62 +10,62 @@ on:
 jobs:
   create-image-and-push-to-dockerhub:
 
-  name: Create Image and Push to Dockerhub
-  runs-on: ubuntu-latest
+    name: Create Image and Push to Dockerhub
+    runs-on: ubuntu-latest
 
-  # For each service, we define:
-  # - service: used for tagging and (optionally) deployment name
-  # - build: the folder in the repo containing the Dockerfile
-  # - deployFolder: the subfolder inside k8s/ where the deploy.yml is located
-  strategy:
-    matrix:
-      include:
-        - service: circle-api-gateway
-          build: apiGateway
-          deployFolder: apiGateway
-        - service: circle-auth-service
-          build: auth
-          deployFolder: auth
-        - service: circle-chat-service
-          build: chatService
-          deployFolder: chat
-        - service: circle-feed-service
-          build: feedService
-          deployFolder: feed
-        - service: circle-notification-service
-          build: notificationService
-          deployFolder: notification  
-        - service: circle-payment-service
-          build: paymentService
-          deployFolder: payment
-        - service: circle-post-service
-          build: postService
-          deployFolder: post
-        - service: circle-user-service
-          build: userService
-          deployFolder: user
+    # For each service, we define:
+    # - service: used for tagging and (optionally) deployment name
+    # - build: the folder in the repo containing the Dockerfile
+    # - deployFolder: the subfolder inside k8s/ where the deploy.yml is located
+    strategy:
+      matrix:
+        include:
+          - service: circle-api-gateway
+            build: apiGateway
+            deployFolder: apiGateway
+          - service: circle-auth-service
+            build: auth
+            deployFolder: auth
+          - service: circle-chat-service
+            build: chatService
+            deployFolder: chat
+          - service: circle-feed-service
+            build: feedService
+            deployFolder: feed
+          - service: circle-notification-service
+            build: notificationService
+            deployFolder: notification  
+          - service: circle-payment-service
+            build: paymentService
+            deployFolder: payment
+          - service: circle-post-service
+            build: postService
+            deployFolder: post
+          - service: circle-user-service
+            build: userService
+            deployFolder: user
 
-  steps:
-    - name: checkout
-      uses: actions/checkout@v3
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Build and push ${{ matrix.service}} Image
-      uses: docker/build-push-action@v4
-      with:
-        context: /${{ matrix.build }}
-        file:  /${{ matrix.build }}/Dockerfile
-        push: true
-        tags: ${{ DOCKER_USERNAME }}/${{ matrix.service }}:1.0.0
-        # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
+      - name: Build and push ${{ matrix.service}} Image
+        uses: docker/build-push-action@v4
+        with:
+          context: /${{ matrix.build }}
+          file:  /${{ matrix.build }}/Dockerfile
+          push: true
+          tags: ${{ DOCKER_USERNAME }}/${{ matrix.service }}:1.0.0
+          # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
 
   setup-and-deploy:
     needs: [create-image-and-push-to-dockerhub]
