@@ -1,0 +1,135 @@
+name: Circle build and Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  create-image-and-push-to-dockerhub:
+
+  name: Create Image and Push to Dockerhub
+  runs-on: ubuntu-latest
+
+  # For each service, we define:
+  # - service: used for tagging and (optionally) deployment name
+  # - build: the folder in the repo containing the Dockerfile
+  # - deployFolder: the subfolder inside k8s/ where the deploy.yml is located
+  strategy:
+    matrix:
+      include:
+        - service: circle-api-gateway
+          build: apiGateway
+          deployFolder: apiGateway
+        - service: circle-auth-service
+          build: auth
+          deployFolder: auth
+        - service: circle-chat-service
+          build: chatService
+          deployFolder: chat
+        - service: circle-feed-service
+          build: feedService
+          deployFolder: feed
+        - service: circle-notification-service
+          build: notificationService
+          deployFolder: notification  
+        - service: circle-payment-service
+          build: paymentService
+          deployFolder: payment
+        - service: circle-post-service
+          build: postService
+          deployFolder: post
+        - service: circle-user-service
+          build: userService
+          deployFolder: user
+
+  steps:
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: Docker Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push ${{ matrix.service}} Image
+      uses: docker/build-push-action@v4
+      with:
+        context: /${{ matrix.build }}
+        file:  /${{ matrix.build }}/Dockerfile
+        push: true
+        tags: ${{ DOCKER_USERNAME }}/${{ matrix.service }}:1.0.0
+        # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
+
+  setup-and-deploy:
+    needs: [create-image-and-push-to-dockerhub]
+
+    name: Setup and Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    strategy:
+      matrix:
+        includes:
+          - service: circle-api-gateway
+            deployFolder: apiGateway
+            deployFile: api-gateway-deploy.yml
+          - service: circle-auth-service
+            deployFolder: auth
+            deployFile: auth-deploy.yml
+          - service: circle-chat-service
+            deployFolder: chat
+            deployFile: chat-deploy.yml
+          - service: circle-feed-service
+            deployFolder: feed
+            deployFile: feed-deploy.yml
+          - service: circle-notification-service
+            deployFolder: notification
+            deployFile: notification-deploy.yml
+          - service: circle-payment-service
+            deployFolder: payment
+            deployFile: payment-deploy.yml
+          - service: circle-post-service
+            deployFolder: post
+            deployFile: post-deploy.yml
+          - service: circle-user-service
+            deployFolder: user
+            deployFile: user-deploy.yml
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GKE_SA }}
+
+    - name: Get GKE Credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+        location: ${{ secrets.GKE_CLUSTER_ZONE }}
+
+    - name: Update Deployment YAML for ${{ matrix.service}}
+      run: |
+        # Update the deploy.yml file in the appropriate k8s subfolder
+        sed -i "s/DOCKER_IMG_TAG/1.0.0/g" ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
+        cat ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
+      # run: |
+      #   sed -i "s/DOCKER_IMG_TAG/${{ github.sha }}/g" ./kubernetes/book-mgmt-api-deploy.yaml
+      #   cat ./kubernetes/book-mgmt-api-deploy.yaml
+
+    - name: Deploy on GKE for ${{ matrix.service}}
+      run: |
+        # Apply the updated deployment YAML file
+        kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
+        kubectl rollout restart deployment/${{ matrix.service }} -n circle

@@ -1,5 +1,6 @@
 # root 
 .env
+gsa-key.json
 
 # apiGateway
 apiGateway/node_modules
