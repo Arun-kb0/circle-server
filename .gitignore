@@ -32,7 +32,7 @@ feedService/.env
 feedService/logs
 feedService/build
 
-# feed service
+# chat service
 chatService/node_modules
 chatService/.env
 chatService/logs
