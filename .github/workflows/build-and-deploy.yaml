@@ -78,31 +78,34 @@ jobs:
       contents: 'read'
       id-token: 'write'
 
+    # service : metadata name in deployment file
+    # deployFolder : service folder name in k8s folder
+    # deployFile : deployment file name
     strategy:
       matrix:
         include:
-          - service: circle-api-gateway
+          - service: api-gateway-deploy
             deployFolder: apiGateway
             deployFile: api-gateway-deploy.yml
-          - service: circle-auth-service
+          - service: auth-deploy
             deployFolder: auth
             deployFile: auth-deploy.yml
-          - service: circle-chat-service
+          - service: chat-deploy
             deployFolder: chat
             deployFile: chat-deploy.yml
-          - service: circle-feed-service
+          - service: feed-deploy
             deployFolder: feed
             deployFile: feed-deploy.yml
-          - service: circle-notification-service
+          - service: notification-deploy
             deployFolder: notification
             deployFile: notification-deploy.yml
-          - service: circle-payment-service
+          - service: payment-deploy
             deployFolder: payment
             deployFile: payment-deploy.yml
-          - service: circle-post-service
+          - service: post-deploy
             deployFolder: post
             deployFile: post-deploy.yml
-          - service: circle-user-service
+          - service: user-deploy
             deployFolder: user
             deployFile: user-deploy.yml
 
