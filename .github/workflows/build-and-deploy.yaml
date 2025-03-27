@@ -10,6 +10,7 @@ on:
 jobs:
   create-image-and-push-to-dockerhub:
 
+    timeout-minutes: 20
     name: Create Image and Push to Dockerhub
     runs-on: ubuntu-latest
 
