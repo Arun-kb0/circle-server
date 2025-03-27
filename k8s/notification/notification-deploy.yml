@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: post-deploy
+  name: notification-deploy
   labels:
-    name: post-deploy
-    app: post
+    name: notification-deploy
+    app: notification
   namespace: circle
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: post-pod
-      app: post
+      name: notification-pod
+      app: notification
   template:
     metadata:
-      name: post-pod
+      name: notification-pod
       labels:
-        name: post-pod
-        app: post
+        name: notification-pod
+        app: notification
     spec:
       initContainers:
       - name: wait-for-cache
@@ -43,7 +43,7 @@ spec:
             echo "rabbitmq-svc not available yet, sleeping..."
             sleep 2
           done;
-          echo "user-svc is up!"
+          echo "rabbitmq-svc is up!"
       - name: wait-for-user
         image: busybox
         command: 
@@ -56,32 +56,32 @@ spec:
             sleep 2
           done;
           echo "user-svc is up!"
-      - name: wait-for-notification
+      - name: wait-for-feed
         image: busybox
         command: 
         - sh
         - -c 
         - | 
-          echo "Waiting for notification service to be available..."
-          until nslookup notification-svc.circle.svc.cluster.local; do
-            echo "notification-svc not available yet, sleeping..."
+          echo "Waiting for feed service to be available..."
+          until nslookup feed-svc.circle.svc.cluster.local; do
+            echo "feed-svc not available yet, sleeping..."
             sleep 2
           done;
-          echo "notification-svc is up!"
+          echo "feed-svc is up!"
 
       containers:
-      - name: post-service
-        image: arun0kb/circle-post-service:1.0.0
+      - name: notification-service
+        image: arun0kb/circle-notification-service:1.0.0
         imagePullPolicy: Always
         envFrom:
         - secretRef:
-            name: post-secret
+            name: notification-secret
         - configMapRef:
-            name: post-configmap
+            name: notification-configmap
         readinessProbe:
           httpGet:
             path: /health
-            port: 8083
+            port: 8086
           initialDelaySeconds: 10
           periodSeconds: 30
           timeoutSeconds: 5
@@ -89,7 +89,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8083
+            port: 8086
           initialDelaySeconds: 10
           periodSeconds: 30
           timeoutSeconds: 5

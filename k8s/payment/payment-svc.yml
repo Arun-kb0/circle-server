@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-svc
+  labels:
+    name: payment-svc
+    app: payment
+  namespace: circle
+spec:
+  type: ClusterIP
+  selector: 
+    name: payment-pod
+    app: payment
+  ports:
+    - name: grpc
+      port: 50057
+      targetPort: 50057
+    - name: http
+      port: 8087
+      targetPort: 8087
