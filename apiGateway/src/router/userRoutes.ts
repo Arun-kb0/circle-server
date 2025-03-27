@@ -6,7 +6,7 @@ import {
   getLiveUsers,
   getSuggestedPeople,
   getUser, unblockUser, unFollowUser, updateUser
-} from "../controller/UserController";
+} from "../controller/userController";
 
 
 const router = express.Router()
