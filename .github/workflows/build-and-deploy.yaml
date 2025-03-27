@@ -64,7 +64,7 @@ jobs:
           context: /${{ matrix.build }}
           file:  /${{ matrix.build }}/Dockerfile
           push: true
-          tags: ${{ DOCKER_USERNAME }}/${{ matrix.service }}:1.0.0
+          tags: arun0kb/${{ matrix.service }}:1.0.0
           # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
 
   setup-and-deploy:
