@@ -5,7 +5,7 @@
   "scripts": {
     "proto:gen": "bash ./proto-gen.sh ",
     "start": "node ./build/index.js",
-    "build": "tsc -p .",
+    "build": "tsc -p . && copyfiles -u 2 \"./src/proto/**/*.proto\" ./build/proto",
     "dev": "nodemon -L ./src/index.ts"
   },
   "keywords": [],
@@ -14,8 +14,10 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.12.2",
     "@grpc/proto-loader": "^0.7.13",
+    "@types/node-cron": "^3.0.11",
     "dotenv": "^16.4.7",
     "mongoose": "^8.9.2",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@types/amqplib": "^0.10.6",
     "@types/node": "^22.10.2",
+    "copyfiles": "^2.4.1",
     "grpc_tools_node_protoc_ts": "^5.3.3"
   },
   "description": ""

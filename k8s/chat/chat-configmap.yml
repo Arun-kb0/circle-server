@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-configmap
+  labels:
+    name: chat-configmap
+    app: chat
+  namespace: circle
+data:
+  CORN_EXPRESSION: "0 0 * * *"
+  DOCKER_IMAGE_TAG: "1.0.0"
+  DOCKER_USERNAME: "arun0kb"
+
+  CHAT_SERVICE_HOST: "0.0.0.0"
+  CHAT_SERVICE_PORT: "50055"
+  CHAT_HEALTH_CHECK_PORT: "8085"
+  USER_SERVICE_HOST: "user-svc"
+  USER_SERVICE_PORT: "50052"
+  GT_QUEUE_HOST: "rabbitmq-svc"
+  GT_QUEUE_PORT: "6379"
+  NOTIFICATION_SERVICE_HOST: "notification-svc"
+  NOTIFICATION_SERVICE_PORT: "50056"

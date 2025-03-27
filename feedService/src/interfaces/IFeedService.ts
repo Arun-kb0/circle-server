@@ -1,4 +1,4 @@
-import { PaginationComment, PaginationPost, PaginationReports, PaginationSavedPost, SvcReturnType } from '../constants/SvcTypes'
+import { PaginationComment, PaginationPost, PaginationReports, PaginationSavedPost, PaginationSearchPost, SvcReturnType } from '../constants/SvcTypes'
 import { ICommentExt } from './IComment'
 import ILike from './ILike'
 import { IPostExt } from './IPost'
@@ -12,7 +12,7 @@ interface IFeedService {
   getUserCreatedPosts(userId: string, page: number): SvcReturnType<PaginationPost<IPostExt[]>>
 
   getPost(postId: string): SvcReturnType<{ post: IPostExt, like: ILike | null } | null>
-  searchPost(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationPost<IPostExt[] | null>>
+  searchPost(searchText: string, page: number, startDate?: string, endDate?: string): SvcReturnType<PaginationSearchPost>
 
   getComments(contentId: string, page: number): SvcReturnType<PaginationComment<ICommentExt[]>>
   getCommentChildren(contentId: string, page: number, parentId?: string): SvcReturnType<PaginationComment<ICommentExt[]>>

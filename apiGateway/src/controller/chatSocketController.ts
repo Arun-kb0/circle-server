@@ -58,6 +58,22 @@ export const editMessage = async (socket: Socket, message: any) => {
   }
 }
 
+export const messageTyping = async (socket: Socket, message: any) => {
+  try {
+    socket.to(message.roomId).emit(SocketEvents.messageTyping, message)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
+export const messageTypingStopped = async (socket: Socket, message: any) => {
+  try {
+    socket.to(message.roomId).emit(SocketEvents.messageTypingStopped, message)
+  } catch (error) {
+    socketErrorHandler(error)
+  }
+}
+
 
 export const joinCallRoom = (socket: Socket, data: any) => {
   try {

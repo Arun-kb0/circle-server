@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deploy
+  labels:
+    name: user-deploy
+    app: user
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: user-pod
+      app: user
+  template:
+    metadata:
+      name: user-pod
+      labels:
+        name: user-pod
+        app: user
+    spec:
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for rabbitmq service to be available..."
+          until nslookup rabbitmq-svc.circle.svc.cluster.local; do
+            echo "rabbitmq-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "rabbitmq-svc is up!"
+
+      containers:
+      - name: user-service
+        image: arun0kb/circle-user-service:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: user-secret
+        - configMapRef:
+            name: user-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

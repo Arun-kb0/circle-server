@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deploy
+  labels:
+    name: api-gateway-deploy
+    app: api-gateway
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: api-gateway-pod
+      app: api-gateway
+  template:
+    metadata:
+      name: api-gateway-pod
+      labels:
+        name: api-gateway-pod
+        app: api-gateway
+    spec:
+      initContainers:
+      - name: wait-for-auth
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for auth service to be available..."
+          until nslookup auth-svc.circle.svc.cluster.local; do
+            echo "auth-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "auth-svc is up!"
+      - name: wait-for-user
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for user service to be available..."
+          until nslookup user-svc.circle.svc.cluster.local; do
+            echo "user-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "user-svc is up!"
+      - name: wait-for-cache
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for cache service to be available..."
+          until nslookup cache-svc.circle.svc.cluster.local; do
+            echo "cache-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "cache-svc is up!"
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for rabbitmq service to be available..."
+          until nslookup rabbitmq-svc.circle.svc.cluster.local; do
+            echo "rabbitmq-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "rabbitmq-svc is up!"
+      - name: wait-for-feed
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for feed service to be available..."
+          until nslookup feed-svc.circle.svc.cluster.local; do
+            echo "feed-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "feed-svc is up!"
+      - name: wait-for-notification
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for notification service to be available..."
+          until nslookup notification-svc.circle.svc.cluster.local; do
+            echo "notification-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "notification-svc is up!"
+      - name: wait-for-chat
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for chat service to be available..."
+          until nslookup chat-svc.circle.svc.cluster.local; do
+            echo "chat-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "chat-svc is up!"
+      - name: wait-for-payment
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for payment service to be available..."
+          until nslookup payment-svc.circle.svc.cluster.local; do
+            echo "payment-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "payment-svc is up!"
+
+      containers:
+      - name: api-gateway
+        image: arun0kb/circle-api-gateway:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: api-gateway-configmap
+        - secretRef:
+            name: api-gateway-secret
+          
+
+            

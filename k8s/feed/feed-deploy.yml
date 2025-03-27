@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-deploy
+  labels:
+    name: feed-deploy
+    app: feed
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: feed-pod
+      app: feed
+  template:
+    metadata:
+      name: feed-pod
+      labels:
+        name: feed-pod
+        app: feed
+    spec:
+      initContainers:
+      - name: wait-for-cache
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for cache service to be available..."
+          until nslookup cache-svc.circle.svc.cluster.local; do
+            echo "cache-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "cache-svc is up!"
+      - name: wait-for-user
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for user service to be available..."
+          until nslookup user-svc.circle.svc.cluster.local; do
+            echo "user-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "user-svc is up!"
+
+      containers:
+      - name: feed-service
+        image: arun0kb/circle-feed-service:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: feed-secret
+        - configMapRef:
+            name: feed-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

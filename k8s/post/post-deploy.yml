@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-deploy
+  labels:
+    name: post-deploy
+    app: post
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: post-pod
+      app: post
+  template:
+    metadata:
+      name: post-pod
+      labels:
+        name: post-pod
+        app: post
+    spec:
+      initContainers:
+      - name: wait-for-cache
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for cache service to be available..."
+          until nslookup cache-svc.circle.svc.cluster.local; do
+            echo "cache-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "cache-svc is up!"
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for rabbitmq service to be available..."
+          until nslookup rabbitmq-svc.circle.svc.cluster.local; do
+            echo "rabbitmq-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "user-svc is up!"
+      - name: wait-for-user
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for user service to be available..."
+          until nslookup user-svc.circle.svc.cluster.local; do
+            echo "user-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "user-svc is up!"
+      - name: wait-for-notification
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for notification service to be available..."
+          until nslookup notification-svc.circle.svc.cluster.local; do
+            echo "notification-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "notification-svc is up!"
+
+      containers:
+      - name: post-service
+        image: arun0kb/circle-post-service:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: post-secret
+        - configMapRef:
+            name: post-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

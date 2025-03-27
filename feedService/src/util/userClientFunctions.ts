@@ -7,6 +7,23 @@ import { User } from '../proto/userProto/user/User'
 
 const client = UserGrpcClient.getClient()
 
+export const getUsersBySearchText = async (searchText: string, page: number) => {
+  try {
+    const users: User[] = await new Promise((resolve, reject) => {
+      client.getAllUsers({ searchText, page }, (err, msg) => {
+        if (err) return reject(new Error(err.message));
+        if (!msg || !msg?.users) return reject(new Error('get all users response is empty.'));
+        resolve(msg.users);
+      });
+    })
+    return users
+  } catch (error) {
+    console.warn('search user failed')
+    console.log(error)
+    return []
+  }
+}
+
 const getMultipleUsers = async (userIds: string[]) => {
   try {
     const users: User[] = await new Promise((resolve, reject) => {

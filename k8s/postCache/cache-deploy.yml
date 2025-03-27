@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-deploy
+  labels:
+    name: cache-deploy
+    app: cache
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cache-pod
+      app: cache
+  template:
+    metadata:
+      name: cache-pod
+      labels:
+        name: cache-pod
+        app: cache
+    spec:
+      containers:
+      - name: cache-service
+        image: redis:7.4-alpine
+        imagePullPolicy: Always
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

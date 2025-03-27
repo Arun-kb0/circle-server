@@ -136,6 +136,30 @@ message Report {
   Post post=10;
 }
 
+
+enum Role{
+  user=0;
+  admin=1;
+}
+
+message User {
+  string _id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+  string location = 5;
+  string state = 6;
+  string gender = 7;
+  int32 followeeCount = 9;
+  int32 followerCount = 10;
+  string createdAt = 11;
+  string updatedAt = 12;
+  Status status = 13;
+  Role role = 14;
+  bool isOnline = 15;
+  Image image = 16;
+}
+
 message GetGlobalFeedRequest {
   int32 page=1;
 };
@@ -191,6 +215,7 @@ message SearchPostResponse {
   int32 currentPage =2;
   int32 numberOfPages=3;
   repeated Like likes=4;
+  repeated User users=5;
 }
 
 message GetUserCreatedPostsRequest {

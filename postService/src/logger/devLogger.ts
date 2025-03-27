@@ -11,7 +11,7 @@ export const devLogger = () => {
 
   return winston.createLogger({
     level: 'info',
-    defaultMeta: { service: 'user-service' },
+    defaultMeta: { service: 'post-service' },
 
     transports: [
       // * for file logging , dev or prod

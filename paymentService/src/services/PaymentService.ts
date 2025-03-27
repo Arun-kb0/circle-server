@@ -145,6 +145,7 @@ class PaymentService implements IPaymentService {
 
   async createOrder(subscriberUserId: string, subscriberEmail: string, amount: number, orderType: IOrder['orderType']): SvcReturnType<{ option: OrderOptionType, orderId: string }> {
     try {
+      console.log('create order in service')
       const order: Partial<IOrder> = {
         userId: subscriberUserId,
         amount: amount,
@@ -156,16 +157,19 @@ class PaymentService implements IPaymentService {
 
       const paymentPayload = {
         merchantId: MERCHANT_ID,
-        merchantUserId: subscriberUserId,
-        email: subscriberEmail,
-        amount: amount * 100,
         merchantTransactionId: newOrder.orderId,
+        amount: amount * 100,
+        merchantUserId: subscriberUserId,
         redirectUrl: `${REDIRECT_URL}/?id=${newOrder.orderId}`,
         redirectMode: 'POST',
+        callbackUrl: `${REDIRECT_URL}/?id=${newOrder.orderId}`,
         paymentInstrument: {
           type: 'PAY_PAGE'
-        }
+        },
+        email: subscriberEmail,
       }
+      console.log("paymentPayload")
+      console.log(paymentPayload)
 
       const payload = Buffer.from(JSON.stringify(paymentPayload)).toString('base64')
       const keyIndex = 1

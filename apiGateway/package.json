@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./build/index.js",
-    "build": "tsc -p .",
+    "build": "tsc -p . && copyfiles -u 2 \"./src/protos/**/*.proto\" ./build/protos",
     "dev": "nodemon -L ./src/index.ts"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
     "@grpc/proto-loader": "^0.7.13",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^1.4.12",
+    "@types/node-cron": "^3.0.11",
     "amqplib": "^0.10.5",
     "axios": "^1.8.1",
     "cloudinary": "^2.5.1",
@@ -28,6 +29,7 @@
     "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
     "socket.io": "^4.8.1",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
@@ -38,6 +40,7 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "copyfiles": "^2.4.1",
     "grpc_tools_node_protoc_ts": "^5.3.3",
     "grpc-tools": "^1.12.4",
     "ts-node": "^10.9.2",

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-deploy
+  labels:
+    name: payment-deploy
+    app: payment
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: payment-pod
+      app: payment
+  template:
+    metadata:
+      name: payment-pod
+      labels:
+        name: payment-pod
+        app: payment
+    spec:
+      initContainers:
+      - name: wait-for-user
+        image: busybox
+        command: 
+        - sh
+        - -c 
+        - | 
+          echo "Waiting for user service to be available..."
+          until nslookup user-svc.circle.svc.cluster.local; do
+            echo "user-svc not available yet, sleeping..."
+            sleep 2
+          done;
+          echo "user-svc is up!"
+
+      containers:
+      - name: payment-service
+        image: arun0kb/circle-payment-service:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: payment-secret
+        - configMapRef:
+            name: payment-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8087
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8087
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

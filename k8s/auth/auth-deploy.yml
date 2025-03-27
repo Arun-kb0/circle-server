@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deploy
+  labels:
+    name: auth-deploy
+    app: auth
+  namespace: circle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: auth-pod
+      app: auth
+  template:
+    metadata:
+      name: auth-pod
+      labels:
+        name: auth-pod
+        app: auth
+    spec:
+      containers:
+      - name: auth-service
+        image: arun0kb/circle-auth-service:1.0.0
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: auth-secret
+        - configMapRef:
+            name: auth-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3

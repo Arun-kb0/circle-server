@@ -12,6 +12,8 @@ export enum SocketEvents {
   receiveMessage = 'receive-message',
   messageDeleted = 'message-deleted',
   editMessage = 'edit-message',
+  messageTyping = 'message-typing',
+  messageTypingStopped = 'message-typing-stopped',
 
   // * call
   joinCallRoom = 'join-call-room',

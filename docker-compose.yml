@@ -1,13 +1,11 @@
 services:
   api-gateway:
     build: ./apiGateway
+    image: ${DOCKER_USERNAME}/circle-api-gateway:${DOCKER_IMAGE_TAG:-latest}
     container_name: api-gateway
     ports:
       - 5001:5001
       - 9000:9000
-    volumes:
-      - ./apiGateway:/app
-      - ./apiGateway/node_modules:/app/node_modules
     depends_on:
       - auth-service
       - user-service
@@ -15,21 +13,23 @@ services:
       - rabbitmq
       - feed-service
       - chat-service
-      # - post-service
+      - post-service
+      - payment-service
+      - notification-service
     environment:
       - LOGGER_DB=${GT_LOGGER_DB}
       - AUTH_SERVICE_HOST=${GT_AUTH_SERVICE_HOST}
       - AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
       - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
-      # - POST_SERVICE_HOST=${GT_POST_SERVICE_HOST}
-      # - POST_SERVICE_PORT=${POST_SERVICE_PORT}
+      - POST_SERVICE_HOST=${GT_POST_SERVICE_HOST}
+      - POST_SERVICE_PORT=${POST_SERVICE_PORT}
       - FEED_SERVICE_HOST=${GT_FEED_SERVICE_HOST}
       - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
-      - CHAT_SERVICE_HOST=host.docker.internal
-      - CHAT_SERVICE_PORT=50055
-      - NOTIFICATION_SERVICE_HOST=host.docker.internal
-      - NOTIFICATION_SERVICE_PORT=50056
+      - CHAT_SERVICE_HOST=${GT_CHAT_SERVICE_HOST}
+      - CHAT_SERVICE_PORT=${CHAT_SERVICE_PORT}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
       - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
       - POST_CACHE_PORT=${GT_POST_CACHE_PORT}
       - POST_RABBITMQ_USER=${RABBITMQ_USER}
@@ -43,16 +43,15 @@ services:
       - PP_REDIRECT_URL=${PP_REDIRECT_URL}
       - PP_SUCCESS_URL=${PP_SUCCESS_URL}
       - PP_FAILURE_URL=${PP_FAILURE_URL}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
 
   auth-service:
     build: ./auth
+    image: ${DOCKER_USERNAME}/circle-auth-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: auth-service
     ports:
       - 50051:50051
       - 8081:8081
-    volumes:
-      - ./auth:/app
-      - node_modules:/app/node_modules
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
       interval: 30s
@@ -68,16 +67,15 @@ services:
       - SMTP_PASS=${SMTP_PASS}
       - USER_DB_URI=${USER_DB_URI}
       - LOGGER_DB=${AUTH_LOGGER_DB}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
 
   user-service:
     build: ./userService
+    image: ${DOCKER_USERNAME}/circle-user-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: user-service
     ports:
       - 50052:50052
       - 8082:8082
-    volumes:
-      - ./userService:/app
-      - ./userService/node_modules:/app/node_modules
     depends_on:
       - rabbitmq
     healthcheck:
@@ -96,7 +94,9 @@ services:
       - POST_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - GT_QUEUE_HOST=${GT_QUEUE_HOST}
       - GT_QUEUE_PORT=${GT_QUEUE_PORT}
-
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -104,6 +104,12 @@ services:
     ports:
       - "5672:5672" # RabbitMQ broker port
       - "15672:15672" # Management UI port
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
@@ -119,13 +125,11 @@ services:
 
   feed-service:
     build: ./feedService
+    image: ${DOCKER_USERNAME}/circle-feed-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: feed-service
     ports:
       - 50054:50054
       - 8084:8084
-    volumes:
-      - ./feedService:/app
-      - ./feedService/node_modules:/app/node_modules
     depends_on:
       - post-cache
       - user-service
@@ -146,16 +150,15 @@ services:
       - POST_CACHE_PORT=${POST_CACHE_PORT}
       - USER_SERVICE_HOST=${USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
 
   chat-service:
     build: './chatService'
+    image: ${DOCKER_USERNAME}/circle-chat-service:${DOCKER_IMAGE_TAG:-latest}
     container_name: chat-service
     ports:
       - 50055:50055
       - 8085:8085
-    volumes: 
-      - ./chatService:/app
-      - ./chatService/node_modules:/app/node_modules
     depends_on:
       - user-service
     healthcheck:
@@ -173,27 +176,116 @@ services:
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       - GT_QUEUE_HOST=${GT_QUEUE_HOST}
       - GT_QUEUE_PORT=${GT_QUEUE_PORT}
-    
-  # post-service:
-  #   build: ./postService
-  #   container_name: post-service
-  #   ports: 
-  #     - 50053:50053
-  #     - 8083:8083
-  #   volumes:
-  #     - ./postService:/app
-  #     - ./postService/node_modules:/app/node_modules
-  #   healthcheck:
-  #     test: ["CMD", "curl" , "-f", "http://localhost:8083/health"]
-  #     interval: 30s
-  #     timeout: 30s
-  #     retries: 5
-  #     start_period: 30s
-  #   environment:
-  #     - POST_SERVICE_PORT=${POST_SERVICE_PORT}
-  #     - POST_SERVICE_HOST=${POST_SERVICE_HOST}
-  #     - POST_HEALTH_CHECK_PORT=${POST_HEALTH_CHECK_PORT}
-  #     - POST_DB_URI=${POST_DB_URI}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+
+  payment-service:
+    build: './paymentService'
+    image: ${DOCKER_USERNAME}/circle-payment-service:${DOCKER_IMAGE_TAG:-latest}
+    container_name: payment-service
+    ports:
+      - 50057:50057
+      - 8087:8087
+    depends_on:
+      - user-service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8087/health" ]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - PAYMENT_DB_URI=${PAYMENT_DB_URI}
+      - PAYMENT_SERVICE_HOST=${PAYMENT_SERVICE_HOST}
+      - PAYMENT_SERVICE_PORT=${PAYMENT_SERVICE_PORT}
+      - PAYMENT_HEALTH_CHECK_PORT=${PAYMENT_HEALTH_CHECK_PORT}
+      - PP_MERCHANT_KEY=${PP_MERCHANT_KEY}
+      - PP_MERCHANT_ID=${PP_MERCHANT_ID}
+      - PP_MERCHANT_BASE_URL=${PP_MERCHANT_BASE_URL}
+      - PP_MERCHANT_STATUS_URL=${PP_MERCHANT_STATUS_URL}
+      - PP_REDIRECT_URL=${PP_REDIRECT_URL}
+      - PP_SUCCESS_URL=${PP_SUCCESS_URL}
+      - PP_FAILURE_URL=${PP_FAILURE_URL}
+      - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+
+  post-service:
+    build: ./postService
+    image: ${DOCKER_USERNAME}/circle-post-service:${DOCKER_IMAGE_TAG:-latest}
+    container_name: post-service
+    ports: 
+      - 50053:50053
+      - 8083:8083
+    depends_on:
+      - post-cache
+      - rabbitmq
+      - user-service
+    healthcheck:
+      test: ["CMD", "curl" , "-f", "http://localhost:8083/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - API_GATEWAY_PORT=${API_GATEWAY_PORT}
+      - API_GATEWAY_HOST=${API_GATEWAY_HOST}
+      - POST_SERVICE_PORT=${POST_SERVICE_PORT}
+      - POST_SERVICE_HOST=${POST_SERVICE_HOST}
+      - POST_HEALTH_CHECK_PORT=${POST_HEALTH_CHECK_PORT}
+      - POST_DB_URI=${POST_DB_URI}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+      - POST_RABBITMQ_USER=${RABBITMQ_USER}
+      - POST_RABBITMQ_PASSWORD=${RABBITMQ_USER}
+      - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
+      - POST_CACHE_PORT=${POST_CACHE_PORT}
+      - USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - NOTIFICATION_SERVICE_HOST=${GT_NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+      - PP_SUCCESS_URL=${PP_SUCCESS_URL}
+      - PP_FAILURE_URL=${PP_FAILURE_URL}
+
+  notification-service:
+    build: ./notificationService
+    image: ${DOCKER_USERNAME}/circle-notification-service:${DOCKER_IMAGE_TAG:-latest}
+    container_name: notification-service
+    ports: 
+      - 50056:50056
+      - 8086:8086
+    depends_on:
+      - post-cache
+      - rabbitmq
+      - user-service
+      - feed-service
+    healthcheck:
+      test: ["CMD", "curl" , "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - NOTIFICATION_DB_URI=${NOTIFICATION_DB_URI}
+      - NOTIFICATION_SERVICE_HOST=${NOTIFICATION_SERVICE_HOST}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+      - NOTIFICATION_HEALTH_CHECK_PORT=${NOTIFICATION_HEALTH_CHECK_PORT}
+      - NOTIFICATION_QUEUE_NAME=${NOTIFICATION_QUEUE_NAME}
+      - GT_QUEUE_HOST=${GT_QUEUE_HOST}
+      - GT_QUEUE_PORT=${GT_QUEUE_PORT}
+      - RABIT_MQ_USER=${RABBITMQ_USER}
+      - RABIT_MQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - FEED_SERVICE_HOST=${GT_FEED_SERVICE_HOST}
+      - FEED_SERVICE_PORT=${FEED_SERVICE_PORT}
+      - GT_USER_SERVICE_HOST=${GT_USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - POST_CACHE_HOST=${GT_POST_CACHE_HOST}
+      - POST_CACHE_PORT=${GT_POST_CACHE_PORT}
+      - CORN_EXPRESSION=${CORN_EXPRESSION}
 
 volumes:
   node_modules:
