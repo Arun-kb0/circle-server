@@ -108,6 +108,12 @@ jobs:
           - service: user-deploy
             deployFolder: user
             deployFile: user-deploy.yml
+          - service: rabbitmq-deploy
+            deployFolder: rabbitmq
+            deployFile: rabbitmq-deploy.yml
+          - service: cache-deploy
+            deployFolder: postCache
+            deployFile: cache-deploy.yml
 
     steps:
     - name: Checkout
