@@ -61,8 +61,8 @@ jobs:
       - name: Build and push ${{ matrix.service}} Image
         uses: docker/build-push-action@v4
         with:
-          context: /${{ matrix.build }}
-          file:  /${{ matrix.build }}/Dockerfile
+          context: ./${{ matrix.build }}
+          file:  ./${{ matrix.build }}/Dockerfile
           push: true
           tags: arun0kb/${{ matrix.service }}:1.0.0
           # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
