@@ -80,7 +80,7 @@ jobs:
 
     strategy:
       matrix:
-        includes:
+        include:
           - service: circle-api-gateway
             deployFolder: apiGateway
             deployFile: api-gateway-deploy.yml
