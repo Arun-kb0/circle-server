@@ -6,8 +6,10 @@ metadata:
     name: notification-svc
     app: notification
   namespace: circle
+  annotations:
+    beta.cloud.google.com/backend-config: '{"default": "notification-backendconfig"}'
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector: 
     name: notification-pod
     app: notification

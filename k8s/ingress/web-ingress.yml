@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: circle
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: circle-global-ip
+spec:
+  rules:
+  - host: circle.planetunknown.xyz
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway-svc
+            port:
+              number: 5001
+      - path: /notification-svc
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-svc
+            port:
+              number: 8086
+
+  # defaultBackend:
+  #   service:
+  #     name: notification-svc
+  #     port:
+  #       number: 8086
