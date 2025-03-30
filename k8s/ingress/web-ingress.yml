@@ -27,8 +27,8 @@ spec:
             port:
               number: 8086
 
-  # defaultBackend:
-  #   service:
-  #     name: notification-svc
-  #     port:
-  #       number: 8086
+  defaultBackend:
+    service:
+      name: api-gateway-svc
+      port:
+        number: 5001

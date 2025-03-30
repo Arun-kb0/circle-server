@@ -9,7 +9,7 @@ metadata:
   annotations:
     beta.cloud.google.com/backend-config: '{"default": "notification-backendconfig"}'
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector: 
     name: notification-pod
     app: notification
@@ -20,4 +20,4 @@ spec:
     - name: http
       port: 8086
       targetPort: 8086
-      nodePort: 30002
+      # nodePort: 30002

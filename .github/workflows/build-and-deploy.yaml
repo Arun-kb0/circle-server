@@ -10,7 +10,7 @@ on:
 jobs:
   create-image-and-push-to-dockerhub:
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     name: Create Image and Push to Dockerhub
     runs-on: ubuntu-latest
 
@@ -200,9 +200,9 @@ jobs:
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
         kubectl rollout restart deployment/${{ matrix.service }} -n circle
         # Wait for the deployment to roll out completely
-        kubectl rollout status deployment/${{ matrix.service }} -n circle
+        # kubectl rollout status deployment/${{ matrix.service }} -n circle
 
-    - name: Deploy Ingress GKE for ${{ matrix.service}}
-      run: |
-        # Now that the pods are ready, apply the Ingress configuration
-        kubectl apply -f ./k8s/ingress/web-ingress.yml
+    # - name: Deploy Ingress GKE for ${{ matrix.service}}
+    #   run: |
+    #     # Now that the pods are ready, apply the Ingress configuration
+    #     kubectl apply -f ./k8s/ingress/web-ingress.yml

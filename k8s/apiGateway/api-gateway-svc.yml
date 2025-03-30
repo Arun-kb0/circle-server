@@ -9,7 +9,7 @@ metadata:
   annotations:
     beta.cloud.google.com/backend-config: '{"default": "api-gateway-backendconfig"}'
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     name: api-gateway-pod
     app: api-gateway
@@ -17,4 +17,4 @@ spec:
     - name: http
       port: 5001
       targetPort: 5001
-      nodePort: 30001
+      # nodePort: 30001
