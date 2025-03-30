@@ -33,5 +33,5 @@ data:
   GT_QUEUE_PORT: "5672"  
   PAYMENT_SERVICE_HOST: "payment-svc"
   PAYMENT_SERVICE_PORT: "50057"
-  PP_SUCCESS_URL: "http://localhost:5173/payment-success"
-  PP_FAILURE_URL: "http://localhost:5173/payment-failed"
+  PP_SUCCESS_URL: "https://circle-client-sigma.vercel.app/payment-success"
+  PP_FAILURE_URL: "https://circle-client-sigma.vercel.app/payment-failed"
