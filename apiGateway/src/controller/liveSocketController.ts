@@ -58,12 +58,13 @@ export const liveStreamEnd = (socket: Socket, data: { userId: string }) => {
   }
 }
 
-export const prepareLiveStream = (socket: Socket, data: { userId: string }) => {
+export const prepareLiveStream = (socket: Socket, data: { userId: string, name: string }) => {
   try {
     const { userId } = data
     liveUsersMap.set(userId, socket.id)
     const roomId = createStreamRoomId(socket.id)
     socket.join(roomId)
+    socket.broadcast.emit(SocketEvents.prepareLiveStream, data)
   } catch (error) {
     socketErrorHandler(error);
   }
@@ -77,7 +78,7 @@ export const joinLiveRoom = (socket: Socket, data: { streamerId: string }) => {
     const roomId = createStreamRoomId(streamSocketId)
     socket.join(roomId)
     socket.to(roomId).emit(SocketEvents.joinedRoomLive, { userId })
-    console.log('roomId ',roomId)
+    console.log('roomId ', roomId)
   } catch (error) {
     socketErrorHandler(error);
   }
