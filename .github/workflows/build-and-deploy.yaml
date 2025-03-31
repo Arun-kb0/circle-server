@@ -56,7 +56,7 @@ jobs:
           context: ./${{ matrix.build }}
           file:  ./${{ matrix.build }}/Dockerfile
           push: true
-          tags: arun0kb/${{ matrix.service }}:1.0.1
+          tags: arun0kb/${{ matrix.service }}:1.0.0
           # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
           no-cache: true
 
@@ -169,7 +169,7 @@ jobs:
     - name: Update Deployment YAML for ${{ matrix.service}}
       run: |
         # Update the deploy.yml file in the appropriate k8s subfolder
-        sed -i "s/DOCKER_IMG_TAG/1.0.1/g" ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
+        sed -i "s/DOCKER_IMG_TAG/1.0.0/g" ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
         cat ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
       # run: |
       #   sed -i "s/DOCKER_IMG_TAG/${{ github.sha }}/g" ./kubernetes/book-mgmt-api-deploy.yaml
