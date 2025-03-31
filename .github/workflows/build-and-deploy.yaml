@@ -58,6 +58,7 @@ jobs:
           push: true
           tags: arun0kb/${{ matrix.service }}:1.0.0
           # tags: arun0kb/${{ matrix.service }}:${{ github.sha }}
+          no-cache: true
 
   setup-and-deploy:
     needs: [create-image-and-push-to-dockerhub]
