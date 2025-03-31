@@ -16,6 +16,19 @@ class ChatRepo implements IChatRepo {
     private chatRoomBaseRepo: IChatRoomBaseRepo
   ) { }
 
+  async findUsersChatLaseMessage(userIds: string[]): Promise<IMessageExt[]> {
+    try {
+      const chatRoomIds = await this.chatRoomBaseRepo.findRoomIdsByUserIds(userIds)
+      if (!chatRoomIds) return []
+      const lastMessages = await this.messageBaseRepo.findLastMessageByRoomIds(chatRoomIds)
+      const msgsWithUser = await addUsersToMessages(lastMessages)
+      return msgsWithUser
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   // *  base message calls
   async getMessages(roomId: string, page: number): Promise<PaginationMessages> {
     try {
@@ -110,7 +123,7 @@ class ChatRepo implements IChatRepo {
   async createChatRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
     try {
       const existingRoom = await this.chatRoomBaseRepo.findRoomById(chatRoom.roomId as string)
-      if(existingRoom) return existingRoom
+      if (existingRoom) return existingRoom
       const newRoom = await this.chatRoomBaseRepo.createRoom(chatRoom)
       return newRoom
     } catch (error) {

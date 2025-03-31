@@ -2,9 +2,28 @@ import IChatRoom from '../../interfaces/IChatRoom';
 import IChatRoomBaseRepo from '../../interfaces/IChatRoomBaseRepo'
 import handleError from '../../util/handleError';
 import { ChatRoom } from '../../model/chatRoomModel'
-import { convertIChatRoomDbToCommonType, convertIChatRoomToDbType } from '../../util/converter';
+import { convertIChatRoomDbToCommonType, convertIChatRoomToDbType, convertToObjectId } from '../../util/converter';
 
 class ChatRoomBaseRepo implements IChatRoomBaseRepo {
+
+  async findRoomIdsByUserIds(userIds: string[]): Promise<string[]> {
+    try {
+      const userObjIds = userIds.map(item => convertToObjectId(item))
+      const foundRooms = await ChatRoom.distinct('roomId',{
+        userId: { $in: userObjIds },
+        targetId: { $in: userObjIds }
+      })
+      if (!foundRooms) return []
+      console.log("userIds")
+      console.log(userIds)
+      console.log("foundRooms")
+      console.log(foundRooms)
+      return foundRooms
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async createRoom(chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null> {
     try {
@@ -44,7 +63,7 @@ class ChatRoomBaseRepo implements IChatRoomBaseRepo {
   async findRoomById(chatRoomId: string): Promise<IChatRoom | null> {
     try {
       const foundRoom = await ChatRoom.findOne({ roomId: chatRoomId })
-      return foundRoom ? convertIChatRoomDbToCommonType(foundRoom) : null 
+      return foundRoom ? convertIChatRoomDbToCommonType(foundRoom) : null
     } catch (error) {
       const err = handleError(error)
       throw new Error(err.message)

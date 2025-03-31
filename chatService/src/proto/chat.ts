@@ -27,6 +27,8 @@ export interface ProtoGrpcType {
     FindMessageByUserResponse: MessageTypeDefinition
     FindRoomByRoomIdRequest: MessageTypeDefinition
     FindRoomByRoomIdResponse: MessageTypeDefinition
+    FindUsersChatLaseMessagesRequest: MessageTypeDefinition
+    FindUsersChatLaseMessagesResponse: MessageTypeDefinition
     GetMessagesRequest: MessageTypeDefinition
     GetMessagesResponse: MessageTypeDefinition
     Message: MessageTypeDefinition

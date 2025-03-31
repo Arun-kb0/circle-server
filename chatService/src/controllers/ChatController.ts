@@ -5,6 +5,7 @@ import IChatController, {
   DeleteRoomMessagesHandler,
   FindMessageByUerHandler, FindMessageMessageHandler,
   FindRoomByRoomIdHandler,
+  FindUsersChatLaseMessagesHandler,
   GetMessageHandler,
   UpdateMessageHandler,
   UpdateRoomHandler
@@ -22,6 +23,19 @@ class ChatController implements IChatController {
   constructor(
     private chatService: IChatService
   ) { }
+
+  findUsersChatLaseMessages: FindUsersChatLaseMessagesHandler = async (call, cb) => {
+    try {
+      const { userIds } = call.request
+      validateRequest('userIds are required.', userIds)
+      const res = await this.chatService.findUsersChatLaseMessage(userIds as string[])
+      validateResponse(res)
+      cb(null, { messages: res.data ? res.data : [] })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
 
   getMessages: GetMessageHandler = async (call, cb) => {
     try {

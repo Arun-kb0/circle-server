@@ -16,6 +16,8 @@ service ChatService {
   rpc UpdateRoom(UpdateRoomRequest) returns (UpdateRoomResponse){};
   rpc DeleteRoom(DeleteRoomRequest) returns (DeleteRoomResponse){};
   rpc FindRoomByRoomId(FindRoomByRoomIdRequest) returns (FindRoomByRoomIdResponse){};
+
+  rpc FindUsersChatLaseMessages (FindUsersChatLaseMessagesRequest) returns (FindUsersChatLaseMessagesResponse){};
 } 
 
 message MessageEnums {
@@ -165,4 +167,12 @@ message FindRoomByRoomIdRequest {
 
 message FindRoomByRoomIdResponse {
   ChatRoom chatRoom=1;
+}
+
+message FindUsersChatLaseMessagesRequest {
+  repeated string userIds=1;
+}
+
+message FindUsersChatLaseMessagesResponse {
+  repeated Message messages=1;
 }

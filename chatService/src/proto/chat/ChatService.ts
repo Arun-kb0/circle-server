@@ -18,6 +18,8 @@ import type { FindMessageByUserRequest as _chat_FindMessageByUserRequest, FindMe
 import type { FindMessageByUserResponse as _chat_FindMessageByUserResponse, FindMessageByUserResponse__Output as _chat_FindMessageByUserResponse__Output } from '../chat/FindMessageByUserResponse';
 import type { FindRoomByRoomIdRequest as _chat_FindRoomByRoomIdRequest, FindRoomByRoomIdRequest__Output as _chat_FindRoomByRoomIdRequest__Output } from '../chat/FindRoomByRoomIdRequest';
 import type { FindRoomByRoomIdResponse as _chat_FindRoomByRoomIdResponse, FindRoomByRoomIdResponse__Output as _chat_FindRoomByRoomIdResponse__Output } from '../chat/FindRoomByRoomIdResponse';
+import type { FindUsersChatLaseMessagesRequest as _chat_FindUsersChatLaseMessagesRequest, FindUsersChatLaseMessagesRequest__Output as _chat_FindUsersChatLaseMessagesRequest__Output } from '../chat/FindUsersChatLaseMessagesRequest';
+import type { FindUsersChatLaseMessagesResponse as _chat_FindUsersChatLaseMessagesResponse, FindUsersChatLaseMessagesResponse__Output as _chat_FindUsersChatLaseMessagesResponse__Output } from '../chat/FindUsersChatLaseMessagesResponse';
 import type { GetMessagesRequest as _chat_GetMessagesRequest, GetMessagesRequest__Output as _chat_GetMessagesRequest__Output } from '../chat/GetMessagesRequest';
 import type { GetMessagesResponse as _chat_GetMessagesResponse, GetMessagesResponse__Output as _chat_GetMessagesResponse__Output } from '../chat/GetMessagesResponse';
 import type { UpdateMessageRequest as _chat_UpdateMessageRequest, UpdateMessageRequest__Output as _chat_UpdateMessageRequest__Output } from '../chat/UpdateMessageRequest';
@@ -98,6 +100,15 @@ export interface ChatServiceClient extends grpc.Client {
   findRoomByRoomId(argument: _chat_FindRoomByRoomIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_FindRoomByRoomIdResponse__Output>): grpc.ClientUnaryCall;
   findRoomByRoomId(argument: _chat_FindRoomByRoomIdRequest, callback: grpc.requestCallback<_chat_FindRoomByRoomIdResponse__Output>): grpc.ClientUnaryCall;
   
+  FindUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  FindUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  FindUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  FindUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  findUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  findUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  findUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  findUsersChatLaseMessages(argument: _chat_FindUsersChatLaseMessagesRequest, callback: grpc.requestCallback<_chat_FindUsersChatLaseMessagesResponse__Output>): grpc.ClientUnaryCall;
+  
   GetMessages(argument: _chat_GetMessagesRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_GetMessagesResponse__Output>): grpc.ClientUnaryCall;
   GetMessages(argument: _chat_GetMessagesRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_chat_GetMessagesResponse__Output>): grpc.ClientUnaryCall;
   GetMessages(argument: _chat_GetMessagesRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_chat_GetMessagesResponse__Output>): grpc.ClientUnaryCall;
@@ -144,6 +155,8 @@ export interface ChatServiceHandlers extends grpc.UntypedServiceImplementation {
   
   FindRoomByRoomId: grpc.handleUnaryCall<_chat_FindRoomByRoomIdRequest__Output, _chat_FindRoomByRoomIdResponse>;
   
+  FindUsersChatLaseMessages: grpc.handleUnaryCall<_chat_FindUsersChatLaseMessagesRequest__Output, _chat_FindUsersChatLaseMessagesResponse>;
+  
   GetMessages: grpc.handleUnaryCall<_chat_GetMessagesRequest__Output, _chat_GetMessagesResponse>;
   
   UpdateMessage: grpc.handleUnaryCall<_chat_UpdateMessageRequest__Output, _chat_UpdateMessageResponse>;
@@ -161,6 +174,7 @@ export interface ChatServiceDefinition extends grpc.ServiceDefinition {
   FindMessageById: MethodDefinition<_chat_FindMessageByIdRequest, _chat_FindMessageByIdResponse, _chat_FindMessageByIdRequest__Output, _chat_FindMessageByIdResponse__Output>
   FindMessageByUser: MethodDefinition<_chat_FindMessageByUserRequest, _chat_FindMessageByUserResponse, _chat_FindMessageByUserRequest__Output, _chat_FindMessageByUserResponse__Output>
   FindRoomByRoomId: MethodDefinition<_chat_FindRoomByRoomIdRequest, _chat_FindRoomByRoomIdResponse, _chat_FindRoomByRoomIdRequest__Output, _chat_FindRoomByRoomIdResponse__Output>
+  FindUsersChatLaseMessages: MethodDefinition<_chat_FindUsersChatLaseMessagesRequest, _chat_FindUsersChatLaseMessagesResponse, _chat_FindUsersChatLaseMessagesRequest__Output, _chat_FindUsersChatLaseMessagesResponse__Output>
   GetMessages: MethodDefinition<_chat_GetMessagesRequest, _chat_GetMessagesResponse, _chat_GetMessagesRequest__Output, _chat_GetMessagesResponse__Output>
   UpdateMessage: MethodDefinition<_chat_UpdateMessageRequest, _chat_UpdateMessageResponse, _chat_UpdateMessageRequest__Output, _chat_UpdateMessageResponse__Output>
   UpdateRoom: MethodDefinition<_chat_UpdateRoomRequest, _chat_UpdateRoomResponse, _chat_UpdateRoomRequest__Output, _chat_UpdateRoomResponse__Output>

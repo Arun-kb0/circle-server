@@ -22,6 +22,8 @@ import { DeleteRoomRequest__Output } from '../proto/chat/DeleteRoomRequest'
 import { DeleteRoomResponse } from '../proto/chat/DeleteRoomResponse'
 import { FindRoomByRoomIdRequest__Output } from '../proto/chat/FindRoomByRoomIdRequest'
 import { FindRoomByRoomIdResponse } from '../proto/chat/FindRoomByRoomIdResponse'
+import { FindUsersChatLaseMessagesRequest__Output } from '../proto/chat/FindUsersChatLaseMessagesRequest'
+import { FindUsersChatLaseMessagesResponse } from '../proto/chat/FindUsersChatLaseMessagesResponse'
 
 
 
@@ -39,6 +41,8 @@ export type UpdateRoomHandler = grpc.handleUnaryCall<UpdateRoomRequest__Output, 
 export type DeleteRoomHandler = grpc.handleUnaryCall<DeleteRoomRequest__Output, DeleteRoomResponse>
 export type FindRoomByRoomIdHandler = grpc.handleUnaryCall<FindRoomByRoomIdRequest__Output, FindRoomByRoomIdResponse>
 
+export type FindUsersChatLaseMessagesHandler = grpc.handleUnaryCall<FindUsersChatLaseMessagesRequest__Output, FindUsersChatLaseMessagesResponse >
+
 
 
 interface IChatController {
@@ -53,7 +57,9 @@ interface IChatController {
   createRoom: CreateRoomHandler,
   updateRoom: UpdateRoomHandler,
   deleteRoom: DeleteRoomHandler,
-  findRoomByRoomId: FindRoomByRoomIdHandler
+  findRoomByRoomId: FindRoomByRoomIdHandler,
+
+  findUsersChatLaseMessages: FindUsersChatLaseMessagesHandler
 }
 
 export default IChatController

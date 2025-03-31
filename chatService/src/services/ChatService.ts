@@ -11,6 +11,16 @@ class ChatService implements IChatService {
     private chatRepo: IChatRepo
   ) { }
 
+  async findUsersChatLaseMessage(userIds: string[]): SvcReturnType<IMessageExt[]> {
+    try {
+      const res = await this.chatRepo.findUsersChatLaseMessage(userIds)
+      return { err: null, data: res }
+    } catch (error) {
+      const { code, message } = handleError(error)
+      return { err: code as number, errMsg: message, data: null }
+    }
+  }
+
 
   async deleteRoomMessages(roomId: string): SvcReturnType<boolean> {
     try {

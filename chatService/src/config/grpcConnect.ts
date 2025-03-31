@@ -41,6 +41,7 @@ const grpcConnect = () => {
       updateRoom: logInterceptor(chatController.updateRoom),
       deleteRoom: logInterceptor(chatController.deleteRoom),
       findRoomByRoomId: logInterceptor(chatController.findRoomByRoomId),
+      findUsersChatLaseMessages: logInterceptor(chatController.findUsersChatLaseMessages)
     }
   )
 

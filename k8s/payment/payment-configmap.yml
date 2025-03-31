@@ -22,9 +22,9 @@ data:
   PP_MERCHANT_BASE_URL: "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
   PP_MERCHANT_STATUS_URL: "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status"
   # PP_REDIRECT_URL: "http://localhost:5001/payment/status"
-  PP_REDIRECT_URL: "http://127.0.0.1:65146/payment/status"
-  PP_SUCCESS_URL: "http://localhost:5173/payment-success"
-  PP_FAILURE_URL: "http://localhost:5173/payment-failed"
+  PP_REDIRECT_URL: "https://circle.planetunknown.xyz/payment/status"
+  PP_SUCCESS_URL: "https://circle-client-sigma.vercel.app/payment-success"
+  PP_FAILURE_URL: "https://circle-client-sigma.vercel.app/payment-failed"
 
   # prod phone pay status and pay urls
   # prod_URL: "https://api.phonepe.com/apis/hermes/pg/v1/pay"

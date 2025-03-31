@@ -10,7 +10,7 @@ on:
 jobs:
   create-image-and-push-to-dockerhub:
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     name: Create Image and Push to Dockerhub
     runs-on: ubuntu-latest
 
@@ -85,60 +85,70 @@ jobs:
             configMapFile: api-gateway-configmap.yml
             secretFile: api-gateway-secret.yml
             serviceFile: api-gateway-svc.yml
+            backendConfigFile: api-gateway-backendconfig.yml
           - service: auth-deploy
             deployFolder: auth
             deployFile: auth-deploy.yml
             configMapFile: auth-configmap.yml
             secretFile: auth-secret.yml
             serviceFile: auth-svc.yml
+            backendConfigFile: ""
           - service: chat-deploy
             deployFolder: chat
             deployFile: chat-deploy.yml
             configMapFile: chat-configmap.yml
             secretFile: chat-secret.yml
             serviceFile:  chat-svc.yml
+            backendConfigFile: ""
           - service: feed-deploy
             deployFolder: feed
             deployFile: feed-deploy.yml
             configMapFile:  feed-configmap.yml
             secretFile: feed-secret.yml
             serviceFile: feed-svc.yml
+            backendConfigFile: ""
           - service: notification-deploy
             deployFolder: notification
             deployFile: notification-deploy.yml
             configMapFile: notification-configmap.yml
             secretFile: notification-secret.yml
             serviceFile: notification-svc.yml
+            backendConfigFile: notification-backendconfig.yml
           - service: payment-deploy
             deployFolder: payment
             deployFile: payment-deploy.yml
             configMapFile: payment-configmap.yml
             secretFile: payment-secret.yml
             serviceFile:  payment-svc.yml
+            backendConfigFile: ""
           - service: post-deploy
             deployFolder: post
             deployFile: post-deploy.yml
             configMapFile: post-configmap.yml 
             secretFile: post-secret.yml
             serviceFile: post-svc.yml
+            backendConfigFile: ""
           - service: user-deploy
             deployFolder: user
             deployFile: user-deploy.yml
             configMapFile: user-configmap.yml
             secretFile: user-secret.yml
             serviceFile:  user-svc.yml
+            backendConfigFile: ""
           - service: rabbitmq-deploy
             deployFolder: rabbitmq
             deployFile: rabbitmq-deploy.yml
             configMapFile: ""
             secretFile: rabbitmq-secret.yml
             serviceFile:  rabbitmq-svc.yml
+            backendConfigFile: ""
           - service: cache-deploy
             deployFolder: postCache
             deployFile: cache-deploy.yml
             configMapFile:  "" 
             secretFile: ""
             serviceFile:  cache-svc.yml
+            backendConfigFile: ""
 
     steps:
     - name: Checkout
@@ -174,6 +184,11 @@ jobs:
       run: |
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.secretFile }} -n circle
 
+    - name: Deploy Backendconfig if exists for ${{ matrix.backendConfigFile }}
+      if: ${{ matrix.backendConfigFile != '' }}
+      run: |
+        kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.backendConfigFile }} -n circle
+
     - name: Deploy Service if exists for ${{ matrix.service }}
       if: ${{ matrix.serviceFile != '' }}
       run: |
@@ -184,3 +199,10 @@ jobs:
         # Apply the updated deployment YAML file
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.deployFile }}
         kubectl rollout restart deployment/${{ matrix.service }} -n circle
+        # Wait for the deployment to roll out completely
+        # kubectl rollout status deployment/${{ matrix.service }} -n circle
+
+    # - name: Deploy Ingress GKE for ${{ matrix.service}}
+    #   run: |
+    #     # Now that the pods are ready, apply the Ingress configuration
+    #     kubectl apply -f ./k8s/ingress/web-ingress.yml

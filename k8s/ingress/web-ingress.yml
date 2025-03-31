@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: circle
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: circle-global-ip
+    # cert-manager.io/issuer: letsencrypt-staging
+    cert-manager.io/issuer: letsencrypt-production
+spec: 
+  tls:
+    - secretName: web-ssl
+      hosts:
+        - circle.planetunknown.xyz
+  rules:
+  - host: circle.planetunknown.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway-svc
+            port:
+              number: 5001
+
+  # defaultBackend:
+  #   service:
+  #     name: api-gateway-svc
+  #     port:
+  #       number: 5001

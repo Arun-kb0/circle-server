@@ -10,6 +10,7 @@ interface IMessageBaseRepo {
   deleteMessageByRoomId(roomId: string): Promise<boolean>
   findMessageByUser(userId: string): Promise<IMessage[]>
   findMessageById(messageId: string): Promise<IMessage | null>
+  findLastMessageByRoomIds(roomIds: string[]): Promise<IMessage[]>
 }
 
 export default IMessageBaseRepo

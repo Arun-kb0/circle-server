@@ -1,12 +1,28 @@
 import IMessage from '../../interfaces/IMessage'
-import IChatBaseRepo from '../../interfaces/IMessageBaseRepo'
+import IMessageBaseRepo from '../../interfaces/IMessageBaseRepo'
 import { Message } from '../../model/messageModel'
 import handleError from '../../util/handleError'
-import { convertIMessageDbToIMessage } from '../../util/converter'
+import { convertIMessageDbToIMessage, convertToObjectId } from '../../util/converter'
 
 
-class MessageBaseRepo implements IChatBaseRepo {
+class MessageBaseRepo implements IMessageBaseRepo {
 
+  async findLastMessageByRoomIds(roomIds: string[]): Promise<IMessage[]> {
+    try {
+      const messages = await Message.aggregate([
+        { $match: { roomId: { $in: roomIds } } },
+        { $sort: { createdAt: -1 } },
+        { $group: { _id: "$roomId", lastMessage: { $first: "$$ROOT" } } },
+        { $replaceRoot: { newRoot: "$lastMessage" } }
+      ])
+      if (!messages || messages.length === 0) return []
+      const convertedMessages = messages.map(item => convertIMessageDbToIMessage(item))
+      return convertedMessages
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
 
   async getMessagesCount(roomId: string): Promise<number> {
     try {
@@ -17,7 +33,6 @@ class MessageBaseRepo implements IChatBaseRepo {
       throw new Error(err.message)
     }
   }
-
 
   async getMessages(roomId: string, limit: number, startIndex: number): Promise<IMessage[]> {
     try {
