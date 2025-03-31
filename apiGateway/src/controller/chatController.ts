@@ -98,5 +98,21 @@ export const findChatRoom = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
+export const getLastMessages = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userIds } = req.query
+    if (!Array.isArray(userIds) || !userIds.every(id => typeof id === 'string')) {
+      throw new HttpError(httpStatus.BAD_REQUEST, 'userIds must be an array of strings.');
+    }
+    chatClient.findUsersChatLaseMessages({ userIds }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.INTERNAL_SERVER_ERROR, 'get last messages failed.'))
+      res.status(httpStatus.OK).json({ ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 

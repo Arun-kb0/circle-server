@@ -17,6 +17,8 @@ interface IChatRepo {
   updateChatRoom(roomId: string, chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null>
   deleteChatRoom(chatRoomId: string): Promise<IChatRoom | null>
   findByIdChatRoom(chatRoomId: string): Promise<IChatRoom | null>
+
+  findUsersChatLaseMessage(userIds:string[]) : Promise<IMessageExt[]>
 }
 
 export default IChatRepo

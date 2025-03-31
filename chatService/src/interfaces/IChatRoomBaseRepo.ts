@@ -5,6 +5,7 @@ interface IChatRoomBaseRepo {
   updateRoom(roomId: string, chatRoom: Partial<IChatRoom>): Promise<IChatRoom | null>
   deleteRoom(chatRoomId: string): Promise<IChatRoom | null>
   findRoomById(chatRoomId: string): Promise<IChatRoom | null>
+  findRoomIdsByUserIds(userIds: string[]): Promise<string[]>
 }
 
 export default IChatRoomBaseRepo

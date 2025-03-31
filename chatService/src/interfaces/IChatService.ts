@@ -16,6 +16,8 @@ interface IChatService {
   updateChatRoom(roomId: string, chatRoom: Partial<IChatRoom>): SvcReturnType<IChatRoom | null>
   deleteChatRoom(chatRoomId: string): SvcReturnType<IChatRoom | null>
   findByIdChatRoom(chatRoomId: string): SvcReturnType<IChatRoom | null>
+
+  findUsersChatLaseMessage(userIds: string[]): SvcReturnType<IMessageExt[]>
 }
 
 export default IChatService
