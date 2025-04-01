@@ -8,10 +8,11 @@ metadata:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: notification-ip
     # cert-manager.io/issuer: letsencrypt-staging
-    cert-manager.io/issuer: letsencrypt-production
+    # cert-manager.io/issuer: letsencrypt-production
+    cert-manager.io/issuer: letsencrypt-production-notification
 spec:
   tls:
-    - secretName: web-ssl
+    - secretName: notification-ssl
       hosts:
         - circle-notification.planetunknown.xyz
   rules:
