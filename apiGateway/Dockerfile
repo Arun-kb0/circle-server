@@ -1,47 +1,47 @@
 # * dev build
 
-# FROM node:20-alpine
+FROM node:20-alpine
 
-# RUN npm i -g nodemon
+RUN npm i -g nodemon
 
-# WORKDIR /app
-
-# COPY package.json .
-
-# RUN npm i
-
-# COPY . .
-
-# EXPOSE 5001
-
-# CMD [ "npm","run","dev" ]
-
-# * prod build
-
-#* Build Stage
-FROM node:20-alpine AS builder
 WORKDIR /app
 
-RUN apk add curl
+COPY package.json .
 
-COPY package*.json ./
-RUN npm install
+RUN npm i
 
 COPY . .
 
-RUN npm run build
-
-# * Production Stage
-FROM node:20-alpine
-WORKDIR /app
-
-RUN apk add curl
-
-COPY package*.json ./
-RUN npm install --production
-
-COPY --from=builder /app/build ./build
-
 EXPOSE 5001
 
-CMD ["npm", "start"]
+CMD [ "npm","run","dev" ]
+
+# * prod build
+
+# #* Build Stage
+# FROM node:20-alpine AS builder
+# WORKDIR /app
+
+# RUN apk add curl
+
+# COPY package*.json ./
+# RUN npm install
+
+# COPY . .
+
+# RUN npm run build
+
+# # * Production Stage
+# FROM node:20-alpine
+# WORKDIR /app
+
+# RUN apk add curl
+
+# COPY package*.json ./
+# RUN npm install --production
+
+# COPY --from=builder /app/build ./build
+
+# EXPOSE 5001
+
+# CMD ["npm", "start"]

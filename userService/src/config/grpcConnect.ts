@@ -42,7 +42,12 @@ const grpcConnect = () => {
       unFollowUser: logInterceptor(followController.unFollowUser),
 
       usersCount: logInterceptor(userController.usersCount),
-      getUserCountByDateDetails: logInterceptor(userController.getUserCountByDateDetails)
+      getUserCountByDateDetails: logInterceptor(userController.getUserCountByDateDetails),
+
+      getBlockedUsersByBlockerId: logInterceptor(userController.getBlockedUsersByBlockerId),
+      getBlockedUserByBlockerAndBlockedId: logInterceptor(userController.getBlockedUserByBlockerAndBlockedId),
+      createBlockedUser : logInterceptor(userController.createBlockedUser),
+      deleteBlockedUser: logInterceptor(userController.deleteBlockedUser),
     }
   )
 }
