@@ -36,10 +36,13 @@ class RedisClient {
 
     RedisClient.instance.on('ready', () => {
       console.log('Redis connection is ready.');
+      RedisClient.retryCount = 0
     });
 
     RedisClient.instance.on('close', () => {
       console.log('Redis connection closed.');
+      RedisClient.instance = null
+      RedisClient.retryCount = 0
     });
     return RedisClient.instance;
   }
