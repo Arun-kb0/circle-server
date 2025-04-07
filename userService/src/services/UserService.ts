@@ -5,9 +5,9 @@ import IUserService from '../interfaces/IUserService'
 import httpStatus from '../constants/httpStatus'
 import { FuncReturnType, PaginationBlockedUsers } from '../constants/svcTypes'
 import { UsersCountType } from '../constants/types'
-import IBlockUser, { IBlockUserExt } from '../interfaces/IBlockUser'
+import { IBlockUserExt } from '../interfaces/IBlockUser'
 
-const LIMIT = 5
+const LIMIT = 20
 
 export class UserService implements IUserService {
 
