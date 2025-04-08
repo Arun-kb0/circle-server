@@ -16,6 +16,8 @@
 
 # EXPOSE 50056
 # EXPOSE 8086
+# EXPOSE 5086
+
 
 # CMD [ "npm","run","dev" ]
 
@@ -48,5 +50,6 @@ COPY --from=builder /app/build ./build
 
 EXPOSE 50056
 EXPOSE 8086
+EXPOSE 5086
 
 CMD ["npm", "start"]

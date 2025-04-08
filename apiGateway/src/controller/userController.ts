@@ -5,6 +5,7 @@ import httpStatus from "../constants/httpStatus";
 import UserGrpcClient from '../config/UserGrpcClient'
 import { AuthRequest } from "../constants/types";
 import liveUsersMap from "../util/liveUsersMap";
+import { channelOptionsEqual } from "@grpc/grpc-js/build/src/channel-options";
 
 
 const client = UserGrpcClient.getClient()
@@ -173,6 +174,65 @@ export const getLiveUsers = (req: AuthRequest, res: Response, next: NextFunction
       if (err) return next(err)
       if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no users found'))
       res.status(httpStatus.OK).json({ message: "get live users details success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const getUserBlockedUsersByBlockerId = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { page, blockerUserId } = req.query
+    if(typeof blockerUserId !== 'string' || isNaN(Number(page))) throw new HttpError(httpStatus.BAD_REQUEST, 'page and blockerUserId are required.')
+    client.getBlockedUsersByBlockerId({ page: Number(page) , blockerUserId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no blocked users found'))
+      res.status(httpStatus.OK).json({ message: "get blocked users success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserBlockedByBlockerAndBlockedId = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { blockerUserId, blockedUserId } = req.query
+    if (typeof blockerUserId !== 'string' || typeof blockedUserId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'blockedUserId and blockerUserId are required.')
+    client.getBlockedUserByBlockerAndBlockedId({ blockedUserId , blockerUserId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'no blocked user found'))
+      res.status(httpStatus.OK).json({ message: "get blocked user success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createUserBlockedUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { blockerUserId, blockedUserId } = req.body
+    if (typeof blockerUserId !== 'string' || typeof blockedUserId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'blockedUserId and blockerUserId are required.')
+    client.createBlockedUser({ blockedUserId , blockerUserId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'create blocked user found'))
+      res.status(httpStatus.OK).json({ message: "create blocked user success", ...msg })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteUserBlockedUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { blockerUserId, blockedUserId } = req.query
+    console.log("deleteUserBlockedUser req.query")
+    console.log(req.query)
+    if (typeof blockerUserId !== 'string' || typeof blockedUserId !== 'string') throw new HttpError(httpStatus.BAD_REQUEST, 'blockedUserId and blockerUserId are required.')
+    client.deleteBlockedUser({ blockedUserId , blockerUserId }, (err, msg) => {
+      if (err) return next(err)
+      if (!msg) return next(new HttpError(httpStatus.NOT_FOUND, 'delete blocked user found'))
+      res.status(httpStatus.OK).json({ message: "delete blocked user success", ...msg })
     })
   } catch (error) {
     next(error)

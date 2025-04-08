@@ -1,15 +1,71 @@
 import IUser from '../interfaces/IUser'
 import IUserRepo from "../interfaces/IUserRepo";
 import IUserBaseRepo from '../interfaces/IUserBaseRepo'
+import IBlockUserBaseRepo from '../interfaces/IBlockUserBaseRepo'
 import handleError from '../util/handeError';
 import { User } from '../proto/user/User';
 import { UsersCountType } from '../constants/types';
+import IBlockUser from '../interfaces/IBlockUser';
 
 export class UserRepo implements IUserRepo {
 
   constructor(
-    private userBaseRepo: IUserBaseRepo
+    private userBaseRepo: IUserBaseRepo,
+    private blockUserBaseRepo: IBlockUserBaseRepo
   ) { }
+
+  async getBlockedUsersByBlockerIdCount(blockerUserId: string): Promise<number> {
+    try {
+      const count = await this.blockUserBaseRepo.getBlockedUsersByBlockerIdCount(blockerUserId)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getBlockedUsersByBlockerId(blockerUserId: string, limit: number, startIndex: number): Promise<IBlockUser[]> {
+    try {
+      const blockedUsers = await this.blockUserBaseRepo.getBlockedUsersByBlockerId(blockerUserId, limit, startIndex)
+      return blockedUsers
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async getBlockedUserByBlockerAndBlockedId(blockerUserId: string, blockedUserId: string): Promise<IBlockUser | null> {
+    try {
+      const blockedUser = await this.blockUserBaseRepo.getBlockedUserByBlockerAndBlockedId(blockerUserId, blockedUserId)
+      return blockedUser
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async createBlockedUser(blockedUserId: string, blockerUserId: string): Promise<IBlockUser | null> {
+    try {
+      const isExits = await this.blockUserBaseRepo.isBlockedUserExists(blockedUserId, blockerUserId)
+      if (isExits) return null
+      const blockedUser = await this.blockUserBaseRepo.createBlockedUser(blockedUserId, blockerUserId)
+      return blockedUser
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async deleteBlockedUser(blockedUserId: string, blockerUserId: string): Promise<IBlockUser | null> {
+    try {
+      const blockedUser = await this.blockUserBaseRepo.deleteBlockedUser(blockedUserId, blockerUserId)
+      return blockedUser
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
 
   async getUserCountByDateDetails(startDate: string, endDate: string): Promise<{ date: string; count: number; }[]> {
     try {
@@ -23,7 +79,7 @@ export class UserRepo implements IUserRepo {
 
   async countUsers(startDate?: string, endDate?: string): Promise<UsersCountType> {
     try {
-      const userCount = await this.userBaseRepo.countUsersByDate(startDate, endDate) 
+      const userCount = await this.userBaseRepo.countUsersByDate(startDate, endDate)
       return userCount
     } catch (error) {
       const err = handleError(error)

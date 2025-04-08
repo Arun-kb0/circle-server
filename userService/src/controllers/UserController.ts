@@ -2,11 +2,14 @@ import * as grpc from '@grpc/grpc-js'
 import { CustomError } from "../util/CustomError";
 import handleError from "../util/handeError";
 import { User } from '../proto/user/User'
-import {  convertUserForGrpc } from '../util/converter'
+import { convertUserForGrpc } from '../util/converter'
 import { validateRequest, validateResponse } from '../util/validations'
 import IUser from "../interfaces/IUser";
 import IUserController, {
-  BlockUserHandler, CountUsersHandler, GetAllUserHandler,
+  BlockUserHandler, CountUsersHandler, CreateBlockedUserHandler,
+  DeleteBlockedUserHandler, GetAllUserHandler,
+  GetBlockedUserByBlockerAndBlockedIdHandler,
+  GetBlockedUsersByBlockerIdHandler,
   GetMultipleUsersHandler, GetUserCountDetailsHandler,
   GetUserHandler, UnblockUserHandler, UpdateUserHandler
 } from '../interfaces/IUserController'
@@ -18,6 +21,61 @@ export class UserController implements IUserController {
   constructor(
     private userService: IUserService
   ) { }
+
+  // * user to user blocking
+  getBlockedUsersByBlockerId: GetBlockedUsersByBlockerIdHandler = async (call, cb) => {
+    try {
+      const { page, blockerUserId } = call.request
+      validateRequest('page and blockerUserId are required', page, blockerUserId)
+      const res = await this.userService.getBlockedUsersByBlockerId(page as number, blockerUserId as string)
+      validateResponse(res)
+      cb(null, res.data)
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  getBlockedUserByBlockerAndBlockedId: GetBlockedUserByBlockerAndBlockedIdHandler = async (call, cb) => {
+    try {
+      const { blockedUserId, blockerUserId } = call.request
+      validateRequest('blockedUserId and blockerUserId are required', blockedUserId, blockerUserId)
+      const res = await this.userService.getBlockedUserByBlockerAndBlockedId(blockerUserId as string, blockedUserId as string)
+      validateResponse(res)
+      cb(null, { blockedUser: res.data })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  createBlockedUser: CreateBlockedUserHandler = async (call, cb) => {
+    try {
+      const { blockedUserId, blockerUserId } = call.request
+      validateRequest('blockedUserId and blockerUserId are required', blockedUserId, blockerUserId)
+      const res = await this.userService.createBlockedUser(blockedUserId as string, blockerUserId as string,)
+      validateResponse(res)
+      cb(null, { blockedUser: res.data })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+
+  deleteBlockedUser: DeleteBlockedUserHandler = async (call, cb) => {
+    try {
+      const { blockedUserId, blockerUserId } = call.request
+      validateRequest('blockedUserId and blockerUserId are required', blockedUserId, blockerUserId)
+      const res = await this.userService.deleteBlockedUser(blockedUserId as string, blockerUserId as string)
+      validateResponse(res)
+      cb(null, { blockedUser: res.data })
+    } catch (error) {
+      const err = handleError(error)
+      cb(err, null)
+    }
+  }
+  // * user to user blocking end
+
 
   getUserCountByDateDetails: GetUserCountDetailsHandler = async (call, cb) => {
     try {

@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-production-notification
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: 12arunkb@gmail.com # Replace this with your email address
+    privateKeySecretRef:
+      name: letsencrypt-production-notification
+    solvers:
+    - http01:
+        ingress:
+          name: notification-ingress
+    # solvers:
+    # - selector:
+    #     dnsZones:
+    #     - circle-notification.planetunknown.xyz
+    #   http01:
+    #     ingress:
+    #       name: notification-ingress

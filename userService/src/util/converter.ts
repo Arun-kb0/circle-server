@@ -4,13 +4,15 @@ import { User } from "../proto/user/User"
 import { IUserDb } from "../model/UserModel"
 import IFollow from "../interfaces/IFollow"
 import { IFollowDb } from "../model/followModel"
+import { IBlockUserDb } from "../model/blockUserModel"
+import IBlockUser from "../interfaces/IBlockUser"
 
 
 export const dateToString = (date: Schema.Types.Date | undefined) => {
   return date ? date.toString() : ''
 }
 
-export const stringToDate = (str: string):DbDate => {
+export const stringToDate = (str: string): DbDate => {
   return new Date(str) as unknown as DbDate
 }
 
@@ -130,5 +132,36 @@ export const convertIFollowDbToIFollow = (follow: IFollowDb): IFollow => {
     targetUserId: follow.targetUserId.toString(),
     createdAt: convertDbDateToIsoString(follow.createdAt),
     updatedAt: convertDbDateToIsoString(follow.updatedAt)
+  }
+}
+
+
+export const covertIBlockUserToIBlockUserDb = (blockedUser: Partial<IBlockUser>): Partial<IBlockUserDb> => {
+  const conversionMap: { [key: string]: (value: any) => any } = {
+    _id: convertToObjectId,
+    blockedUserId: convertToObjectId,
+    blockerUserId: convertToObjectId,
+    createdAt: stringToDate,
+    updatedAt: stringToDate,
+  }
+  const blockUserDb: Partial<IBlockUserDb> = {}
+  Object.keys(blockedUser).forEach((key) => {
+    const typedKey = key as keyof IBlockUser;
+    if (blockedUser[typedKey] && conversionMap[typedKey]) {
+      blockUserDb[typedKey] = conversionMap[typedKey](blockedUser[typedKey])
+    } else if (blockedUser[typedKey]) {
+      blockUserDb[typedKey as keyof IBlockUserDb] = blockedUser[typedKey];
+    }
+  })
+  return blockUserDb
+}
+
+export const convertIBlockUserDbToIBlockedUser = (blockedUser: IBlockUserDb): IBlockUser => {
+  return {
+    _id: blockedUser._id.toString(),
+    blockedUserId: blockedUser.blockedUserId.toString(),
+    blockerUserId: blockedUser.blockerUserId.toString(),
+    createdAt: convertDbDateToIsoString(blockedUser.createdAt),
+    updatedAt: convertDbDateToIsoString(blockedUser.updatedAt)
   }
 }

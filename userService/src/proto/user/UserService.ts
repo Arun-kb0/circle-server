@@ -4,12 +4,20 @@ import type * as grpc from '@grpc/grpc-js'
 import type { MethodDefinition } from '@grpc/proto-loader'
 import type { BlockUserRequest as _user_BlockUserRequest, BlockUserRequest__Output as _user_BlockUserRequest__Output } from '../user/BlockUserRequest';
 import type { BlockUserResponse as _user_BlockUserResponse, BlockUserResponse__Output as _user_BlockUserResponse__Output } from '../user/BlockUserResponse';
+import type { CreateBlockedUserRequest as _user_CreateBlockedUserRequest, CreateBlockedUserRequest__Output as _user_CreateBlockedUserRequest__Output } from '../user/CreateBlockedUserRequest';
+import type { CreateBlockedUserResponse as _user_CreateBlockedUserResponse, CreateBlockedUserResponse__Output as _user_CreateBlockedUserResponse__Output } from '../user/CreateBlockedUserResponse';
+import type { DeleteBlockedUserRequest as _user_DeleteBlockedUserRequest, DeleteBlockedUserRequest__Output as _user_DeleteBlockedUserRequest__Output } from '../user/DeleteBlockedUserRequest';
+import type { DeleteBlockedUserResponse as _user_DeleteBlockedUserResponse, DeleteBlockedUserResponse__Output as _user_DeleteBlockedUserResponse__Output } from '../user/DeleteBlockedUserResponse';
 import type { DeleteUserRequest as _user_DeleteUserRequest, DeleteUserRequest__Output as _user_DeleteUserRequest__Output } from '../user/DeleteUserRequest';
 import type { DeleteUserResponse as _user_DeleteUserResponse, DeleteUserResponse__Output as _user_DeleteUserResponse__Output } from '../user/DeleteUserResponse';
 import type { FollowUserRequest as _user_FollowUserRequest, FollowUserRequest__Output as _user_FollowUserRequest__Output } from '../user/FollowUserRequest';
 import type { FollowUserResponse as _user_FollowUserResponse, FollowUserResponse__Output as _user_FollowUserResponse__Output } from '../user/FollowUserResponse';
 import type { GetAllUsersRequest as _user_GetAllUsersRequest, GetAllUsersRequest__Output as _user_GetAllUsersRequest__Output } from '../user/GetAllUsersRequest';
 import type { GetAllUsersResponse as _user_GetAllUsersResponse, GetAllUsersResponse__Output as _user_GetAllUsersResponse__Output } from '../user/GetAllUsersResponse';
+import type { GetBlockedUserByBlockerAndBlockedIdRequest as _user_GetBlockedUserByBlockerAndBlockedIdRequest, GetBlockedUserByBlockerAndBlockedIdRequest__Output as _user_GetBlockedUserByBlockerAndBlockedIdRequest__Output } from '../user/GetBlockedUserByBlockerAndBlockedIdRequest';
+import type { GetBlockedUserByBlockerAndBlockedIdResponse as _user_GetBlockedUserByBlockerAndBlockedIdResponse, GetBlockedUserByBlockerAndBlockedIdResponse__Output as _user_GetBlockedUserByBlockerAndBlockedIdResponse__Output } from '../user/GetBlockedUserByBlockerAndBlockedIdResponse';
+import type { GetBlockedUsersByBlockerIdRequest as _user_GetBlockedUsersByBlockerIdRequest, GetBlockedUsersByBlockerIdRequest__Output as _user_GetBlockedUsersByBlockerIdRequest__Output } from '../user/GetBlockedUsersByBlockerIdRequest';
+import type { GetBlockedUsersByBlockerIdResponse as _user_GetBlockedUsersByBlockerIdResponse, GetBlockedUsersByBlockerIdResponse__Output as _user_GetBlockedUsersByBlockerIdResponse__Output } from '../user/GetBlockedUsersByBlockerIdResponse';
 import type { GetFollowersRequest as _user_GetFollowersRequest, GetFollowersRequest__Output as _user_GetFollowersRequest__Output } from '../user/GetFollowersRequest';
 import type { GetFollowersResponse as _user_GetFollowersResponse, GetFollowersResponse__Output as _user_GetFollowersResponse__Output } from '../user/GetFollowersResponse';
 import type { GetFollowingRequest as _user_GetFollowingRequest, GetFollowingRequest__Output as _user_GetFollowingRequest__Output } from '../user/GetFollowingRequest';
@@ -41,6 +49,24 @@ export interface UserServiceClient extends grpc.Client {
   blockUser(argument: _user_BlockUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_BlockUserResponse__Output>): grpc.ClientUnaryCall;
   blockUser(argument: _user_BlockUserRequest, callback: grpc.requestCallback<_user_BlockUserResponse__Output>): grpc.ClientUnaryCall;
   
+  CreateBlockedUser(argument: _user_CreateBlockedUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  CreateBlockedUser(argument: _user_CreateBlockedUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  CreateBlockedUser(argument: _user_CreateBlockedUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  CreateBlockedUser(argument: _user_CreateBlockedUserRequest, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  createBlockedUser(argument: _user_CreateBlockedUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  createBlockedUser(argument: _user_CreateBlockedUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  createBlockedUser(argument: _user_CreateBlockedUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  createBlockedUser(argument: _user_CreateBlockedUserRequest, callback: grpc.requestCallback<_user_CreateBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  
+  DeleteBlockedUser(argument: _user_DeleteBlockedUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  DeleteBlockedUser(argument: _user_DeleteBlockedUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  DeleteBlockedUser(argument: _user_DeleteBlockedUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  DeleteBlockedUser(argument: _user_DeleteBlockedUserRequest, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  deleteBlockedUser(argument: _user_DeleteBlockedUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  deleteBlockedUser(argument: _user_DeleteBlockedUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  deleteBlockedUser(argument: _user_DeleteBlockedUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  deleteBlockedUser(argument: _user_DeleteBlockedUserRequest, callback: grpc.requestCallback<_user_DeleteBlockedUserResponse__Output>): grpc.ClientUnaryCall;
+  
   DeleteUser(argument: _user_DeleteUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteUserResponse__Output>): grpc.ClientUnaryCall;
   DeleteUser(argument: _user_DeleteUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_DeleteUserResponse__Output>): grpc.ClientUnaryCall;
   DeleteUser(argument: _user_DeleteUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_DeleteUserResponse__Output>): grpc.ClientUnaryCall;
@@ -67,6 +93,24 @@ export interface UserServiceClient extends grpc.Client {
   getAllUsers(argument: _user_GetAllUsersRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetAllUsersResponse__Output>): grpc.ClientUnaryCall;
   getAllUsers(argument: _user_GetAllUsersRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetAllUsersResponse__Output>): grpc.ClientUnaryCall;
   getAllUsers(argument: _user_GetAllUsersRequest, callback: grpc.requestCallback<_user_GetAllUsersResponse__Output>): grpc.ClientUnaryCall;
+  
+  GetBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUserByBlockerAndBlockedId(argument: _user_GetBlockedUserByBlockerAndBlockedIdRequest, callback: grpc.requestCallback<_user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>): grpc.ClientUnaryCall;
+  
+  GetBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  GetBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
+  getBlockedUsersByBlockerId(argument: _user_GetBlockedUsersByBlockerIdRequest, callback: grpc.requestCallback<_user_GetBlockedUsersByBlockerIdResponse__Output>): grpc.ClientUnaryCall;
   
   GetFollowers(argument: _user_GetFollowersRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_user_GetFollowersResponse__Output>): grpc.ClientUnaryCall;
   GetFollowers(argument: _user_GetFollowersRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_user_GetFollowersResponse__Output>): grpc.ClientUnaryCall;
@@ -163,11 +207,19 @@ export interface UserServiceClient extends grpc.Client {
 export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
   BlockUser: grpc.handleUnaryCall<_user_BlockUserRequest__Output, _user_BlockUserResponse>;
   
+  CreateBlockedUser: grpc.handleUnaryCall<_user_CreateBlockedUserRequest__Output, _user_CreateBlockedUserResponse>;
+  
+  DeleteBlockedUser: grpc.handleUnaryCall<_user_DeleteBlockedUserRequest__Output, _user_DeleteBlockedUserResponse>;
+  
   DeleteUser: grpc.handleUnaryCall<_user_DeleteUserRequest__Output, _user_DeleteUserResponse>;
   
   FollowUser: grpc.handleUnaryCall<_user_FollowUserRequest__Output, _user_FollowUserResponse>;
   
   GetAllUsers: grpc.handleUnaryCall<_user_GetAllUsersRequest__Output, _user_GetAllUsersResponse>;
+  
+  GetBlockedUserByBlockerAndBlockedId: grpc.handleUnaryCall<_user_GetBlockedUserByBlockerAndBlockedIdRequest__Output, _user_GetBlockedUserByBlockerAndBlockedIdResponse>;
+  
+  GetBlockedUsersByBlockerId: grpc.handleUnaryCall<_user_GetBlockedUsersByBlockerIdRequest__Output, _user_GetBlockedUsersByBlockerIdResponse>;
   
   GetFollowers: grpc.handleUnaryCall<_user_GetFollowersRequest__Output, _user_GetFollowersResponse>;
   
@@ -193,9 +245,13 @@ export interface UserServiceHandlers extends grpc.UntypedServiceImplementation {
 
 export interface UserServiceDefinition extends grpc.ServiceDefinition {
   BlockUser: MethodDefinition<_user_BlockUserRequest, _user_BlockUserResponse, _user_BlockUserRequest__Output, _user_BlockUserResponse__Output>
+  CreateBlockedUser: MethodDefinition<_user_CreateBlockedUserRequest, _user_CreateBlockedUserResponse, _user_CreateBlockedUserRequest__Output, _user_CreateBlockedUserResponse__Output>
+  DeleteBlockedUser: MethodDefinition<_user_DeleteBlockedUserRequest, _user_DeleteBlockedUserResponse, _user_DeleteBlockedUserRequest__Output, _user_DeleteBlockedUserResponse__Output>
   DeleteUser: MethodDefinition<_user_DeleteUserRequest, _user_DeleteUserResponse, _user_DeleteUserRequest__Output, _user_DeleteUserResponse__Output>
   FollowUser: MethodDefinition<_user_FollowUserRequest, _user_FollowUserResponse, _user_FollowUserRequest__Output, _user_FollowUserResponse__Output>
   GetAllUsers: MethodDefinition<_user_GetAllUsersRequest, _user_GetAllUsersResponse, _user_GetAllUsersRequest__Output, _user_GetAllUsersResponse__Output>
+  GetBlockedUserByBlockerAndBlockedId: MethodDefinition<_user_GetBlockedUserByBlockerAndBlockedIdRequest, _user_GetBlockedUserByBlockerAndBlockedIdResponse, _user_GetBlockedUserByBlockerAndBlockedIdRequest__Output, _user_GetBlockedUserByBlockerAndBlockedIdResponse__Output>
+  GetBlockedUsersByBlockerId: MethodDefinition<_user_GetBlockedUsersByBlockerIdRequest, _user_GetBlockedUsersByBlockerIdResponse, _user_GetBlockedUsersByBlockerIdRequest__Output, _user_GetBlockedUsersByBlockerIdResponse__Output>
   GetFollowers: MethodDefinition<_user_GetFollowersRequest, _user_GetFollowersResponse, _user_GetFollowersRequest__Output, _user_GetFollowersResponse__Output>
   GetFollowing: MethodDefinition<_user_GetFollowingRequest, _user_GetFollowingResponse, _user_GetFollowingRequest__Output, _user_GetFollowingResponse__Output>
   GetMultipleUser: MethodDefinition<_user_GetMultipleUserRequest, _user_GetMultipleUserResponse, _user_GetMultipleUserRequest__Output, _user_GetMultipleUserResponse__Output>

@@ -1,4 +1,5 @@
-import IUser  from "../interfaces/IUser";
+import IUser from "../interfaces/IUser";
+import { IBlockUserExt } from '../interfaces/IBlockUser'
 
 export type PaginationUsers = {
   users: IUser[];
@@ -11,3 +12,9 @@ export type FuncReturnType<T> = Promise<{
   errMsg?: string
   data: T | null;
 }>
+
+export type PaginationBlockedUsers = {
+  blockedUsers: IBlockUserExt[];
+  numberOfPages: number;
+  currentPage: number;
+}

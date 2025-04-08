@@ -13,6 +13,8 @@
 # COPY . .
 
 # EXPOSE 5001
+# EXPOSE 5080
+
 
 # CMD [ "npm","run","dev" ]
 
@@ -43,5 +45,6 @@ RUN npm install --production
 COPY --from=builder /app/build ./build
 
 EXPOSE 5001
+EXPOSE 5080
 
 CMD ["npm", "start"]

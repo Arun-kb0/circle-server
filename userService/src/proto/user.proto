@@ -22,6 +22,11 @@ service UserService {
   
   rpc UsersCount(UsersCountRequest) returns (UsersCountResponse) {};
   rpc GetUserCountByDateDetails(GetUserCountByDateDetailsRequest) returns (GetUserCountByDateDetailsResponse) {};
+
+  rpc GetBlockedUsersByBlockerId(GetBlockedUsersByBlockerIdRequest) returns (GetBlockedUsersByBlockerIdResponse) {};
+  rpc GetBlockedUserByBlockerAndBlockedId(GetBlockedUserByBlockerAndBlockedIdRequest) returns (GetBlockedUserByBlockerAndBlockedIdResponse) {};
+  rpc CreateBlockedUser(CreateBlockedUserRequest) returns (CreateBlockedUserResponse) {};
+  rpc DeleteBlockedUser(DeleteBlockedUserRequest) returns (DeleteBlockedUserResponse) {};
 }
 
 message Image {
@@ -59,6 +64,16 @@ message User {
   Role role = 14;
   bool isOnline = 15;
   Image image = 16;
+}
+
+message BlockedUser {
+  string _id = 1;
+  string blockedUserId = 2;
+  string blockerUserId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+  string blockedUserName=6;
+  string blockedUserImage=7;
 }
 
 message GetAllUsersRequest {
@@ -198,4 +213,42 @@ message UserByDateDetails {
 
 message GetUserCountByDateDetailsResponse {
   repeated UserByDateDetails userCountArray =1;
+}
+
+message GetBlockedUsersByBlockerIdRequest {
+  string blockerUserId=1;
+  int32 page=2;
+}
+
+message GetBlockedUsersByBlockerIdResponse {
+  repeated BlockedUser blockedUsers =1;
+  int32 currentPage=2;
+  int32 numberOfPages=3;
+}
+
+message GetBlockedUserByBlockerAndBlockedIdRequest {
+  string blockerUserId=1;
+  string blockedUserId=2;
+}
+
+message GetBlockedUserByBlockerAndBlockedIdResponse {
+  BlockedUser blockedUser=1;
+}
+
+message CreateBlockedUserRequest {
+  string blockerUserId=1;
+  string blockedUserId=2;
+}
+
+message CreateBlockedUserResponse {
+  BlockedUser blockedUser=1;
+}
+
+message DeleteBlockedUserRequest {
+  string blockerUserId=1;
+  string blockedUserId=2;
+}
+
+message DeleteBlockedUserResponse {
+  BlockedUser blockedUser=1;
 }
