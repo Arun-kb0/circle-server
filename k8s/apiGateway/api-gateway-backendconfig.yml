@@ -6,7 +6,7 @@ metadata:
 spec:
   healthCheck:
     requestPath: /health
-    port: 5001
+    port: 5080
     checkIntervalSec: 30
     timeoutSec: 5
     healthyThreshold: 2
