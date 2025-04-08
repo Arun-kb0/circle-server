@@ -5,7 +5,7 @@ services:
     container_name: api-gateway
     ports:
       - 5001:5001
-      - 9000:9000
+      - 5080:5080
     depends_on:
       - auth-service
       - user-service
@@ -258,6 +258,7 @@ services:
     ports: 
       - 50056:50056
       - 8086:8086
+      - 5086:5086
     depends_on:
       - post-cache
       - rabbitmq

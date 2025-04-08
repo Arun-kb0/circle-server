@@ -9,9 +9,11 @@ import UseSocketIo from './config/UseSocketIo'
 import { removeUser, setUser } from './util/notificationUsersCache'
 import socketLogger from './logger/socketLogger'
 import { SocketEvents } from './constants/enums'
+import { healthCheck } from './util/healthCheck'
 
 const MONGODB_URI = process.env.NOTIFICATION_DB_URI || ''
 const HTTP_PORT = process.env.NOTIFICATION_HEALTH_CHECK_PORT || 8086
+const HEALTH_CHECK_PORT_2 = process.env.NOTIFICATION_HEALTH_CHECK_PORT_2 || 5086
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
@@ -56,8 +58,12 @@ dbConnect(MONGODB_URI)
   .then(() => {
     grpcConnect()
     subscribeToNotificationQueue()
+    
+    healthCheck.listen(HEALTH_CHECK_PORT_2, () => {
+      console.log(`HTTP health2 check server running on port ${HTTP_PORT}`);
+    })
     server.listen(HTTP_PORT, () => {
       console.log(`notification service is running at ${HTTP_PORT}`)
     })
   })
-  .catch((err)=> console.log(err))
+  .catch((err) => console.log(err))

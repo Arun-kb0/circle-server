@@ -27,13 +27,15 @@ import socketLogger from './middleware/socketLogger'
 import { getOnlineUserKeys, removeSingleOnlineUser, setOnlineUser } from './util/onlineUsersCache'
 import notificationRouter from './router/notificationRoutes'
 import paymentRouter from './router/paymentRouter'
+import { healthCheck } from './util/healthCheck'
+
 
 const app = UseExpress.getInstance()
 const server = UseHttpServer.getInstance()
 const io = UseSocketIo.getInstance()
 const PORT = process.env.API_GATEWAY_PORT || 5001
 const HOST = process.env.API_GATEWAY_HOST || 'localhost'
-
+const HEALTH_CHECK_PORT = process.env.API_GATEWAY_HEALTH_CHECK_PORT || 5080
 
 app.use(express.json())
 app.use(cookieParser())
@@ -93,6 +95,9 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(errorHandler)
 server.listen(PORT, () => {
+  healthCheck.listen(HEALTH_CHECK_PORT, () => {
+    console.log(`HTTP health check server running on port ${HEALTH_CHECK_PORT}`);
+  })
   console.log(`api gateway is running at ${PORT}`)
 })
 
