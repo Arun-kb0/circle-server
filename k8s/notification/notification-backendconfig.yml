@@ -7,7 +7,7 @@ spec:
   healthCheck:
     requestPath: /health
     port: 5086
-    checkIntervalSec: 30
+    checkIntervalSec: 60
     timeoutSec: 5
     healthyThreshold: 2
     unhealthyThreshold: 3
