@@ -20,7 +20,7 @@ spec:
     - name: http
       port: 8086
       targetPort: 8086
-    - name: http
+    - name: health
       port: 5086
       targetPort: 5086
       # nodePort: 30002
