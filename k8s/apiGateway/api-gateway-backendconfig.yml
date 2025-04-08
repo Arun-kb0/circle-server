@@ -4,6 +4,7 @@ metadata:
   name: api-gateway-backendconfig
   namespace: circle
 spec:
+  timeoutSec: 300
   healthCheck:
     requestPath: /health
     port: 5080
