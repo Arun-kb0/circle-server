@@ -3,6 +3,9 @@ import socketErrorHandler from '../middleware/socketErrorHandler'
 import { SocketEvents } from "../constants/enums";
 import { AnswerLiveDataType, LiveIceCandidateDataType, LiveMessageType, LiveUserDataType } from "../constants/types";
 import liveUsersMap from '../util/liveUsersMap'
+import { transports, router, mediaSoupOptions, producers } from '../config/mediaSoupOptions'
+import { MediaKind } from "mediasoup/types";
+
 
 const createStreamRoomId = (userId: string) => {
   return `stream-${userId}`
@@ -53,6 +56,19 @@ export const liveStreamEnd = (socket: Socket, data: { userId: string }) => {
       socketId: socket.id,
     })
     liveUsersMap.delete(data.userId)
+
+    // * mediasoup
+    if (producers[socket.id]) {
+      producers[socket.id].close();
+      delete producers[socket.id];
+    }
+
+    if (transports[socket.id]) {
+      transports[socket.id].close();
+      delete transports[socket.id];
+    }
+    console.log(`Live stream ended for user: ${data.userId}`);
+
   } catch (error) {
     socketErrorHandler(error)
   }
@@ -109,3 +125,148 @@ export const liveSendMessage = (socket: Socket, data: LiveMessageType) => {
     socketErrorHandler(error);
   }
 }
+
+// ! new code - mediasoup
+
+export const mediaSoupGetRouterRtpCapabilities = async (socket: Socket, data: any, callback: (params: any) => void) => {
+  try {
+    console.log('typeof callback', typeof callback)
+    console.log('typeof data', typeof data)
+    callback(router.rtpCapabilities);
+  } catch (error: any) {
+    console.error('Error creating WebRTC transport', error);
+    if (error instanceof Error) callback({ error: error.message });
+    else callback({ error: error.name })
+  }
+}
+
+export const mediaSoupCreateWebRtcTransport = async (socket: Socket, data: any, callback: (params: any) => void) => {
+  try {
+    console.log('mediaSoupCreateWebRtcTransport function')
+    console.log(data)
+    console.log(typeof callback)
+    const transport = await router.createWebRtcTransport({
+      listenIps: [{
+        ip: "0.0.0.0",
+        announcedIp: '127.0.0.1'
+      }],
+      enableUdp: true,
+      enableTcp: true,
+      preferUdp: true,
+    });
+
+    transports[socket.id] = transport;
+
+    callback({
+      id: transport.id,
+      iceParameters: transport.iceParameters,
+      iceCandidates: transport.iceCandidates,
+      dtlsParameters: transport.dtlsParameters,
+    });
+  } catch (error: any) {
+    console.error('Error creating WebRTC transport', error);
+    if (error instanceof Error) callback({ error: error.message });
+    else callback({ error: error.name })
+  }
+}
+
+export const mediaSoupConnectWebRtcTransport = async (socket: Socket, data: any, callback: (params: any) => void) => {
+  const transport = transports[socket.id];
+  if (!transport) {
+    return callback({ error: "Transport not found" });
+  }
+  console.log('transport.dtlsState = ',transport.dtlsState)
+  if (data.dtlsState === 'connected') {
+    return callback({ error: 'Transport is already connected' });
+  }
+  try {
+    await transport.connect({ dtlsParameters: data.dtlsParameters });
+    callback({ success: true });
+  } catch (error) {
+    console.error("Error connecting transport:", error);
+    if (error instanceof Error) callback({ error: error.message });
+  }
+}
+
+export const mediaSoupProduce = async (socket: Socket, data: { kind: string; rtpParameters: any }, callback: (res: any) => void) => {
+  const transport = transports[socket.id];
+  if (!transport) {
+    return callback({ error: "Transport not found" });
+  }
+
+  try {
+    const producer = await transport.produce({
+      kind: data.kind as MediaKind,
+      rtpParameters: data.rtpParameters,
+    });
+
+    producers[socket.id] = producer;
+    callback({ id: producer.id });
+  } catch (error: any) {
+    console.error('Error producing media', error);
+    callback({ error: error.message });
+  }
+}
+
+export const mediaSoupConsume = async (socket: Socket, data: { rtpCapabilities: any }, callback: (res: any) => void) => {
+  try {
+    const firstProducer = Object.values(producers)[0];
+    if (!firstProducer) {
+      return callback({ error: 'No producer available' });
+    }
+    if (!router.canConsume({ producerId: firstProducer.id, rtpCapabilities: data.rtpCapabilities })) {
+      return callback({ error: 'Cannot consume' });
+    }
+    const transport = transports[socket.id];
+    if (!transport) {
+      return callback({ error: 'Transport not found' });
+    }
+    const consumer = await transport.consume({
+      producerId: firstProducer.id,
+      rtpCapabilities: data.rtpCapabilities,
+      paused: true,
+    });
+
+    consumer.on('transportclose', () => {
+      console.log('transport closed by the consumer')
+    })
+    consumer.on('producerclose', () => {
+      console.log('producer of consumer closed')
+    })
+
+    callback({
+      id: consumer.id,
+      producerId: firstProducer.id,
+      kind: consumer.kind,
+      rtpParameters: consumer.rtpParameters,
+    });
+
+    socket.on(SocketEvents.mediaSoupConsumerResume, async () => {
+      await consumer.resume()
+    })
+  } catch (error: any) {
+    console.error('Error consuming media', error);
+    callback({ error: error.message });
+  }
+}
+
+export const mediaSoupDisconnect = (socket: Socket) => {
+  console.log(`Client disconnected: ${socket.id}`);
+  if (transports[socket.id]) {
+    transports[socket.id].close();
+    delete transports[socket.id];
+  }
+  if (producers[socket.id]) {
+    producers[socket.id].close();
+    delete producers[socket.id];
+  }
+}
+
+// export const mediaSoupConsumerResume = (socket: Socket) => {
+//  try {
+//     await cosumer
+//  } catch (error) {
+//    console.error('Error consuming media', error);
+//    callback({ error: error.message });
+//  }
+// }

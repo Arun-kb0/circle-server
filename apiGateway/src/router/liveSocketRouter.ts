@@ -1,6 +1,14 @@
 import { Socket } from "socket.io";
 import { SocketEvents } from '../constants/enums'
-import { liveStreamStart, liveStreamEnd, liveIceCandidate, answerLiveStream, joinLiveRoom, prepareLiveStream, liveUserDisconnect, liveSendMessage } from '../controller/liveSocketController'
+import {
+  liveStreamStart, liveStreamEnd, liveIceCandidate,
+  answerLiveStream, joinLiveRoom, prepareLiveStream,
+  liveUserDisconnect, liveSendMessage,
+  mediaSoupConsume, mediaSoupCreateWebRtcTransport, mediaSoupDisconnect,
+  mediaSoupProduce,
+  mediaSoupGetRouterRtpCapabilities,
+  mediaSoupConnectWebRtcTransport,
+} from '../controller/liveSocketController'
 import { AnswerLiveDataType, LiveIceCandidateDataType, LiveUserDataType } from "../constants/types";
 
 const liveSocketRouter = (socket: Socket) => {
@@ -15,6 +23,13 @@ const liveSocketRouter = (socket: Socket) => {
   socket.on(SocketEvents.liveUserDisconnect, (data) => liveUserDisconnect(socket, data))
 
   socket.on(SocketEvents.liveSendMessage, (data) => liveSendMessage(socket, data))
+
+  socket.on(SocketEvents.mediaSoupGetRouterRtpCapabilities, (data, callback) => mediaSoupGetRouterRtpCapabilities(socket, data, callback))
+  socket.on(SocketEvents.mediaSoupConnectWebRtcTransport, (data, callback) => mediaSoupConnectWebRtcTransport(socket, data, callback))
+  socket.on(SocketEvents.mediaSoupCreateWebRtcTransport, (data, callback) => mediaSoupCreateWebRtcTransport(socket, data, callback))
+  socket.on(SocketEvents.mediaSoupProduce, (data, callback) => mediaSoupProduce(socket, data, callback))
+  socket.on(SocketEvents.mediaSoupConsume, (data, callback) => mediaSoupConsume(socket, data, callback))
+  socket.on(SocketEvents.mediaSoupDisconnect, () => mediaSoupDisconnect(socket))
 }
 
 export default liveSocketRouter

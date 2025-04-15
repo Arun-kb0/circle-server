@@ -28,6 +28,7 @@ import { getOnlineUserKeys, removeSingleOnlineUser, setOnlineUser } from './util
 import notificationRouter from './router/notificationRoutes'
 import paymentRouter from './router/paymentRouter'
 import { healthCheck } from './util/healthCheck'
+import { producers, transports } from './config/mediaSoupOptions'
 
 
 const app = UseExpress.getInstance()
@@ -79,8 +80,16 @@ io.on("connection", async (socket) => {
     await removeSingleOnlineUser(userId)
     const onlineUsers = await getOnlineUserKeys()
     io.emit(SocketEvents.getOnlineUsers, { onlineUsers })
-  })
+    if (producers[socket.id]) {
+      producers[socket.id].close();
+      delete producers[socket.id];
+    }
 
+    if (transports[socket.id]) {
+      transports[socket.id].close();
+      delete transports[socket.id];
+    }
+  });
 })
 
 
