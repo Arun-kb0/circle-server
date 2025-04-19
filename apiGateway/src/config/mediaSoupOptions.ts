@@ -24,8 +24,8 @@ interface MediaSoupOptions {
 
 export const mediaSoupOptions: MediaSoupOptions = {
   worker: {
-    rtcMinPort: 2000,
-    rtcMaxPort: 2020,
+    rtcMinPort: 4000,
+    rtcMaxPort: 4020,
     logLevel: 'warn'
   },
   router: {
