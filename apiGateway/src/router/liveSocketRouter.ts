@@ -9,6 +9,7 @@ import {
   mediaSoupGetRouterRtpCapabilities,
   mediaSoupConnectWebRtcTransport,
   userLiveStreamEnded,
+  mediaSoupConsumerResume,
 } from '../controller/liveSocketController'
 import { AnswerLiveDataType, LiveIceCandidateDataType, LiveUserDataType } from "../constants/types";
 
@@ -31,6 +32,8 @@ const liveSocketRouter = (socket: Socket) => {
   socket.on(SocketEvents.mediaSoupProduce, (data, callback) => mediaSoupProduce(socket, data, callback))
   socket.on(SocketEvents.mediaSoupConsume, (data, callback) => mediaSoupConsume(socket, data, callback))
   socket.on(SocketEvents.mediaSoupDisconnect, () => mediaSoupDisconnect(socket))
+  socket.on(SocketEvents.mediaSoupConsumerResume, (data, callback) => mediaSoupConsumerResume(socket, data, callback))
+
 }
 
 export default liveSocketRouter

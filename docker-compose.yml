@@ -6,6 +6,7 @@ services:
     ports:
       - 5001:5001
       - 5080:5080
+      - 4000-4020:4000-4020
     depends_on:
       - auth-service
       - user-service
@@ -44,6 +45,10 @@ services:
       - PP_SUCCESS_URL=${PP_SUCCESS_URL}
       - PP_FAILURE_URL=${PP_FAILURE_URL}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - MSOUP_CLIENT_IP=${MSOUP_CLIENT_IP}
+      - MSOUP_CLIENT_ANNOUNCED_IP=${MSOUP_CLIENT_ANNOUNCED_IP}
+      - MSOUP_SERVER_IP=${MSOUP_SERVER_IP}
+      - MSOUP_ANNOUNCED_IP=${MSOUP_ANNOUNCED_IP}
 
   auth-service:
     build: ./auth

@@ -1,5 +1,8 @@
 import * as mediasoup from 'mediasoup';
-import { Producer, Router, WebRtcTransport, Worker } from 'mediasoup/types';
+import { Consumer, Producer, Router, WebRtcTransport, Worker } from 'mediasoup/types';
+
+const SERVER_IP = process.env.MSOUP_SERVER_IP || '0.0.0.0'
+const ANNOUNCED_IP = process.env.MSOUP_ANNOUNCED_IP || undefined
 
 interface MediaSoupOptions {
   worker: {
@@ -44,8 +47,8 @@ export const mediaSoupOptions: MediaSoupOptions = {
   webRtcTransport: {
     listenIps: [
       {
-        ip: '0.0.0.0', // Replace with your server's public or private IP
-        announcedIp: undefined, // Use null if there is no public IP to announce
+        ip: SERVER_IP, // Replace with your server's public or private IP
+        announcedIp: ANNOUNCED_IP, // Use null if there is no public IP to announce
       },
     ],
     enableUdp: true,
@@ -61,6 +64,7 @@ let router: Router
 
 export const transports: { [socketId: string]: WebRtcTransport } = {};
 export const producers: { [socketId: string]: Producer } = {};
+export const consumers: { [socketId: string]: Consumer } = {};
 
 (async () => {
   try {

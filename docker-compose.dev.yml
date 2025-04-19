@@ -48,7 +48,11 @@ services:
       - PP_SUCCESS_URL=${PP_SUCCESS_URL}
       - PP_FAILURE_URL=${PP_FAILURE_URL}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
-
+      - MSOUP_CLIENT_IP=${MSOUP_CLIENT_IP}
+      - MSOUP_CLIENT_ANNOUNCED_IP=${MSOUP_CLIENT_ANNOUNCED_IP}
+      - MSOUP_SERVER_IP=${MSOUP_SERVER_IP}
+      - MSOUP_ANNOUNCED_IP=${MSOUP_ANNOUNCED_IP}
+      
   auth-service:
     build: ./auth
     container_name: auth-service
