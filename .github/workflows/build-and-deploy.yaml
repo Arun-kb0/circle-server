@@ -86,13 +86,6 @@ jobs:
             configMapFile: api-gateway-configmap.yml
             secretFile: api-gateway-secret.yml
             serviceFile: api-gateway-svc.yml
-          - service: media-soup-svc
-            deployFolder: apiGateway
-            deployFile: ""
-            configMapFile: ""
-            secretFile: ""
-            serviceFile: media-soup-svc.yml
-            backendConfigFile: ""
           - service: auth-deploy
             deployFolder: auth
             deployFile: auth-deploy.yml
@@ -200,6 +193,11 @@ jobs:
       if: ${{ matrix.serviceFile != '' }}
       run: |
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.serviceFile }} -n circle
+
+    # media-soup-svc  
+    - name: Deploy Service media-soup-svc 
+      run: |
+        kubectl apply -f ./k8s/apiGateway/media-soup-svc.yml -n circle
 
     - name: Deploy on GKE for ${{ matrix.service}}
       run: |
