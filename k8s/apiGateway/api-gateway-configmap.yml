@@ -37,6 +37,7 @@ data:
   PP_SUCCESS_URL: "https://circle-client-sigma.vercel.app/payment-success"
   PP_FAILURE_URL: "https://circle-client-sigma.vercel.app/payment-failed"
   MSOUP_CLIENT_IP: "0.0.0.0"
-  MSOUP_CLIENT_ANNOUNCED_IP: "media-soup-svc"
+  # dont add protocol on - MSOUP_CLIENT_ANNOUNCED_IP
+  MSOUP_CLIENT_ANNOUNCED_IP: "10.160.0.13"
   MSOUP_SERVER_IP: "0.0.0.0"
-  MSOUP_ANNOUNCED_IP: 
+  MSOUP_ANNOUNCED_IP: '10.160.0.13'

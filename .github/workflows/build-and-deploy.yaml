@@ -206,8 +206,3 @@ jobs:
         kubectl rollout restart deployment/${{ matrix.service }} -n circle
         # Wait for the deployment to roll out completely
         # kubectl rollout status deployment/${{ matrix.service }} -n circle
-
-    # - name: Deploy Ingress GKE for ${{ matrix.service}}
-    #   run: |
-    #     # Now that the pods are ready, apply the Ingress configuration
-    #     kubectl apply -f ./k8s/ingress/web-ingress.yml
