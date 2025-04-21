@@ -195,7 +195,7 @@ jobs:
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.serviceFile }} -n circle
 
     # media-soup-svc  
-    - name: Deploy Service media-soup-svc 
+    - name: Deploy load balancer Service media-soup-svc 
       run: |
         kubectl apply -f ./k8s/apiGateway/media-soup-svc.yml -n circle
 
