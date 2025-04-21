@@ -71,8 +71,8 @@ export const consumers: { [socketId: string]: Consumer } = {};
     worker = await mediasoup.createWorker({
       rtcMinPort: 4000,
       rtcMaxPort: 4020,
-      // logLevel: 'warn',
-      // logTags: ['info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp'],
+      logLevel: 'warn',
+      logTags: ['info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp'],
     });
 
     worker.on('died', () => {

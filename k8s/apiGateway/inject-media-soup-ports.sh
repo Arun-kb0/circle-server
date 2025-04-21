@@ -9,10 +9,14 @@ PORTS_TMP=$(mktemp)
 # 1) Generate the ports block for MediaSoup
 for p in $(seq 4000 4020); do
   cat <<EOF >>"$PORTS_TMP"
-    - name: media-soup-$p
+    - name: media-soup-udp-$p
       port: $p
       targetPort: $p
       protocol: UDP
+    - name: media-soup-tcp-$p
+      port: $p
+      targetPort: $p
+      protocol: TCP
 EOF
 done
 # 2) Remove all entries under the `ports` section
