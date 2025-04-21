@@ -52,7 +52,8 @@ export const mediaSoupOptions: MediaSoupOptions = {
       },
     ],
     enableUdp: true,
-    enableTcp: true,
+    // enableTcp: true,
+    enableTcp: false,
     preferUdp: true,
     initialAvailableOutgoingBitrate: 1000000, // Set an initial bitrate
   },

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # script need to be fixed
-SERVICE_YAML="media-soup-svc.yml"
+SERVICE_YAML="media-soup-udp-svc.yml"
 # Temporary file for the new ports block
 PORTS_TMP=$(mktemp)
 
@@ -13,12 +13,9 @@ for p in $(seq 4000 4020); do
       port: $p
       targetPort: $p
       protocol: UDP
-    - name: media-soup-tcp-$p
-      port: $p
-      targetPort: $p
-      protocol: TCP
 EOF
 done
+
 # 2) Remove all entries under the `ports` section
 sed -i '/^  ports:/,/^$/d' "$SERVICE_YAML"
 
