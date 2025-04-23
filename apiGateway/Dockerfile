@@ -36,7 +36,7 @@
 
 # CMD [ "npm","run","dev" ]
 
-# # * prod build
+# * prod build
 
 # #* Build Stage
 FROM node:20-alpine AS builder
@@ -85,4 +85,3 @@ EXPOSE 4000-4020
 
 # 5) Start via npm (now that package.json is present)
 CMD ["npm", "start"]
-

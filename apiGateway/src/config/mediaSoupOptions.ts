@@ -26,7 +26,8 @@ export const mediaSoupOptions: MediaSoupOptions = {
   worker: {
     rtcMinPort: 4000,
     rtcMaxPort: 4020,
-    logLevel: 'warn'
+    // logLevel: 'warn'
+    logLevel: 'debug'
   },
   router: {
     mediaCodecs: [
@@ -52,8 +53,7 @@ export const mediaSoupOptions: MediaSoupOptions = {
       },
     ],
     enableUdp: true,
-    // enableTcp: true,
-    enableTcp: false,
+    enableTcp: true,
     preferUdp: true,
     initialAvailableOutgoingBitrate: 1000000, // Set an initial bitrate
   },
@@ -99,6 +99,7 @@ export const consumers: { [socketId: string]: Consumer } = {};
         },
       ],
     });
+
 
     console.log('Mediasoup worker and router created successfully.');
   } catch (err) {

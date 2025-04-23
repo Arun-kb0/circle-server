@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: media-soup-udp-svc
+  name: media-soup-svc
   namespace: circle
   annotations:
     networking.gke.io/load-balancer-type: "External"  # Explicitly defines external LoadBalancer

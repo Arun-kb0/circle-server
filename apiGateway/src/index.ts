@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
+import './util/mediasoupLogListeners'
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import authRouter from './router/authRoutes'
