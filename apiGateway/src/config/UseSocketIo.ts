@@ -10,7 +10,9 @@ class UseSocketIo {
   static getInstance() {
     if (!UseSocketIo.instance) {
       UseSocketIo.instance = new Server(server, {
-        cors: corsOptions
+        cors: corsOptions,
+        pingInterval: 10000,
+        pingTimeout: 5000
       })
     }
     return UseSocketIo.instance

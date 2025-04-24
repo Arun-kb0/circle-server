@@ -1,5 +1,6 @@
 import { UsersCountType } from '../constants/types'
 import IUser from '../interfaces/IUser'
+import IBlockUser from './IBlockUser'
 
 interface IUserRepo {
   countDocs(): Promise<number>
@@ -15,6 +16,12 @@ interface IUserRepo {
 
   countUsers(startDate?: string, endDate?: string): Promise<UsersCountType>
   getUserCountByDateDetails(startDate: string, endDate: string): Promise<{ date: string, count: number }[]>
+
+  getBlockedUsersByBlockerId(blockerUserId: string, limit: number, startIndex: number): Promise<IBlockUser[]> 
+  getBlockedUsersByBlockerIdCount(blockerUserId: string): Promise<number> 
+  getBlockedUserByBlockerAndBlockedId(blockerUserId: string, blockedUserId: string): Promise<IBlockUser | null>
+  createBlockedUser(blockedUserId: string, blockerUserId: string): Promise<IBlockUser | null>
+  deleteBlockedUser(blockedUserId: string, blockerUserId: string): Promise<IBlockUser | null>
 }
 
 export default IUserRepo

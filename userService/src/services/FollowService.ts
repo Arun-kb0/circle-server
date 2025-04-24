@@ -7,7 +7,7 @@ import IUser from '../interfaces/IUser';
 import handleError from '../util/handeError';
 import { publishMessage } from '../util/rabbitmq'
 
-const LIMIT = 10
+const LIMIT = 20
 
 class FollowService implements IFollowService {
 

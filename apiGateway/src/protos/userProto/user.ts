@@ -11,12 +11,21 @@ export interface ProtoGrpcType {
   user: {
     BlockUserRequest: MessageTypeDefinition
     BlockUserResponse: MessageTypeDefinition
+    BlockedUser: MessageTypeDefinition
+    CreateBlockedUserRequest: MessageTypeDefinition
+    CreateBlockedUserResponse: MessageTypeDefinition
+    DeleteBlockedUserRequest: MessageTypeDefinition
+    DeleteBlockedUserResponse: MessageTypeDefinition
     DeleteUserRequest: MessageTypeDefinition
     DeleteUserResponse: MessageTypeDefinition
     FollowUserRequest: MessageTypeDefinition
     FollowUserResponse: MessageTypeDefinition
     GetAllUsersRequest: MessageTypeDefinition
     GetAllUsersResponse: MessageTypeDefinition
+    GetBlockedUserByBlockerAndBlockedIdRequest: MessageTypeDefinition
+    GetBlockedUserByBlockerAndBlockedIdResponse: MessageTypeDefinition
+    GetBlockedUsersByBlockerIdRequest: MessageTypeDefinition
+    GetBlockedUsersByBlockerIdResponse: MessageTypeDefinition
     GetFollowersRequest: MessageTypeDefinition
     GetFollowersResponse: MessageTypeDefinition
     GetFollowingRequest: MessageTypeDefinition

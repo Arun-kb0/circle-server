@@ -14,7 +14,17 @@ import { GetMultipleUserResponse } from '../proto/user/GetMultipleUserResponse';
 import { UsersCountRequest__Output } from '../proto/user/UsersCountRequest';
 import { UsersCountResponse } from '../proto/user/UsersCountResponse';
 import { GetUserCountByDateDetailsRequest__Output } from '../proto/user/GetUserCountByDateDetailsRequest';
-import { GetUserCountByDateDetailsResponse} from '../proto/user/GetUserCountByDateDetailsResponse';
+import { GetUserCountByDateDetailsResponse } from '../proto/user/GetUserCountByDateDetailsResponse';
+
+import { GetBlockedUsersByBlockerIdRequest__Output } from '../proto/user/GetBlockedUsersByBlockerIdRequest';
+import { GetBlockedUsersByBlockerIdResponse } from '../proto/user/GetBlockedUsersByBlockerIdResponse';
+import { GetBlockedUserByBlockerAndBlockedIdRequest__Output } from '../proto/user/GetBlockedUserByBlockerAndBlockedIdRequest';
+import { GetBlockedUserByBlockerAndBlockedIdResponse } from '../proto/user/GetBlockedUserByBlockerAndBlockedIdResponse';
+import { CreateBlockedUserRequest__Output } from '../proto/user/CreateBlockedUserRequest';
+import { CreateBlockedUserResponse } from '../proto/user/CreateBlockedUserResponse';
+import { DeleteBlockedUserRequest__Output } from '../proto/user/DeleteBlockedUserRequest';
+import { DeleteBlockedUserResponse } from '../proto/user/DeleteBlockedUserResponse';
+
 
 
 export type GetAllUserHandler = grpc.handleUnaryCall<GetAllUsersRequest__Output, GetAllUsersResponse>;
@@ -26,7 +36,11 @@ export type GetMultipleUsersHandler = grpc.handleUnaryCall<GetMultipleUserReques
 export type CountUsersHandler = grpc.handleUnaryCall<UsersCountRequest__Output, UsersCountResponse>;
 export type GetUserCountDetailsHandler = grpc.handleUnaryCall<GetUserCountByDateDetailsRequest__Output, GetUserCountByDateDetailsResponse>;
 
-
+export type GetBlockedUsersByBlockerIdHandler = grpc.handleUnaryCall<GetBlockedUsersByBlockerIdRequest__Output, GetBlockedUsersByBlockerIdResponse>;
+export type GetBlockedUserByBlockerAndBlockedIdHandler = grpc.handleUnaryCall<GetBlockedUserByBlockerAndBlockedIdRequest__Output, GetBlockedUserByBlockerAndBlockedIdResponse>;
+export type CreateBlockedUserHandler = grpc.handleUnaryCall<CreateBlockedUserRequest__Output, CreateBlockedUserResponse>;
+export type DeleteBlockedUserHandler = grpc.handleUnaryCall<DeleteBlockedUserRequest__Output, DeleteBlockedUserResponse>; 
+  
 interface IUserController {
   getAllUsers: GetAllUserHandler
   getUser: GetUserHandler
@@ -37,6 +51,12 @@ interface IUserController {
   getMultipleUsers: GetMultipleUsersHandler
   usersCount: CountUsersHandler
   getUserCountByDateDetails: GetUserCountDetailsHandler
+
+  getBlockedUsersByBlockerId: GetBlockedUsersByBlockerIdHandler
+  getBlockedUserByBlockerAndBlockedId: GetBlockedUserByBlockerAndBlockedIdHandler
+  createBlockedUser: CreateBlockedUserHandler
+  deleteBlockedUser: DeleteBlockedUserHandler
+  
 }
 
 export default IUserController
