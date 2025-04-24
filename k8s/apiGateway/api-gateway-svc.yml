@@ -21,5 +21,3 @@ spec:
       port: 5080
       targetPort: 5080
       # nodePort: 30001
-
-      # mediasoup-ports 
