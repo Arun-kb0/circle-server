@@ -9,9 +9,12 @@ interface IFollowRepo {
   GetSuggestedPeople(userId: string, limit: number, startIndex: number): Promise<IUser[]>
   getFollowersCount(userId: string): Promise<number>
   getFollowers(userId: string, limit: number, startIndex: number): Promise<IUser[]>
-  
+
   getFollowingCount(userId: string): Promise<number>
   getFollowing(userId: string, limit: number, startIndex: number): Promise<IUser[]>
+
+  findMutualConnectionCount(userId: string): Promise<number>
+  findMutualConnectionUsersByUserId(userId: string, limit: number, startIndex: number): Promise<IUser[]>
 }
 
 export default IFollowRepo
