@@ -28,7 +28,7 @@ const formattedErrorLog = (error: HttpError, req: Request, res: Response) => {
 
 
 const errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(error)
+  // console.log(error)
 
   if (error.name === 'TokenExpiredError') {
     error.statusCode = httpStatus.UNAUTHORIZED
@@ -46,7 +46,7 @@ const errorHandler = (error: any, req: Request, res: Response, next: NextFunctio
     }
   } else if ('code' in error) {
     statusCode = grpcCodeToHttpStatus(error.code)
-    const errorMessage = error?.details;
+    const errorMessage = error?.details 
     const capitalizedMessage = errorMessage?.charAt(0).toUpperCase() + errorMessage.slice(1);
 
     resJson = {

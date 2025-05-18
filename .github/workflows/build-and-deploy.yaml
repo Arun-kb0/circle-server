@@ -86,7 +86,6 @@ jobs:
             configMapFile: api-gateway-configmap.yml
             secretFile: api-gateway-secret.yml
             serviceFile: api-gateway-svc.yml
-            backendConfigFile: api-gateway-backendconfig.yml
           - service: auth-deploy
             deployFolder: auth
             deployFile: auth-deploy.yml
@@ -195,6 +194,12 @@ jobs:
       run: |
         kubectl apply -f ./k8s/${{ matrix.deployFolder }}/${{ matrix.serviceFile }} -n circle
 
+    # media-soup-svc  
+    - name: Deploy load balancer Service media-soup-tcp-svc, media-soup-tcp-svc
+      run: |
+        kubectl apply -f ./k8s/apiGateway/media-soup-tcp-svc.yml -n circle
+        kubectl apply -f ./k8s/apiGateway/media-soup-udp-svc.yml -n circle
+
     - name: Deploy on GKE for ${{ matrix.service}}
       run: |
         # Apply the updated deployment YAML file
@@ -202,8 +207,3 @@ jobs:
         kubectl rollout restart deployment/${{ matrix.service }} -n circle
         # Wait for the deployment to roll out completely
         # kubectl rollout status deployment/${{ matrix.service }} -n circle
-
-    # - name: Deploy Ingress GKE for ${{ matrix.service}}
-    #   run: |
-    #     # Now that the pods are ready, apply the Ingress configuration
-    #     kubectl apply -f ./k8s/ingress/web-ingress.yml

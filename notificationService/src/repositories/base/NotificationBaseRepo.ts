@@ -21,7 +21,7 @@ class NotificationBaseRepo implements INotificationBaseRepo {
 
   async findNotificationsByReceiverId(receiverId: string, limit: number, startIndex: number): Promise<INotification[]> {
     try {
-      const notifications = await Notification.find({ receiverId }).limit(limit).skip(startIndex) 
+      const notifications = await Notification.find({ receiverId }).sort({ createdAt: -1 }).limit(limit).skip(startIndex)
       return notifications.map(item => convertINotificationDbToINotification(item))
     } catch (error) {
       const err = handleError(error)
@@ -34,7 +34,7 @@ class NotificationBaseRepo implements INotificationBaseRepo {
       const convertedNotification = convertINotificationToINotificationDb(notification)
       console.log('converted notifications')
       console.log(convertedNotification)
-      
+
       const newNotification = await Notification.create(convertedNotification)
       return convertINotificationDbToINotification(newNotification)
     } catch (error) {

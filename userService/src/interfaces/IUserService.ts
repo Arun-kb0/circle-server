@@ -1,6 +1,7 @@
 import IUser from './IUser'
-import { FuncReturnType } from '../constants/svcTypes'
+import { FuncReturnType, PaginationBlockedUsers } from '../constants/svcTypes'
 import { UsersCountType } from '../constants/types'
+import IBlockUser, { IBlockUserExt } from './IBlockUser'
 
 
 interface IUserService {
@@ -14,6 +15,12 @@ interface IUserService {
   getMultipleUsers(userIds: string[]): FuncReturnType<IUser[]>
   countUsers(startDate?: string, endDate?: string): FuncReturnType<UsersCountType>
   getUserCountByDateDetails(startDate: string, endDate: string): FuncReturnType<{ date: string, count: number }[]>
+
+
+  getBlockedUsersByBlockerId(page: number, blockerUserId: string): FuncReturnType<PaginationBlockedUsers>
+  getBlockedUserByBlockerAndBlockedId(blockerUserId: string, blockedUserId: string): FuncReturnType<IBlockUserExt | null>
+  createBlockedUser(blockedUserId: string, blockerUserId: string): FuncReturnType<IBlockUserExt>
+  deleteBlockedUser(blockedUserId: string, blockerUserId: string): FuncReturnType<IBlockUserExt | null>
 }
 
 

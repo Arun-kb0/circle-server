@@ -13,6 +13,29 @@ class FollowRepo implements IFollowRepo {
     private userRepo: IUserRepo
   ) { }
 
+  async findMutualConnectionCount(userId: string): Promise<number> {
+    try {
+      const count = await this.followBaseRepo.findMutualConnectionCount(userId)
+      console.log('findMutualConnectionCount', count)
+      return count
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
+  async findMutualConnectionUsersByUserId(userId: string, limit: number, startIndex: number): Promise<IUser[]> {
+    try {
+      const users = await this.followBaseRepo.findMutualConnectionUsersByUserId(userId, limit, startIndex)
+      console.log('findMutualConnectionUsersByUserId')
+      console.log(users)
+      return users
+    } catch (error) {
+      const err = handleError(error)
+      throw new Error(err.message)
+    }
+  }
+
   async isFollowing(userId: string, targetId: string): Promise<boolean> {
     try {
       const data = await this.followBaseRepo.isFollowing(userId, targetId)

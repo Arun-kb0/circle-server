@@ -5,13 +5,14 @@ metadata:
   namespace: circle
   annotations:
     kubernetes.io/ingress.class: gce
-    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.allow-http: "false"
     kubernetes.io/ingress.global-static-ip-name: notification-ip
     # cert-manager.io/issuer: letsencrypt-staging
-    cert-manager.io/issuer: letsencrypt-production
+    # cert-manager.io/issuer: letsencrypt-production
+    cert-manager.io/issuer: letsencrypt-production-notification
 spec:
   tls:
-    - secretName: web-ssl
+    - secretName: notification-ssl
       hosts:
         - circle-notification.planetunknown.xyz
   rules:
@@ -22,9 +23,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: api-gateway-svc
+            name: notification-svc
             port:
-              number: 5001
+              number: 8086
 
   # defaultBackend:
   #   service:

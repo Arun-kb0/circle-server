@@ -15,9 +15,9 @@ spec:
       http01:
         ingress:
           name: web-ingress
-    - selector:
-        dnsZones:
-        - circle-notification.planetunknown.xyz
-      http01:
-        ingress:
-          name: notification-ingress
+    # - selector:
+    #     dnsZones:
+    #     - circle-notification.planetunknown.xyz
+    #   http01:
+    #     ingress:
+    #       name: notification-ingress

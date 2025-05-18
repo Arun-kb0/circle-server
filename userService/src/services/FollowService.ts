@@ -7,7 +7,7 @@ import IUser from '../interfaces/IUser';
 import handleError from '../util/handeError';
 import { publishMessage } from '../util/rabbitmq'
 
-const LIMIT = 10
+const LIMIT = 20
 
 class FollowService implements IFollowService {
 
@@ -45,9 +45,17 @@ class FollowService implements IFollowService {
   async getSuggestedPeople(userId: string, page: number): FuncReturnType<PaginationUsers> {
     try {
       const startIndex = (page - 1) * LIMIT
-      const total = await this.followRepo.GetSuggestedPeopleCount(userId)
+      let total = 0
+      const mutualUsersCount = await this.followRepo.findMutualConnectionCount(userId)
+      if (mutualUsersCount === 0) total = await this.followRepo.GetSuggestedPeopleCount(userId)
+      total = mutualUsersCount
       const numberOfPages = Math.ceil(total / LIMIT)
-      const users = await this.followRepo.GetSuggestedPeople(userId, LIMIT, startIndex)
+      let users: IUser[] = []
+      if (mutualUsersCount === 0) {
+        users = await this.followRepo.GetSuggestedPeople(userId, LIMIT, startIndex)
+      } else {
+        users = await this.followRepo.findMutualConnectionUsersByUserId(userId, LIMIT, startIndex)
+      }
       return { err: null, data: { users, numberOfPages, currentPage: page } }
     } catch (error) {
       const { code, message } = handleError(error)

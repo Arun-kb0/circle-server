@@ -2,6 +2,7 @@ import UserGrpcClient from '../config/UserGrpcClient'
 import { User } from '../proto/userProto/user/User'
 import ITransaction, { ITransactionAdmin, ITransactionExt } from '../interfaces/ITransaction'
 import ISubscription, { ISubscriptionsExt } from '../interfaces/ISubscription'
+import { UserSubscriptionPlan } from '../model/userSubscriptionPlanModel'
 
 const client = UserGrpcClient.getClient()
 
@@ -55,13 +56,16 @@ export const addUserToTransaction = async (transaction: ITransaction): Promise<I
     return transaction
   }
 }
-
+// ! fix
 export const addUsersToTransactions = async (transactions: ITransaction[]): Promise<ITransactionExt[]> => {
   try {
-    const userIds = transactions.map(msg => msg.senderId)
+    // const userIds = transactions.map(msg => msg.senderId)
+    const userIds = transactions.map(item => item.userId === item.senderId ? item.receiverId : item.senderId)
     const users = await getMultipleUsers(userIds)
+    console.log("users from addUsersToTransactions ")
+    console.log(users)
     const transactionsWithUser = transactions.map((transaction): ITransactionExt => {
-      const user = users.find((item) => item._id === transaction.senderId);
+      const user = users.find((item) => item._id === transaction.senderId || item._id === transaction.receiverId);
       return {
         ...transaction,
         userName: user?.name || undefined,

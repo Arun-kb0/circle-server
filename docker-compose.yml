@@ -5,7 +5,8 @@ services:
     container_name: api-gateway
     ports:
       - 5001:5001
-      - 9000:9000
+      - 5080:5080
+      - 4000-4020:4000-4020
     depends_on:
       - auth-service
       - user-service
@@ -44,6 +45,10 @@ services:
       - PP_SUCCESS_URL=${PP_SUCCESS_URL}
       - PP_FAILURE_URL=${PP_FAILURE_URL}
       - CORN_EXPRESSION=${CORN_EXPRESSION}
+      - MSOUP_CLIENT_IP=${MSOUP_CLIENT_IP}
+      - MSOUP_CLIENT_ANNOUNCED_IP=${MSOUP_CLIENT_ANNOUNCED_IP}
+      - MSOUP_SERVER_IP=${MSOUP_SERVER_IP}
+      - MSOUP_ANNOUNCED_IP=${MSOUP_ANNOUNCED_IP}
 
   auth-service:
     build: ./auth
@@ -258,6 +263,7 @@ services:
     ports: 
       - 50056:50056
       - 8086:8086
+      - 5086:5086
     depends_on:
       - post-cache
       - rabbitmq

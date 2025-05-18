@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-soup-tcp-svc
+  namespace: circle
+  annotations:
+    networking.gke.io/load-balancer-type: "External"  # Explicitly defines external LoadBalancer
+    service.beta.kubernetes.io/external-traffic-policy: "Cluster"  # For load balancing across nodes
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.93.116.218
+  selector:
+    name: api-gateway-pod
+    app: api-gateway
+  ports:
+    - name: media-soup-tcp-4000
+      port: 4000
+      targetPort: 4000
+      protocol: TCP
+    - name: media-soup-tcp-4001
+      port: 4001
+      targetPort: 4001
+      protocol: TCP
+    - name: media-soup-tcp-4002
+      port: 4002
+      targetPort: 4002
+      protocol: TCP
+    - name: media-soup-tcp-4003
+      port: 4003
+      targetPort: 4003
+      protocol: TCP
+    - name: media-soup-tcp-4004
+      port: 4004
+      targetPort: 4004
+      protocol: TCP
+    - name: media-soup-tcp-4005
+      port: 4005
+      targetPort: 4005
+      protocol: TCP
+    - name: media-soup-tcp-4006
+      port: 4006
+      targetPort: 4006
+      protocol: TCP
+    - name: media-soup-tcp-4007
+      port: 4007
+      targetPort: 4007
+      protocol: TCP
+    - name: media-soup-tcp-4008
+      port: 4008
+      targetPort: 4008
+      protocol: TCP
+    - name: media-soup-tcp-4009
+      port: 4009
+      targetPort: 4009
+      protocol: TCP
+    - name: media-soup-tcp-4010
+      port: 4010
+      targetPort: 4010
+      protocol: TCP
+    - name: media-soup-tcp-4011
+      port: 4011
+      targetPort: 4011
+      protocol: TCP
+    - name: media-soup-tcp-4012
+      port: 4012
+      targetPort: 4012
+      protocol: TCP
+    - name: media-soup-tcp-4013
+      port: 4013
+      targetPort: 4013
+      protocol: TCP
+    - name: media-soup-tcp-4014
+      port: 4014
+      targetPort: 4014
+      protocol: TCP
+    - name: media-soup-tcp-4015
+      port: 4015
+      targetPort: 4015
+      protocol: TCP
+    - name: media-soup-tcp-4016
+      port: 4016
+      targetPort: 4016
+      protocol: TCP
+    - name: media-soup-tcp-4017
+      port: 4017
+      targetPort: 4017
+      protocol: TCP
+    - name: media-soup-tcp-4018
+      port: 4018
+      targetPort: 4018
+      protocol: TCP
+    - name: media-soup-tcp-4019
+      port: 4019
+      targetPort: 4019
+      protocol: TCP
+    - name: media-soup-tcp-4020
+      port: 4020
+      targetPort: 4020
+      protocol: TCP

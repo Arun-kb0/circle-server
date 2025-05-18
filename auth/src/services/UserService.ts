@@ -307,7 +307,7 @@ export class UserService implements IUserService {
 
     try {
       const user = await this.userRepo.findByToken(refreshToken)
-      if (!user) return { err: httpStatus.NOT_FOUND, data: null }
+      if (!user) return { err:  httpStatus.NOT_FOUND, data: null }
 
       let res: ResType = { err: 0, data: null }
       const verifyCallback: VerifyCallback = (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {

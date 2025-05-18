@@ -17,4 +17,7 @@ spec:
     - name: http
       port: 5001
       targetPort: 5001
+    - name: health
+      port: 5080
+      targetPort: 5080
       # nodePort: 30001

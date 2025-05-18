@@ -45,6 +45,14 @@ export enum SocketEvents {
   liveUserDisconnected = 'live-user-disconnected',
 
   liveSendMessage = 'live-send-message',
-  liveReceiveMessage = 'live-receive-message'
+  liveReceiveMessage = 'live-receive-message',
 
+  // * mediasoup
+  mediaSoupGetRouterRtpCapabilities = 'mediasoup-get-route-rtp-capabilities',
+  mediaSoupConnectWebRtcTransport = 'mediasoup-connect-webrtc-transport',
+  mediaSoupCreateWebRtcTransport = 'mediasoup-create-webrtc-transport',
+  mediaSoupProduce = 'mediasoup-produce',
+  mediaSoupConsume = 'mediasoup-consume',
+  mediaSoupDisconnect = 'mediasoup-disconnect',
+  mediaSoupConsumerResume= 'mediasoup-consumer-resumer'
 } 
